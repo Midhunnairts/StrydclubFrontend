@@ -103,7 +103,7 @@
           </div>
 
           <!-- Action CTA Button -->
-          <a href="#" class="btn-view-details" id="btn-details-{{ event.category.toLowerCase() }}">
+          <a [routerLink]="['/events', event.id]" class="btn-view-details" id="btn-details-{{ event.category.toLowerCase() }}">
             View Details
           </a>
 

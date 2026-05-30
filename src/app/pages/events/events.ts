@@ -1,8 +1,10 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 interface EventListItem {
+  id: string;
   title: string;
   category: string;
   date: string;
@@ -16,7 +18,7 @@ interface EventListItem {
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './events.html',
   styleUrl: './events.scss'
 })
@@ -37,6 +39,7 @@ export class EventsComponent {
 
   events = signal<EventListItem[]>([
     {
+      id: 'weekend-5k-marathon',
       title: 'Weekend 5K Marathon',
       category: 'Running',
       date: 'May 28, 2026',
@@ -47,6 +50,7 @@ export class EventsComponent {
       slotsTotal: 100
     },
     {
+      id: 'inter-city-badminton-tournament',
       title: 'Inter-City Badminton Tournament',
       category: 'Badminton',
       date: 'June 2, 2026',
@@ -57,6 +61,7 @@ export class EventsComponent {
       slotsTotal: 32
     },
     {
+      id: 'friday-night-football-league',
       title: 'Friday Night Football League',
       category: 'Football',
       date: 'May 25, 2026',
@@ -67,6 +72,7 @@ export class EventsComponent {
       slotsTotal: 22
     },
     {
+      id: 'sunrise-volleyball-championship',
       title: 'Sunrise Volleyball Championship',
       category: 'Volleyball',
       date: 'May 30, 2026',
@@ -77,6 +83,7 @@ export class EventsComponent {
       slotsTotal: 30
     },
     {
+      id: 'pickleball-pro-league',
       title: 'Pickleball Pro League',
       category: 'Pickleball',
       date: 'June 5, 2026',
@@ -87,6 +94,7 @@ export class EventsComponent {
       slotsTotal: 40
     },
     {
+      id: 'traditional-kho-kho-challenge',
       title: 'Traditional Kho Kho Challenge',
       category: 'Kho Kho',
       date: 'June 8, 2026',
@@ -97,6 +105,7 @@ export class EventsComponent {
       slotsTotal: 20
     },
     {
+      id: 'padel-club-challenge',
       title: 'Padel Club Challenge',
       category: 'Padel',
       date: 'June 25, 2026',

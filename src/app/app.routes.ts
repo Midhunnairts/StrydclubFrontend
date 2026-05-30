@@ -6,9 +6,13 @@ import { CommunityComponent } from './pages/community/community';
 import { AboutComponent } from './pages/about/about';
 import { ContactComponent } from './pages/contact/contact';
 import { LoginComponent } from './pages/login/login';
+import { IndividualEventComponent } from './pages/individual-event/individual-event';
+import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'dashboard', component: UserDashboardComponent },
+  { path: 'events/:id', component: IndividualEventComponent },
   { path: 'events', component: EventsComponent },
   { path: 'sports', component: SportsComponent },
   { path: 'community', component: CommunityComponent },

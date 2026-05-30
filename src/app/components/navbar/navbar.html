@@ -1,13 +1,14 @@
 <header class="header-nav">
   <div class="nav-container">
-    
+
     <!-- Branding Logo -->
     <a routerLink="/" class="brand-logo" id="nav-brand">
       STRYDCLUB
     </a>
 
     <!-- Hamburger Mobile Toggle -->
-    <button class="mobile-toggle" aria-label="Toggle navigation menu" (click)="toggleMobileMenu()" [class.open]="isMobileMenuOpen()">
+    <button class="mobile-toggle" aria-label="Toggle navigation menu" (click)="toggleMobileMenu()"
+      [class.open]="isMobileMenuOpen()">
       <span class="bar bar-1"></span>
       <span class="bar bar-2"></span>
       <span class="bar bar-3"></span>
@@ -16,23 +17,23 @@
     <!-- Desktop Navigation Links -->
     <ul class="nav-links" id="nav-links-list">
       @for (item of navItems; track item.label) {
-        <li class="nav-item">
-          <a [routerLink]="item.link" 
-             routerLinkActive="active"
-             [routerLinkActiveOptions]="{exact: true}"
-             (click)="setActiveTab(item.label)">
-            {{ item.label }}
-          </a>
-        </li>
+      <li class="nav-item">
+        <a [routerLink]="item.link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+          (click)="setActiveTab(item.label)">
+          {{ item.label }}
+        </a>
+      </li>
       }
     </ul>
 
     <!-- Action Call to Actions -->
     <div class="nav-actions" id="nav-actions-container">
       <a routerLink="/login" class="btn-login" id="btn-login-action">Login</a>
-      <a href="#" class="btn-dashboard" id="btn-dashboard-action">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="avatar-icon">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+      <a routerLink="/dashboard" class="btn-dashboard" id="btn-dashboard-action">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
+          class="avatar-icon">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
         </svg>
         <span>Dashboard</span>
       </a>
@@ -44,21 +45,21 @@
   <div class="mobile-menu" [class.open]="isMobileMenuOpen()" id="nav-mobile-menu">
     <ul class="mobile-nav-links">
       @for (item of navItems; track item.label) {
-        <li>
-          <a [routerLink]="item.link" 
-             routerLinkActive="active"
-             [routerLinkActiveOptions]="{exact: true}"
-             (click)="setActiveTab(item.label)">
-            {{ item.label }}
-          </a>
-        </li>
+      <li>
+        <a [routerLink]="item.link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+          (click)="setActiveTab(item.label)">
+          {{ item.label }}
+        </a>
+      </li>
       }
     </ul>
     <div class="mobile-nav-actions">
       <a routerLink="/login" class="btn-login" (click)="toggleMobileMenu()">Login</a>
-      <a href="#" class="btn-dashboard" (click)="toggleMobileMenu()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="avatar-icon">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+      <a routerLink="/dashboard" class="btn-dashboard" (click)="toggleMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
+          class="avatar-icon">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
         </svg>
         <span>Dashboard</span>
       </a>
