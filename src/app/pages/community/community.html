@@ -105,5 +105,43 @@
       </div>
     </div>
 
+    <!-- Active Cities Section -->
+    <div class="active-cities-section">
+      <h2 class="cities-title" id="cities-title-header">Active Cities</h2>
+      
+      <!-- Cities Cards Grid -->
+      <div class="cities-grid" id="active-cities-grid">
+        @for (city of cities(); track city.name) {
+          <div class="city-card" id="city-card-{{ city.name.toLowerCase() }}">
+            
+            <!-- City Header Title -->
+            <div class="city-card-header">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="city-icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+              </svg>
+              <h3 class="city-name">{{ city.name }}</h3>
+            </div>
+
+            <!-- Stats Block -->
+            <div class="city-stats-row">
+              <!-- Members Stats Box -->
+              <div class="city-stat-box">
+                <span class="city-stat-label">Members</span>
+                <span class="city-stat-value">{{ city.membersCount | number }}</span>
+              </div>
+
+              <!-- Events Stats Box -->
+              <div class="city-stat-box">
+                <span class="city-stat-label">Events</span>
+                <span class="city-stat-value">{{ city.eventsCount }}</span>
+              </div>
+            </div>
+
+          </div>
+        }
+      </div>
+    </div>
+
   </div>
 </section>

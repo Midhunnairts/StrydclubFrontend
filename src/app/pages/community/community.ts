@@ -15,6 +15,12 @@ interface LeaderboardItem {
   winsCount: number;
 }
 
+interface CityItem {
+  name: string;
+  membersCount: number;
+  eventsCount: number;
+}
+
 @Component({
   selector: 'app-community',
   standalone: true,
@@ -66,5 +72,14 @@ export class CommunityComponent {
       eventsCount: 16,
       winsCount: 7
     }
+  ]);
+
+  cities = signal<CityItem[]>([
+    { name: 'Bangalore', membersCount: 3200, eventsCount: 145 },
+    { name: 'Mumbai', membersCount: 2800, eventsCount: 132 },
+    { name: 'Delhi', membersCount: 2500, eventsCount: 118 },
+    { name: 'Hyderabad', membersCount: 1900, eventsCount: 95 },
+    { name: 'Pune', membersCount: 1600, eventsCount: 82 },
+    { name: 'Chennai', membersCount: 1400, eventsCount: 76 }
   ]);
 }
