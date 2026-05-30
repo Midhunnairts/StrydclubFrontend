@@ -41,7 +41,10 @@
 
           <!-- Submit Button -->
           <button type="submit" class="btn-submit-message" [disabled]="!contactForm.form.valid">
-            Send Message
+            <span>Send Message</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="send-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+            </svg>
           </button>
         </form>
       </div>
@@ -74,6 +77,11 @@
                       <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                     </svg>
                   }
+                  @case ('social') {
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="info-icon">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.596.596 0 0 1-.73-.73 5.964 5.964 0 0 1 1.018-2.52C4.693 16.377 3 14.37 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+                    </svg>
+                  }
                 }
               </div>
 
@@ -87,8 +95,48 @@
           }
         </div>
 
+        <!-- Business Inquiries Card -->
+        <div class="business-inquiries-card" id="contact-business-inquiries">
+          <h3 class="inquiries-title">Business Inquiries</h3>
+          <p class="inquiries-subtitle">Interested in partnerships, sponsorships, or hosting an event? Let's talk about how we can work together.</p>
+          <a href="mailto:partnerships@strydclub.com" class="btn-inquiries-link">partnerships@strydclub.com</a>
+        </div>
+
       </div>
 
+    </div>
+
+    <!-- Join Our Community Social Section -->
+    <div class="social-community-banner" id="contact-social-banner">
+      <h2 class="social-banner-title">Join Our Community</h2>
+      <p class="social-banner-subtitle">Follow us on social media for updates, event announcements, and community highlights</p>
+      
+      <!-- Social Circle Nodes Stack -->
+      <div class="social-icons-row">
+        <a href="#" class="social-circle-node" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="social-icon">
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+          </svg>
+        </a>
+        <a href="#" class="social-circle-node" aria-label="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="social-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A11.952 11.952 0 0 1 12 15c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 3 12c0-.778.099-1.533.284-2.253" />
+          </svg>
+        </a>
+        <a href="#" class="social-circle-node" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="social-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 8.25 15.25 12l-5.5 3.75V8.25Z" />
+          </svg>
+        </a>
+        <a href="#" class="social-circle-node" aria-label="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="social-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v5.35h-3.12v-5.07c0-1.27-.45-2.14-1.58-2.14-.86 0-1.37.58-1.6 1.15-.08.2-.1.49-.1.77v5.29H10.73V8.7h3.12v1.51c.42-.64 1.15-1.56 2.82-1.56 2.06 0 3.6 1.34 3.6 4.22ZM5.3 6.55c-1.07 0-1.93-.86-1.93-1.93 0-1.06.86-1.92 1.93-1.92 1.07 0 1.93.86 1.93 1.92 0 1.07-.86 1.93-1.93 1.93ZM6.86 19.5H3.74V8.7h3.12v10.8Z" />
+          </svg>
+        </a>
+      </div>
     </div>
 
   </div>

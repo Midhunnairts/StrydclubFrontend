@@ -31,6 +31,11 @@ export class ContactComponent {
       iconName: 'headquarters',
       label: 'Headquarters',
       value: 'Bangalore, Karnataka, India'
+    },
+    {
+      iconName: 'social',
+      label: 'Social',
+      value: '@strydclub'
     }
   ]);
 
