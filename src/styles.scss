@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Premium Dark Mode Color System */
+  --bg-dark-pure: #000000;
+  --bg-dark-card: #08090a;
+  --bg-dark-hover: rgba(255, 255, 255, 0.05);
+  
+  --text-white: #ffffff;
+  --text-silver: #f3f4f6;
+  --text-muted: #8e939e;
+  
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-focus: rgba(255, 255, 255, 0.4);
+  
+  /* Gradients */
+  --text-gradient: linear-gradient(180deg, #ffffff 15%, #9299a6 100%);
+  --button-hover-glow: 0 0 20px rgba(255, 255, 255, 0.15);
+  
+  /* Fonts */
+  --font-family-title: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Smooth transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-fast: all 0.15s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-dark-pure);
+  color: var(--text-white);
+  font-family: var(--font-family-body);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Subtle background sporty grid/radial light gradient to match the premium design context */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: 
+    radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
+    radial-gradient(circle at 10% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Link Resets */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: var(--transition-smooth);
+}
