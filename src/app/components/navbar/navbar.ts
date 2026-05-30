@@ -17,7 +17,7 @@ export class NavbarComponent {
     { label: 'Home', link: '/' },
     { label: 'Events', link: '/events' },
     { label: 'Sports', link: '/sports' },
-    { label: 'Community', link: '/' },
+    { label: 'Community', link: '/community' },
     { label: 'About', link: '/' },
     { label: 'Contact', link: '/' }
   ];
