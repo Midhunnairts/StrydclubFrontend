@@ -16,7 +16,7 @@ export class NavbarComponent {
   navItems = [
     { label: 'Home', link: '/' },
     { label: 'Events', link: '/events' },
-    { label: 'Sports', link: '/' },
+    { label: 'Sports', link: '/sports' },
     { label: 'Community', link: '/' },
     { label: 'About', link: '/' },
     { label: 'Contact', link: '/' }
