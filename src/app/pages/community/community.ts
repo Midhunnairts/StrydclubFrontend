@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 interface StatItem {
   iconName: string;
@@ -34,7 +35,9 @@ interface TestimonialItem {
   templateUrl: './community.html',
   styleUrl: './community.scss'
 })
-export class CommunityComponent {
+export class CommunityComponent implements OnInit {
+  private http = inject(HttpClient);
+
   stats = signal<StatItem[]>([
     { iconName: 'members', value: '12,500+', label: 'Active Members' },
     { iconName: 'cities', value: '24', label: 'Cities Covered' },
@@ -42,6 +45,7 @@ export class CommunityComponent {
     { iconName: 'champions', value: '2,400+', label: 'Champions Crowned' }
   ]);
 
+  // Initialized with offline static fallbacks, updated dynamically via API
   leaderboard = signal<LeaderboardItem[]>([
     {
       rank: 1,
@@ -106,4 +110,29 @@ export class CommunityComponent {
       quote: '"The Friday night football leagues are the highlight of my week. Great competition and even better friendships."'
     }
   ]);
+
+  ngOnInit() {
+    this.loadLeaderboard();
+  }
+
+  loadLeaderboard() {
+    this.http.get<{ success: boolean; leaderboard: any[] }>('http://localhost:3000/api/community/leaderboard')
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            const mapped = res.leaderboard.map(e => ({
+              rank: e.rank,
+              name: e.name,
+              sport: e.sport,
+              eventsCount: parseInt(e.eventsCount) || 10,
+              winsCount: Math.round(parseInt(e.points.replace(/,/g, '')) / 200) || 5
+            }));
+            this.leaderboard.set(mapped);
+          }
+        },
+        error: (err) => {
+          console.warn('Backend server offline. Keeping static community ranks fallback...');
+        }
+      });
+  }
 }

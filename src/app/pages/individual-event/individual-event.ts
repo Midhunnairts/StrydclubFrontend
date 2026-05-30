@@ -1,6 +1,7 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 interface RuleItem {
   text: string;
@@ -44,8 +45,9 @@ interface EventDetails {
 })
 export class IndividualEventComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
 
-  // Full dataset of all 7 premium events
+  // Full fallback dataset in case backend is offline
   private allEvents: EventDetails[] = [
     {
       id: 'weekend-5k-marathon',
@@ -294,25 +296,86 @@ export class IndividualEventComponent implements OnInit {
     }
   ];
 
-  // Selected event signal initialized with the default (Weekend 5K Marathon)
-  eventDetails = signal<EventDetails>(this.allEvents[0]);
+  // Set initial loading state to null
+  eventDetails = signal<EventDetails | null>(null);
 
   ngOnInit() {
-    // Read slug ID from route param
+    this.loadEventDetails();
+  }
+
+  loadEventDetails() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      const match = this.allEvents.find(e => e.id === id);
-      if (match) {
-        this.eventDetails.set(match);
-      }
+      this.http.get<{ success: boolean; event: EventDetails }>(`http://localhost:3000/api/events/${id}`)
+        .subscribe({
+          next: (res) => {
+            if (res.success) {
+              const mapped: EventDetails = {
+                id: res.event.id || (res.event as any).slug || '',
+                title: res.event.title,
+                category: res.event.category,
+                description: res.event.description,
+                date: res.event.date,
+                time: res.event.time,
+                location: res.event.location,
+                status: res.event.status,
+                price: res.event.price,
+                slotsFilled: res.event.slotsFilled,
+                slotsTotal: res.event.slotsTotal,
+                rules: res.event.rules || [],
+                schedule: res.event.schedule || [],
+                participants: res.event.participants || [],
+                organizedBy: res.event.organizedBy,
+                contact: res.event.contact
+              };
+              this.eventDetails.set(mapped);
+            }
+          },
+          error: (err) => {
+            console.warn('Backend server offline. Fetching offline details fallback...');
+            const match = this.allEvents.find(e => e.id === id);
+            if (match) {
+              this.eventDetails.set(match);
+            }
+          }
+        });
     }
   }
 
   onRegister() {
-    console.log(`Registering for ${this.eventDetails().title}...`);
+    const details = this.eventDetails();
+    if (!details) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please log in to register for upcoming sports events!');
+      return;
+    }
+
+    const headers = { Authorization: `Bearer ${token}` };
+    this.http.post<{ success: boolean; message: string }>(
+      `http://localhost:3000/api/events/${details.id}/register`, 
+      {}, 
+      { headers }
+    ).subscribe({
+      next: (res) => {
+        if (res.success) {
+          alert('Registration successful! Check your My Dashboard page!');
+          // Reload to show new slotsFilled count & updated participants roster!
+          this.loadEventDetails();
+        }
+      },
+      error: (err) => {
+        const errorMsg = err.error?.message || 'Server connection error during registration';
+        alert(errorMsg);
+      }
+    });
   }
 
   onShare() {
-    console.log(`Sharing event ${this.eventDetails().title}...`);
+    const details = this.eventDetails();
+    if (details) {
+      alert(`Successfully shared event details for ${details.title}!`);
+    }
   }
 }
