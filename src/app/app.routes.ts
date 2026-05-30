@@ -5,6 +5,7 @@ import { SportsComponent } from './pages/sports/sports';
 import { CommunityComponent } from './pages/community/community';
 import { AboutComponent } from './pages/about/about';
 import { ContactComponent } from './pages/contact/contact';
+import { LoginComponent } from './pages/login/login';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -12,6 +13,7 @@ export const routes: Routes = [
   { path: 'sports', component: SportsComponent },
   { path: 'community', component: CommunityComponent },
   { path: 'about', component: AboutComponent },
-  { path: 'contact', component: ContactComponent }
+  { path: 'contact', component: ContactComponent },
+  { path: 'login', component: LoginComponent }
 ];
 
