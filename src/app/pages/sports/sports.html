@@ -51,32 +51,28 @@
 
           <!-- Bottom Next Event Sub-card Panel -->
           <div class="sport-next-event-panel">
-            <span class="panel-section-title">Next Event</span>
-            
             <div class="panel-event-details">
-              <h3 class="panel-event-title">{{ sport.nextEvent.title }}</h3>
-              
-              <!-- Date & Time Row -->
-              <div class="panel-meta-row">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="meta-icon">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-                <span>{{ sport.nextEvent.date }} • {{ sport.nextEvent.time }}</span>
-              </div>
-
-              <!-- Location Row -->
-              <div class="panel-meta-row">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="meta-icon">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                </svg>
-                <span>{{ sport.nextEvent.location }}</span>
-              </div>
+              <span class="panel-section-title">Next Event</span>
+              <h3 class="panel-event-date">{{ sport.nextEvent.date }}</h3>
             </div>
           </div>
 
+          <!-- View Sport Events Button -->
+          <a href="#" class="btn-view-sport-events" id="btn-view-{{ sport.name.toLowerCase() }}-events">
+            View {{ sport.name }} Events
+          </a>
+
         </div>
       }
+    </div>
+
+    <!-- Request a Sport CTA Section -->
+    <div class="request-sport-banner" id="request-sport-cta">
+      <h2 class="banner-title">Don't see your sport?</h2>
+      <p class="banner-subtitle">We're constantly expanding. Let us know what you'd like to see next.</p>
+      <button class="btn-request-sport" id="btn-request-sport-action">
+        Request a Sport
+      </button>
     </div>
 
   </div>

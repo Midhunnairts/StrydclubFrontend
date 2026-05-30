@@ -112,7 +112,7 @@ export class SportsComponent {
       membersCount: 650,
       nextEvent: {
         title: 'Padel Club Challenge',
-        date: 'June 25, 2026',
+        date: 'June 12, 2026',
         time: '6:00 PM',
         location: 'Padel Arena, Hyderabad'
       }
