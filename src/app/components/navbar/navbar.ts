@@ -19,7 +19,7 @@ export class NavbarComponent {
     { label: 'Sports', link: '/sports' },
     { label: 'Community', link: '/community' },
     { label: 'About', link: '/about' },
-    { label: 'Contact', link: '/' }
+    { label: 'Contact', link: '/contact' }
   ];
 
   setActiveTab(tabName: string) {
