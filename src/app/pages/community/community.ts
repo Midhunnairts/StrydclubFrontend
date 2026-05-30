@@ -21,6 +21,12 @@ interface CityItem {
   eventsCount: number;
 }
 
+interface TestimonialItem {
+  name: string;
+  role: string;
+  quote: string;
+}
+
 @Component({
   selector: 'app-community',
   standalone: true,
@@ -81,5 +87,23 @@ export class CommunityComponent {
     { name: 'Hyderabad', membersCount: 1900, eventsCount: 95 },
     { name: 'Pune', membersCount: 1600, eventsCount: 82 },
     { name: 'Chennai', membersCount: 1400, eventsCount: 76 }
+  ]);
+
+  testimonials = signal<TestimonialItem[]>([
+    {
+      name: 'Rahul Sharma',
+      role: 'Marathon Runner',
+      quote: '"Strydclub transformed my fitness journey. The community is incredibly supportive and the events are well-organized."'
+    },
+    {
+      name: 'Priya Desai',
+      role: 'Badminton Enthusiast',
+      quote: '"I\'ve met amazing people and improved my game significantly. Best sports community I\'ve been part of!"'
+    },
+    {
+      name: 'Amit Kumar',
+      role: 'Football Player',
+      quote: '"The Friday night football leagues are the highlight of my week. Great competition and even better friendships."'
+    }
   ]);
 }

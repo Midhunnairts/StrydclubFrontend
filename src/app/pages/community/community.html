@@ -143,5 +143,44 @@
       </div>
     </div>
 
+    <!-- Testimonials Section -->
+    <div class="testimonials-section">
+      <h2 class="testimonials-title" id="testimonials-title-header">What Members Say</h2>
+      
+      <!-- Testimonials Cards Grid -->
+      <div class="testimonials-grid" id="testimonials-cards-grid">
+        @for (item of testimonials(); track item.name) {
+          <div class="testimonial-card" id="testimonial-card-{{ item.name.toLowerCase().split(' ').join('-') }}">
+            
+            <!-- Stars row -->
+            <div class="stars-row">
+              <span class="star-symbol">★</span>
+              <span class="star-symbol">★</span>
+              <span class="star-symbol">★</span>
+              <span class="star-symbol">★</span>
+              <span class="star-symbol">★</span>
+            </div>
+
+            <!-- Quote Description -->
+            <p class="quote-text">{{ item.quote }}</p>
+
+            <!-- User Info Frame (Bottom) -->
+            <div class="user-info-frame">
+              <div class="user-avatar-circle">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="user-avatar-icon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+              </div>
+              <div class="user-details">
+                <h4 class="user-name">{{ item.name }}</h4>
+                <span class="user-role">{{ item.role }}</span>
+              </div>
+            </div>
+
+          </div>
+        }
+      </div>
+    </div>
+
   </div>
 </section>
