@@ -1,0 +1,29 @@
+<section class="sports-section" id="sports-selection-section">
+  <div class="sports-container">
+    
+    <!-- Heading Title -->
+    <div class="sports-header">
+      <h2 class="sports-title" id="sports-title-header">Choose Your Sport</h2>
+      <p class="sports-subtitle" id="sports-subtitle-text">Seven sports. Endless possibilities.</p>
+    </div>
+
+    <!-- Sports Cards Grid -->
+    <div class="sports-grid" id="sports-cards-grid">
+      @for (sport of sports(); track sport.name) {
+        <div class="sport-card" id="sport-card-{{ sport.name.toLowerCase() }}">
+          <!-- Sport Emoji Graphic Icon -->
+          <div class="sport-icon-container">
+            <span class="sport-emoji">{{ sport.icon }}</span>
+          </div>
+
+          <!-- Sport Info -->
+          <div class="sport-info">
+            <h3 class="sport-name">{{ sport.name }}</h3>
+            <p class="sport-events-count">{{ sport.eventsCount }} upcoming events</p>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
