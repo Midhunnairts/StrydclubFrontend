@@ -65,5 +65,42 @@
       </div>
     </div>
 
+    <!-- Our Journey Section -->
+    <div class="journey-section" id="about-journey-section">
+      <h2 class="journey-title" id="about-journey-header">Our Journey</h2>
+      
+      <!-- Timeline Component -->
+      <div class="timeline" id="about-timeline-track">
+        <!-- Timeline Line -->
+        <div class="timeline-line"></div>
+        
+        <!-- Timeline Items -->
+        @for (milestone of journey(); track milestone.year) {
+          <div class="timeline-item {{ milestone.side }}" id="journey-item-{{ milestone.year }}">
+            
+            <!-- Timeline Dot Node -->
+            <div class="timeline-dot-wrapper">
+              <div class="timeline-dot"></div>
+            </div>
+            
+            <!-- Timeline Card -->
+            <div class="timeline-card">
+              <span class="timeline-year">{{ milestone.year }}</span>
+              <h3 class="timeline-card-title">{{ milestone.title }}</h3>
+              <p class="timeline-card-description">{{ milestone.description }}</p>
+            </div>
+            
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Closing CTA Banner -->
+    <div class="about-cta-banner" id="about-closing-cta">
+      <h2 class="cta-title">Join the Movement</h2>
+      <p class="cta-subtitle">Be part of the community that's redefining sports culture in India.</p>
+      <a href="#" class="btn-get-started" id="btn-about-join-action">Get Started Today</a>
+    </div>
+
   </div>
 </section>

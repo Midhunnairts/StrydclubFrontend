@@ -168,6 +168,212 @@
   }
 }
 
+/* Our Journey Section */
+.journey-section {
+  display: flex;
+  flex-direction: column;
+  margin-top: 64px;
+}
+
+.journey-title {
+  font-family: var(--font-family-title);
+  font-size: 3.5rem;
+  font-weight: 850;
+  color: var(--text-white);
+  text-align: center;
+  margin-bottom: 64px;
+  letter-spacing: -0.03em;
+}
+
+/* Timeline Components */
+.timeline {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  position: relative;
+  width: 100%;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: flex-start;
+
+  &.right {
+    justify-content: flex-end;
+  }
+}
+
+/* Timeline Node circle */
+.timeline-dot-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 48px;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.timeline-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--bg-dark-pure);
+  border: 10px solid var(--text-white);
+  transition: var(--transition-smooth);
+}
+
+.timeline-item:hover .timeline-dot {
+  transform: scale(1.15);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+/* Timeline Cards */
+.timeline-card {
+  position: relative;
+  width: 44%;
+  padding: 40px;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.01) 32%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.01) 48%, rgba(255, 255, 255, 0.01) 100%), #0b0c0e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: var(--transition-smooth);
+
+  &:hover {
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.02) 32%, rgba(255, 255, 255, 0.06) 40%, rgba(255, 255, 255, 0.02) 48%, rgba(255, 255, 255, 0.02) 100%), #0e0f12;
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* Align text based on side */
+.timeline-item.left {
+  text-align: right;
+
+  .timeline-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
+.timeline-item.right {
+  text-align: left;
+
+  .timeline-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.timeline-year {
+  font-family: var(--font-family-title);
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--text-white);
+  margin-bottom: 8px;
+  letter-spacing: -0.03em;
+}
+
+.timeline-card-title {
+  font-family: var(--font-family-title);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-white);
+  margin: 0 0 16px 0;
+  letter-spacing: -0.02em;
+}
+
+.timeline-card-description {
+  font-family: var(--font-family-body);
+  font-size: 1.05rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+/* Closing CTA Banner */
+.about-cta-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 48px;
+  margin-top: 88px;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.01) 32%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.01) 48%, rgba(255, 255, 255, 0.01) 100%), #0b0c0e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: var(--transition-smooth);
+
+  &:hover {
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.02) 32%, rgba(255, 255, 255, 0.06) 40%, rgba(255, 255, 255, 0.02) 48%, rgba(255, 255, 255, 0.02) 100%), #0e0f12;
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  .cta-title {
+    font-family: var(--font-family-title);
+    font-size: 3.25rem;
+    font-weight: 800;
+    color: var(--text-white);
+    margin: 0 0 16px 0;
+    letter-spacing: -0.03em;
+  }
+
+  .cta-subtitle {
+    font-family: var(--font-family-body);
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin: 0 0 36px 0;
+    max-width: 640px;
+    line-height: 1.55;
+  }
+
+  .btn-get-started {
+    display: inline-block;
+    padding: 16px 44px;
+    border-radius: 50px;
+    background-color: var(--text-white);
+    border: 1px solid var(--text-white);
+    font-family: var(--font-family-body);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--bg-dark-pure);
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.04);
+    transition: var(--transition-smooth);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(255, 255, 255, 0.18);
+    }
+  }
+}
+
 /* Responsiveness overrides */
 @media screen and (max-width: 1000px) {
   .about-page-section {
@@ -211,6 +417,32 @@
       font-size: 1.05rem;
     }
   }
+
+  .journey-title {
+    font-size: 2.8rem;
+    margin-bottom: 44px;
+  }
+
+  .timeline-year {
+    font-size: 2.8rem;
+  }
+
+  .timeline-card {
+    padding: 30px;
+  }
+
+  .about-cta-banner {
+    padding: 64px 36px;
+    margin-top: 64px;
+
+    .cta-title {
+      font-size: 2.5rem;
+    }
+
+    .cta-subtitle {
+      font-size: 1.15rem;
+    }
+  }
 }
 
 @media screen and (max-width: 700px) {
@@ -242,6 +474,33 @@
 
   .value-card {
     padding: 32px;
+  }
+
+  .timeline-line {
+    left: 24px;
+    transform: none;
+  }
+
+  .timeline-item {
+    justify-content: flex-start !important;
+    text-align: left !important;
+    padding-left: 56px;
+    margin-bottom: 30px;
+
+    &.left .timeline-card {
+      align-items: flex-start;
+    }
+  }
+
+  .timeline-dot-wrapper {
+    left: 24px;
+    top: 36px;
+    transform: translate(-50%, -50%);
+  }
+
+  .timeline-card {
+    width: 100%;
+    padding: 28px;
   }
 }
 
@@ -286,6 +545,47 @@
     }
 
     .value-card-description {
+      font-size: 0.95rem;
+    }
+  }
+
+  .journey-title {
+    font-size: 2rem;
+  }
+
+  .timeline-year {
+    font-size: 2.2rem;
+  }
+
+  .timeline-card {
+    padding: 24px;
+    border-radius: 20px;
+
+    .timeline-card-title {
+      font-size: 1.35rem;
+      margin-bottom: 12px;
+    }
+
+    .timeline-card-description {
+      font-size: 0.95rem;
+    }
+  }
+
+  .about-cta-banner {
+    padding: 48px 24px;
+    margin-top: 48px;
+
+    .cta-title {
+      font-size: 2rem;
+    }
+
+    .cta-subtitle {
+      font-size: 1rem;
+      margin-bottom: 28px;
+    }
+
+    .btn-get-started {
+      padding: 14px 36px;
       font-size: 0.95rem;
     }
   }

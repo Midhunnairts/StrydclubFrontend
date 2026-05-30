@@ -7,6 +7,13 @@ interface ValueItem {
   description: string;
 }
 
+interface JourneyItem {
+  year: string;
+  title: string;
+  description: string;
+  side: 'left' | 'right';
+}
+
 @Component({
   selector: 'app-about',
   standalone: true,
@@ -35,6 +42,27 @@ export class AboutComponent {
       iconName: 'everyone',
       title: 'For Everyone',
       description: 'From beginners to champions, every athlete finds their place in our community.'
+    }
+  ]);
+
+  journey = signal<JourneyItem[]>([
+    {
+      year: '2025',
+      title: 'The Beginning',
+      description: "Founded with a vision to unite India's sports enthusiasts under one platform.",
+      side: 'left'
+    },
+    {
+      year: '2026',
+      title: 'Rapid Growth',
+      description: "Expanded to 24 cities with over 12,500 active members and 850+ events.",
+      side: 'right'
+    },
+    {
+      year: '2027',
+      title: 'The Future',
+      description: "Scaling to 100+ cities, introducing new sports, and building the ultimate sports ecosystem.",
+      side: 'left'
     }
   ]);
 }
