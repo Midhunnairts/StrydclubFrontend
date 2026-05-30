@@ -2,18 +2,35 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-interface RuleItem {
-  text: string;
+interface StatsCard {
+  label: string;
+  value: string;
+  icon: 'trophy' | 'ribbon' | 'chart' | 'calendar';
 }
 
-interface ScheduleItem {
+interface RegisteredEvent {
+  title: string;
+  category: string;
+  date: string;
   time: string;
-  activity: string;
+  location: string;
+  status: string;
 }
 
-interface ParticipantItem {
-  name: string;
-  role: string;
+interface PastEvent {
+  title: string;
+  category: string;
+  date: string;
+  result: string;
+  won: boolean;
+}
+
+interface ProfileStats {
+  totalEvents: number;
+  eventsWon: number;
+  sportsPlayed: number;
+  memberSince: string;
+  favoriteSports: string[];
 }
 
 @Component({
@@ -24,38 +41,58 @@ interface ParticipantItem {
   styleUrl: './user-dashboard.scss'
 })
 export class UserDashboardComponent {
-  rules = signal<RuleItem[]>([
-    { text: 'Participants must arrive 30 minutes before start time' },
-    { text: 'Valid ID required for registration verification' },
-    { text: 'Running shoes mandatory - no casual footwear' },
-    { text: 'Hydration stations available every kilometer' },
-    { text: 'Medical support on standby throughout the route' }
+  // Stats Counters Cards
+  statsCards = signal<StatsCard[]>([
+    { label: 'Events Won', value: '3', icon: 'trophy' },
+    { label: 'Total Events', value: '12', icon: 'ribbon' },
+    { label: 'Win Rate', value: '25%', icon: 'chart' },
+    { label: 'Upcoming', value: '2', icon: 'calendar' }
   ]);
 
-  schedule = signal<ScheduleItem[]>([
-    { time: '5:30 AM', activity: 'Registration & Check-in' },
-    { time: '5:50 AM', activity: 'Warm-up Session' },
-    { time: '6:00 AM', activity: 'Race Begins' },
-    { time: '7:30 AM', activity: 'Awards Ceremony' },
-    { time: '8:00 AM', activity: 'Post-Race Refreshments' }
+  // Registered Active Events
+  registeredEvents = signal<RegisteredEvent[]>([
+    {
+      title: 'Weekend 5K Marathon',
+      category: 'Running',
+      date: 'May 28, 2026',
+      time: '6:00 AM',
+      location: 'Cubbon Park, Bangalore',
+      status: 'Confirmed'
+    },
+    {
+      title: 'Friday Night Football League',
+      category: 'Football',
+      date: 'May 25, 2026',
+      time: '7:00 PM',
+      location: 'Green Field Arena, Delhi',
+      status: 'Confirmed'
+    }
   ]);
 
-  participants = signal<ParticipantItem[]>([
-    { name: 'Rahul Sharma', role: 'Participant' },
-    { name: 'Priya Desai', role: 'Participant' },
-    { name: 'Amit Kumar', role: 'Participant' },
-    { name: 'Sneha Reddy', role: 'Participant' }
+  // Past Participation Trophies
+  pastParticipation = signal<PastEvent[]>([
+    {
+      title: 'Spring Badminton Championship',
+      category: 'Badminton',
+      date: 'May 15, 2026',
+      result: '2nd Place',
+      won: true
+    },
+    {
+      title: 'Urban Football League',
+      category: 'Football',
+      date: 'May 10, 2026',
+      result: 'Participant',
+      won: false
+    }
   ]);
 
-  slotsFilled = 45;
-  slotsTotal = 100;
-  price = 499;
-
-  onRegister() {
-    console.log('Registering for Weekend 5K Marathon...');
-  }
-
-  onShare() {
-    console.log('Sharing event Weekend 5K Marathon...');
-  }
+  // Player Profile Information
+  profileStats = signal<ProfileStats>({
+    totalEvents: 12,
+    eventsWon: 3,
+    sportsPlayed: 3,
+    memberSince: 'January 2026',
+    favoriteSports: ['Running', 'Football', 'Badminton']
+  });
 }
