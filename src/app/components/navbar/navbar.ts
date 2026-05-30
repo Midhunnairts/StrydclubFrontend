@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
@@ -13,12 +14,12 @@ export class NavbarComponent {
   isMobileMenuOpen = signal<boolean>(false);
 
   navItems = [
-    { label: 'Home', link: '#' },
-    { label: 'Events', link: '#' },
-    { label: 'Sports', link: '#' },
-    { label: 'Community', link: '#' },
-    { label: 'About', link: '#' },
-    { label: 'Contact', link: '#' }
+    { label: 'Home', link: '/' },
+    { label: 'Events', link: '/events' },
+    { label: 'Sports', link: '/' },
+    { label: 'Community', link: '/' },
+    { label: 'About', link: '/' },
+    { label: 'Contact', link: '/' }
   ];
 
   setActiveTab(tabName: string) {
