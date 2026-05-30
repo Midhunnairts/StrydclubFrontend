@@ -9,6 +9,8 @@ interface EventListItem {
   time: string;
   location: string;
   status: string;
+  slotsFilled: number;
+  slotsTotal: number;
 }
 
 @Component({
@@ -40,7 +42,9 @@ export class EventsComponent {
       date: 'May 28, 2026',
       time: '6:00 AM',
       location: 'Cubbon Park, Bangalore',
-      status: 'upcoming'
+      status: 'upcoming',
+      slotsFilled: 45,
+      slotsTotal: 100
     },
     {
       title: 'Inter-City Badminton Tournament',
@@ -48,7 +52,9 @@ export class EventsComponent {
       date: 'June 2, 2026',
       time: '9:00 AM',
       location: 'Sports Complex, Mumbai',
-      status: 'upcoming'
+      status: 'upcoming',
+      slotsFilled: 12,
+      slotsTotal: 32
     },
     {
       title: 'Friday Night Football League',
@@ -56,31 +62,39 @@ export class EventsComponent {
       date: 'May 25, 2026',
       time: '7:00 PM',
       location: 'Green Field Arena, Delhi',
-      status: 'upcoming'
+      status: 'upcoming',
+      slotsFilled: 8,
+      slotsTotal: 22
     },
     {
-      title: 'National Volleyball Championship',
+      title: 'Sunrise Volleyball Championship',
       category: 'Volleyball',
-      date: 'June 10, 2026',
-      time: '4:00 PM',
-      location: 'Indira Gandhi Stadium, Delhi',
-      status: 'upcoming'
+      date: 'May 30, 2026',
+      time: '5:30 AM',
+      location: 'Beach Courts, Goa',
+      status: 'upcoming',
+      slotsFilled: 10,
+      slotsTotal: 30
     },
     {
-      title: 'Pickleball Summer Open',
+      title: 'Pickleball Pro League',
       category: 'Pickleball',
-      date: 'June 15, 2026',
-      time: '8:00 AM',
-      location: 'Ace Tennis Club, Bangalore',
-      status: 'upcoming'
+      date: 'June 5, 2026',
+      time: '10:00 AM',
+      location: 'Indoor Arena, Pune',
+      status: 'upcoming',
+      slotsFilled: 15,
+      slotsTotal: 40
     },
     {
-      title: 'Pro Kho Kho Tournament',
+      title: 'Traditional Kho Kho Challenge',
       category: 'Kho Kho',
-      date: 'June 20, 2026',
-      time: '5:00 PM',
-      location: 'Shivaji Sports Complex, Pune',
-      status: 'upcoming'
+      date: 'June 8, 2026',
+      time: '4:00 PM',
+      location: 'Stadium, Hyderabad',
+      status: 'upcoming',
+      slotsFilled: 6,
+      slotsTotal: 20
     },
     {
       title: 'Padel Club Challenge',
@@ -88,7 +102,9 @@ export class EventsComponent {
       date: 'June 25, 2026',
       time: '6:00 PM',
       location: 'Padel Arena, Hyderabad',
-      status: 'upcoming'
+      status: 'upcoming',
+      slotsFilled: 10,
+      slotsTotal: 20
     }
   ]);
 
@@ -116,5 +132,10 @@ export class EventsComponent {
 
   selectCategory(category: string) {
     this.selectedCategory.set(category);
+  }
+
+  getSlotsPercentage(event: EventListItem): number {
+    if (!event.slotsTotal) return 0;
+    return (event.slotsFilled / event.slotsTotal) * 100;
   }
 }

@@ -87,6 +87,26 @@
             </li>
           </ul>
 
+          <!-- Divider Line -->
+          <div class="card-divider"></div>
+
+          <!-- Slots Tracker & Progress Bar -->
+          <div class="event-slots-tracker">
+            <div class="tracker-labels">
+              <span class="label-title">Available Slots</span>
+              <span class="label-count">{{ event.slotsFilled }}/{{ event.slotsTotal }}</span>
+            </div>
+            <!-- Progress Track -->
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" [style.width.%]="getSlotsPercentage(event)"></div>
+            </div>
+          </div>
+
+          <!-- Action CTA Button -->
+          <a href="#" class="btn-view-details" id="btn-details-{{ event.category.toLowerCase() }}">
+            View Details
+          </a>
+
         </div>
       }
     </div>
