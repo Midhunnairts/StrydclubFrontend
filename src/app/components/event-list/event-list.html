@@ -1,0 +1,73 @@
+<section class="events-section" id="events-display-section">
+  <div class="events-container">
+    
+    <!-- Title Header -->
+    <div class="events-header">
+      <h2 class="events-title" id="events-title-header">Featured Events</h2>
+      <p class="events-subtitle" id="events-subtitle-text">Register now. Compete soon.</p>
+    </div>
+
+    <!-- Events Cards Grid -->
+    <div class="events-grid" id="events-cards-grid">
+      @for (event of events(); track event.title) {
+        <div class="event-card" id="event-card-{{ event.category.toLowerCase() }}">
+          
+          <!-- Category Tag Badge -->
+          <div class="event-badge">
+            <span>{{ event.category }}</span>
+          </div>
+
+          <!-- Event Body Info -->
+          <div class="event-body">
+            <h3 class="event-name">{{ event.title }}</h3>
+            
+            <ul class="event-details-list">
+              <!-- Date & Time Row -->
+              <li class="detail-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="detail-icon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>
+                <span>{{ event.date }}</span>
+              </li>
+
+              <!-- Location Row -->
+              <li class="detail-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="detail-icon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                </svg>
+                <span>{{ event.location }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Slots Tracker & Progress Bar -->
+          <div class="event-slots-tracker">
+            <div class="tracker-labels">
+              <span class="label-title">Slots Remaining</span>
+              <span class="label-count">{{ event.slotsFilled }}/{{ event.slotsTotal }}</span>
+            </div>
+            <!-- Progress Track -->
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" [style.width.%]="getSlotsPercentage(event)"></div>
+            </div>
+          </div>
+
+          <!-- Action CTA Button -->
+          <a href="#" class="btn-register" id="btn-register-{{ event.category.toLowerCase() }}">
+            Register Now
+          </a>
+
+        </div>
+      }
+    </div>
+
+    <!-- View All Button -->
+    <div class="events-footer-actions">
+      <a href="#" class="btn-view-all" id="btn-view-all-events">
+        View All Events
+      </a>
+    </div>
+
+  </div>
+</section>

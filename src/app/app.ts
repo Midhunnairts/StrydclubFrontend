@@ -3,10 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar';
 import { HeroComponent } from './components/hero/hero';
 import { SportListComponent } from './components/sport-list/sport-list';
+import { EventListComponent } from './components/event-list/event-list';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, HeroComponent, SportListComponent],
+  imports: [RouterOutlet, NavbarComponent, HeroComponent, SportListComponent, EventListComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

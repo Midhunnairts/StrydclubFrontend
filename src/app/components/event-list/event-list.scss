@@ -1,0 +1,271 @@
+.events-section {
+  position: relative;
+  width: 100%;
+  padding: 80px 24px 120px;
+  background-color: var(--bg-dark-pure);
+  z-index: 10;
+}
+
+.events-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Title Section */
+.events-header {
+  text-align: center;
+  margin-bottom: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.events-title {
+  font-family: var(--font-family-title);
+  font-size: 3.25rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--text-white);
+  margin: 0;
+}
+
+.events-subtitle {
+  font-family: var(--font-family-body);
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Cards Grid */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Event Card base structure */
+.event-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 36px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: var(--transition-smooth);
+
+  &:hover {
+    transform: translateY(-6px);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.03);
+  }
+}
+
+/* Absolute Category Tag Badge */
+.event-badge {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  span {
+    font-family: var(--font-family-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-white);
+    text-transform: uppercase;
+  }
+}
+
+/* Card Body Content */
+.event-body {
+  margin-top: 24px; // Spacing to account for badge height
+}
+
+.event-name {
+  font-family: var(--font-family-title);
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-white);
+  margin-bottom: 20px;
+  letter-spacing: -0.015em;
+  max-width: 80%; // Ensure it doesn't collide with the absolute badge
+}
+
+.event-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+  margin-bottom: 28px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-family-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+
+  .detail-icon {
+    width: 17px;
+    height: 17px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+}
+
+/* Slots Tracker & Progress Bar */
+.event-slots-tracker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  margin-top: auto; // Pushes tracker and button to bottom of card
+}
+
+.tracker-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-family-body);
+
+  .label-title {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .label-count {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-white);
+  }
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  background-color: var(--text-white);
+  transition: width 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Register Action Button */
+.btn-register {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px;
+  border-radius: 50px;
+  background-color: var(--text-white);
+  border: 1px solid var(--text-white);
+  font-family: var(--font-family-body);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--bg-dark-pure);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.04);
+  transition: var(--transition-smooth);
+
+  &:hover {
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Card hover glows */
+.event-card:hover .progress-bar-fill {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Bottom Center View All CTA */
+.events-footer-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 56px;
+}
+
+.btn-view-all {
+  display: inline-block;
+  padding: 14px 38px;
+  border-radius: 50px;
+  border: 1.8px solid rgba(255, 255, 255, 0.22);
+  background-color: transparent;
+  font-family: var(--font-family-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-white);
+  transition: var(--transition-smooth);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1.5px);
+  }
+}
+
+/* Screen Responsiveness overrides */
+@media screen and (max-width: 1000px) {
+  .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .events-title {
+    font-size: 2.8rem;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  
+  .events-title {
+    font-size: 2.4rem;
+  }
+  
+  .event-card {
+    padding: 30px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .events-section {
+    padding: 60px 16px 80px;
+  }
+  
+  .events-title {
+    font-size: 2rem;
+  }
+  
+  .events-subtitle {
+    font-size: 1rem;
+  }
+}
