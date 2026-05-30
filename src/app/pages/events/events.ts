@@ -2,7 +2,7 @@ import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../../services/api.service';
 
 interface EventListItem {
   id: string;
@@ -24,7 +24,7 @@ interface EventListItem {
   styleUrl: './events.scss'
 })
 export class EventsComponent implements OnInit {
-  private http = inject(HttpClient);
+  private apiService = inject(ApiService);
 
   searchQuery = signal<string>('');
   selectedCategory = signal<string>('All');
@@ -48,7 +48,7 @@ export class EventsComponent implements OnInit {
   }
 
   loadEvents() {
-    this.http.get<{ success: boolean; events: EventListItem[] }>('http://localhost:3000/api/events')
+    this.apiService.getEvents()
       .subscribe({
         next: (res) => {
           if (res.success) {

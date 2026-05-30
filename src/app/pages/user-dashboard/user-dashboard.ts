@@ -1,7 +1,7 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../../services/api.service';
 
 interface StatsCard {
   label: string;
@@ -42,7 +42,7 @@ interface ProfileStats {
   styleUrl: './user-dashboard.scss'
 })
 export class UserDashboardComponent implements OnInit {
-  private http = inject(HttpClient);
+  private apiService = inject(ApiService);
   private router = inject(Router);
 
   // Stats Counters Cards Writable Signal
@@ -81,14 +81,7 @@ export class UserDashboardComponent implements OnInit {
       return;
     }
 
-    const headers = { Authorization: `Bearer ${token}` };
-    this.http.get<{
-      success: boolean;
-      stats: { eventsWon: number; totalEvents: number; winRate: string; upcomingCount: number };
-      registeredEvents: RegisteredEvent[];
-      pastParticipation: PastEvent[];
-      profileStats: ProfileStats;
-    }>('http://localhost:3000/api/users/dashboard', { headers }).subscribe({
+    this.apiService.getUserDashboard(token).subscribe({
       next: (res) => {
         if (res.success) {
           // Set stats counters signals

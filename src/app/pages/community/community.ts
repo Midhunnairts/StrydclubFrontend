@@ -1,6 +1,6 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../../services/api.service';
 
 interface StatItem {
   iconName: string;
@@ -36,7 +36,7 @@ interface TestimonialItem {
   styleUrl: './community.scss'
 })
 export class CommunityComponent implements OnInit {
-  private http = inject(HttpClient);
+  private apiService = inject(ApiService);
 
   stats = signal<StatItem[]>([
     { iconName: 'members', value: '12,500+', label: 'Active Members' },
@@ -116,7 +116,7 @@ export class CommunityComponent implements OnInit {
   }
 
   loadLeaderboard() {
-    this.http.get<{ success: boolean; leaderboard: any[] }>('http://localhost:3000/api/community/leaderboard')
+    this.apiService.getLeaderboard()
       .subscribe({
         next: (res) => {
           if (res.success) {

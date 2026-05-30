@@ -1,7 +1,7 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../../services/api.service';
 
 interface RuleItem {
   text: string;
@@ -45,7 +45,7 @@ interface EventDetails {
 })
 export class IndividualEventComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private http = inject(HttpClient);
+  private apiService = inject(ApiService);
 
   // Full fallback dataset in case backend is offline
   private allEvents: EventDetails[] = [
@@ -306,7 +306,7 @@ export class IndividualEventComponent implements OnInit {
   loadEventDetails() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.http.get<{ success: boolean; event: EventDetails }>(`http://localhost:3000/api/events/${id}`)
+      this.apiService.getEventDetails(id)
         .subscribe({
           next: (res) => {
             if (res.success) {
@@ -352,12 +352,7 @@ export class IndividualEventComponent implements OnInit {
       return;
     }
 
-    const headers = { Authorization: `Bearer ${token}` };
-    this.http.post<{ success: boolean; message: string }>(
-      `http://localhost:3000/api/events/${details.id}/register`, 
-      {}, 
-      { headers }
-    ).subscribe({
+    this.apiService.registerForEvent(details.id, token).subscribe({
       next: (res) => {
         if (res.success) {
           alert('Registration successful! Check your My Dashboard page!');

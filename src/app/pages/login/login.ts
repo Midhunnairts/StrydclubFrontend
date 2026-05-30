@@ -2,7 +2,7 @@ import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './login.scss'
 })
 export class LoginComponent {
-  private http = inject(HttpClient);
+  private apiService = inject(ApiService);
   private router = inject(Router);
 
   activeTab = signal<'phone' | 'email'>('phone');
@@ -31,17 +31,10 @@ export class LoginComponent {
     if (!value) return;
 
     // Send mock OTP
-    this.http.post<{ success: boolean; message: string }>('http://localhost:3000/api/auth/send-otp', {
-      channel,
-      value
-    }).subscribe({
+    this.apiService.sendOtp(channel, value).subscribe({
       next: () => {
         // Automatically verify OTP with code 123456 for a seamless user experience
-        this.http.post<{ success: boolean; token: string; user: any }>('http://localhost:3000/api/auth/verify-otp', {
-          channel,
-          value,
-          code: '123456'
-        }).subscribe({
+        this.apiService.verifyOtp(channel, value, '123456').subscribe({
           next: (res) => {
             if (res.success) {
               // Store credentials locally
