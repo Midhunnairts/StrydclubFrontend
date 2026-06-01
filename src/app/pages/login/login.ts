@@ -19,9 +19,16 @@ export class LoginComponent {
 
   phoneNumber = '';
   emailAddress = '';
+  otpCode = '';
+
+  waitingForOtp = signal<boolean>(false);
+  loading = signal<boolean>(false);
+  otpSentMessage = signal<string>('');
 
   setTab(tab: 'phone' | 'email') {
-    this.activeTab.set(tab);
+    if (!this.waitingForOtp()) {
+      this.activeTab.set(tab);
+    }
   }
 
   onSubmit() {
@@ -30,48 +37,103 @@ export class LoginComponent {
 
     if (!value) return;
 
-    // Send mock OTP
+    this.loading.set(true);
+
     this.apiService.sendOtp(channel, value).subscribe({
-      next: () => {
-        // Automatically verify OTP with code 123456 for a seamless user experience
-        this.apiService.verifyOtp(channel, value, '123456').subscribe({
-          next: (res) => {
-            if (res.success) {
-              // Store credentials locally
-              localStorage.setItem('token', res.token);
-              localStorage.setItem('user', JSON.stringify(res.user));
-              
-              // Redirect to user dashboard page
-              this.router.navigate(['/dashboard']);
-            }
-          },
-          error: (err) => {
-            const errorMsg = err.error?.message || 'Verification failed';
-            alert(errorMsg);
-          }
-        });
+      next: (res: any) => {
+        this.loading.set(false);
+        this.waitingForOtp.set(true);
+        if (res.mockMode && res.code) {
+          this.otpSentMessage.set(`Simulated Code: ${res.code} (SMTP or SMS gateway not active)`);
+        } else {
+          this.otpSentMessage.set(`A 6-digit OTP code has been sent to ${value}.`);
+        }
       },
       error: (err) => {
+        this.loading.set(false);
         const errorMsg = err.error?.message || 'Server connection failed';
         alert('Failed to send OTP: ' + errorMsg);
       }
     });
   }
 
+  onVerifyOtp() {
+    const channel = this.activeTab();
+    const value = channel === 'phone' ? this.phoneNumber : this.emailAddress;
+    const code = this.otpCode;
+
+    if (!code || code.length !== 6) {
+      alert('Please enter a valid 6-digit verification code.');
+      return;
+    }
+
+    this.loading.set(true);
+
+    this.apiService.verifyOtp(channel, value, code).subscribe({
+      next: (res) => {
+        this.loading.set(false);
+        if (res.success) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('token', res.token);
+            localStorage.setItem('user', JSON.stringify(res.user));
+          }
+          this.router.navigate(['/dashboard']);
+        }
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const errorMsg = err.error?.message || 'Invalid or expired OTP. Please try again.';
+        alert(errorMsg);
+      }
+    });
+  }
+
+  resendOtp() {
+    const channel = this.activeTab();
+    const value = channel === 'phone' ? this.phoneNumber : this.emailAddress;
+    if (!value) return;
+
+    this.loading.set(true);
+    this.apiService.sendOtp(channel, value).subscribe({
+      next: (res: any) => {
+        this.loading.set(false);
+        this.otpCode = '';
+        if (res.mockMode && res.code) {
+          this.otpSentMessage.set(`Simulated Resend Code: ${res.code}`);
+        } else {
+          this.otpSentMessage.set(`A new 6-digit verification code was sent to ${value}.`);
+        }
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const errorMsg = err.error?.message || 'Failed to resend OTP';
+        alert(errorMsg);
+      }
+    });
+  }
+
+  goBack() {
+    this.waitingForOtp.set(false);
+    this.otpCode = '';
+    this.otpSentMessage.set('');
+  }
+
   loginWithGoogle() {
     console.log('Logging in with Google...');
-    // Simulated Google login
-    localStorage.setItem('token', 'mock-google-token');
-    localStorage.setItem('user', JSON.stringify({
-      name: 'Google Athlete',
-      email: 'athlete.google@strydclub.com',
-      phone: '+91 9999999999',
-      favoriteSports: ['Running'],
-      memberSince: 'January 2026',
-      totalEvents: 1,
-      eventsWon: 0,
-      sportsPlayed: 1
-    }));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', 'mock-google-token');
+      localStorage.setItem('user', JSON.stringify({
+        name: 'Google Athlete',
+        email: 'athlete.google@strydclub.com',
+        phone: '+91 9999999999',
+        favoriteSports: ['Running'],
+        memberSince: 'January 2026',
+        totalEvents: 1,
+        eventsWon: 0,
+        sportsPlayed: 1
+      }));
+    }
     this.router.navigate(['/dashboard']);
   }
 }
+

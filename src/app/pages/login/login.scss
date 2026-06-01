@@ -290,6 +290,68 @@
   }
 }
 
+/* OTP UI Elements */
+.otp-instruction-text {
+  font-family: var(--font-family-body);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0 0 8px 0;
+}
+
+.otp-digits-input {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.8rem;
+  letter-spacing: 0.35em;
+  padding: 16px 20px;
+  text-transform: uppercase;
+  color: var(--text-white);
+  border-color: rgba(255, 255, 255, 0.15);
+
+  &:focus {
+    border-color: var(--text-white);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  }
+}
+
+.otp-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-otp-action-link {
+  background: none;
+  border: none;
+  font-family: var(--font-family-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: var(--transition-smooth);
+
+  &:hover:not(:disabled) {
+    color: var(--text-white);
+    text-decoration: underline;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.otp-divider {
+  font-family: var(--font-family-body);
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.15);
+}
+
 /* Responsiveness overrides */
 @media screen and (max-width: 500px) {
   .login-page-section {
