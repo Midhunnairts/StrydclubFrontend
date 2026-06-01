@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -342,6 +342,27 @@ export class IndividualEventComponent implements OnInit {
         });
     }
   }
+
+  isAlreadyRegistered = computed(() => {
+    const details = this.eventDetails();
+    if (!details) return false;
+
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          const userName = user.name;
+          if (userName && details.participants) {
+            return details.participants.some(p => p.name === userName);
+          }
+        } catch (e) {
+          console.error('Error parsing user details', e);
+        }
+      }
+    }
+    return false;
+  });
 
   modalState = signal<{
     show: boolean;
