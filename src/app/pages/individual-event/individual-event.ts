@@ -1,6 +1,6 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 interface RuleItem {
@@ -45,6 +45,7 @@ interface EventDetails {
 })
 export class IndividualEventComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private apiService = inject(ApiService);
 
   // Full fallback dataset in case backend is offline
@@ -342,20 +343,56 @@ export class IndividualEventComponent implements OnInit {
     }
   }
 
+  modalState = signal<{
+    show: boolean;
+    title: string;
+    message: string;
+    type: 'auth' | 'success';
+  }>({
+    show: false,
+    title: '',
+    message: '',
+    type: 'auth'
+  });
+
+  closeModal() {
+    this.modalState.update(state => ({ ...state, show: false }));
+  }
+
+  confirmModalAction() {
+    const type = this.modalState().type;
+    this.closeModal();
+    if (type === 'auth') {
+      this.router.navigate(['/login']);
+    } else if (type === 'success') {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
   onRegister() {
     const details = this.eventDetails();
     if (!details) return;
 
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('Please log in to register for upcoming sports events!');
+      this.modalState.set({
+        show: true,
+        title: 'Sign In Required',
+        message: 'You need to be signed in to register for upcoming sports events. Sign in now to claim your spot!',
+        type: 'auth'
+      });
       return;
     }
 
     this.apiService.registerForEvent(details.id, token).subscribe({
       next: (res) => {
         if (res.success) {
-          alert('Registration successful! Check your My Dashboard page!');
+          this.modalState.set({
+            show: true,
+            title: 'Registration Successful!',
+            message: 'You have successfully secured your spot for this event. View and track your schedule on your dashboard.',
+            type: 'success'
+          });
           // Reload to show new slotsFilled count & updated participants roster!
           this.loadEventDetails();
         }
