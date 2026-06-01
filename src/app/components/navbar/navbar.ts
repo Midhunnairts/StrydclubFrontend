@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -10,6 +10,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './navbar.scss'
 })
 export class NavbarComponent {
+  private router = inject(Router);
+
   activeTab = signal<string>('Home');
   isMobileMenuOpen = signal<boolean>(false);
 
@@ -22,6 +24,13 @@ export class NavbarComponent {
     { label: 'Contact', link: '/contact' }
   ];
 
+  get isLoggedIn(): boolean {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return !!localStorage.getItem('token');
+    }
+    return false;
+  }
+
   setActiveTab(tabName: string) {
     this.activeTab.set(tabName);
     this.isMobileMenuOpen.set(false);
@@ -30,4 +39,14 @@ export class NavbarComponent {
   toggleMobileMenu() {
     this.isMobileMenuOpen.update(open => !open);
   }
+
+  logout() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
+    this.isMobileMenuOpen.set(false);
+    this.router.navigate(['/login']);
+  }
 }
+
