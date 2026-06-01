@@ -1,5 +1,6 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 interface NextEventInfo {
@@ -21,7 +22,7 @@ interface SportPageItem {
 @Component({
   selector: 'app-sports',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './sports.html',
   styleUrl: './sports.scss'
 })

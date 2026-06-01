@@ -58,7 +58,7 @@
           </div>
 
           <!-- View Sport Events Button -->
-          <a href="#" class="btn-view-sport-events" id="btn-view-{{ sport.name.toLowerCase() }}-events">
+          <a [routerLink]="['/events']" [queryParams]="{ category: sport.name }" class="btn-view-sport-events" id="btn-view-{{ sport.name.toLowerCase() }}-events">
             View {{ sport.name }} Events
           </a>
 
