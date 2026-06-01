@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../../services/api.service';
 
 interface NextEventInfo {
   title: string;
@@ -24,7 +25,9 @@ interface SportPageItem {
   templateUrl: './sports.html',
   styleUrl: './sports.scss'
 })
-export class SportsComponent {
+export class SportsComponent implements OnInit {
+  private apiService = inject(ApiService);
+
   sports = signal<SportPageItem[]>([
     {
       name: 'Running',
@@ -118,4 +121,21 @@ export class SportsComponent {
       }
     }
   ]);
+
+  ngOnInit() {
+    this.loadSports();
+  }
+
+  loadSports() {
+    this.apiService.getSports().subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.sports.set(res.sports);
+        }
+      },
+      error: (err) => {
+        console.warn('Backend server offline. Utilizing sports mock dataset fallback...');
+      }
+    });
+  }
 }

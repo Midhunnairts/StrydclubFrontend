@@ -87,4 +87,11 @@ export class ApiService {
   getLeaderboard(): Observable<{ success: boolean; leaderboard: any[] }> {
     return this.http.get<{ success: boolean; leaderboard: any[] }>(`${this.apiUrl}/community/leaderboard`);
   }
+
+  /**
+   * Fetch all sports categories and their dynamic stats.
+   */
+  getSports(): Observable<{ success: boolean; sports: any[] }> {
+    return this.http.get<{ success: boolean; sports: any[] }>(`${this.apiUrl}/sports`);
+  }
 }
