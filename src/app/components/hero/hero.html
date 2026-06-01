@@ -24,7 +24,7 @@
     <div class="hero-actions" id="hero-actions-container">
       
       <!-- Primary CTA: Explore Events -->
-      <a href="#" class="btn-primary" id="btn-explore-events">
+      <a routerLink="/events" class="btn-primary" id="btn-explore-events">
         <span>Explore Events</span>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="icon-arrow">
           <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -32,12 +32,21 @@
       </a>
 
       <!-- Secondary CTA: Join the Club -->
-      <a href="#" class="btn-secondary" id="btn-join-club">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="icon-play">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-        </svg>
-        <span>Join the Club</span>
-      </a>
+      @if (!isLoggedIn) {
+        <a routerLink="/login" class="btn-secondary" id="btn-join-club">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="icon-play">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+          </svg>
+          <span>Join the Club</span>
+        </a>
+      } @else {
+        <a routerLink="/dashboard" class="btn-secondary" id="btn-join-club">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="icon-play">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+          </svg>
+          <span>Go to Dashboard</span>
+        </a>
+      }
 
     </div>
 
