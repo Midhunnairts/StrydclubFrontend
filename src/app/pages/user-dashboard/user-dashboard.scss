@@ -9,7 +9,7 @@
 
 .user-dashboard-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1560px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -111,16 +111,23 @@
       transition: var(--transition-smooth);
 
       &.icon-trophy {
-        color: #eab308; /* Premium Gold */
+        color: #eab308;
+        /* Premium Gold */
       }
+
       &.icon-ribbon {
-        color: #06b6d4; /* Premium Cyan */
+        color: #06b6d4;
+        /* Premium Cyan */
       }
+
       &.icon-chart {
-        color: #10b981; /* Premium Emerald */
+        color: #10b981;
+        /* Premium Emerald */
       }
+
       &.icon-calendar {
-        color: #f97316; /* Premium Orange */
+        color: #f97316;
+        /* Premium Orange */
       }
     }
   }
@@ -289,7 +296,8 @@
       margin-top: 4px;
 
       &.highlight-win {
-        color: #eab308; /* Highlight gold result placement */
+        color: #eab308;
+        /* Highlight gold result placement */
       }
     }
   }

@@ -8,7 +8,7 @@
 
 .events-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1560px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -234,7 +234,7 @@
   .events-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .events-title {
     font-size: 2.8rem;
   }
@@ -246,11 +246,11 @@
     max-width: 480px;
     margin: 0 auto;
   }
-  
+
   .events-title {
     font-size: 2.4rem;
   }
-  
+
   .event-card {
     padding: 30px;
   }
@@ -260,11 +260,11 @@
   .events-section {
     padding: 60px 16px 80px;
   }
-  
+
   .events-title {
     font-size: 2rem;
   }
-  
+
   .events-subtitle {
     font-size: 1rem;
   }

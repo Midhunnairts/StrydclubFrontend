@@ -8,7 +8,7 @@
 
 .events-page-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1560px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -361,7 +361,7 @@
   .events-page-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .page-title {
     font-size: 3.2rem;
   }
@@ -373,7 +373,7 @@
     align-items: stretch;
     gap: 12px;
   }
-  
+
   .btn-filters {
     justify-content: center;
     width: 100%;
@@ -384,11 +384,11 @@
     max-width: 480px;
     margin: 0 auto;
   }
-  
+
   .page-title {
     font-size: 2.5rem;
   }
-  
+
   .events-list-card {
     padding: 30px;
   }
@@ -398,11 +398,11 @@
   .events-page-section {
     padding: 120px 16px 80px;
   }
-  
+
   .page-title {
     font-size: 2rem;
   }
-  
+
   .page-subtitle {
     font-size: 1rem;
   }

@@ -16,7 +16,7 @@
 
 .nav-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1560px;
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
@@ -58,7 +58,8 @@
       letter-spacing: 0.01em;
       transition: var(--transition-fast);
 
-      &:hover, &.active {
+      &:hover,
+      &.active {
         color: var(--text-white);
       }
 
@@ -156,10 +157,12 @@
     .bar-1 {
       transform: translateY(7px) rotate(45deg);
     }
+
     .bar-2 {
       opacity: 0;
       transform: translateX(-10px);
     }
+
     .bar-3 {
       transform: translateY(-7px) rotate(-45deg);
     }
@@ -206,7 +209,8 @@
       font-weight: 500;
       color: var(--text-muted);
 
-      &:hover, &.active {
+      &:hover,
+      &.active {
         color: var(--text-white);
       }
     }
@@ -220,7 +224,8 @@
     gap: 16px;
     margin-top: 32px;
 
-    .btn-login, .btn-dashboard {
+    .btn-login,
+    .btn-dashboard {
       justify-content: center;
       width: 100%;
       text-align: center;
@@ -232,10 +237,12 @@
 
 /* Screen Responsiveness */
 @media screen and (max-width: 900px) {
-  .nav-links, .nav-actions {
+
+  .nav-links,
+  .nav-actions {
     display: none;
   }
-  
+
   .mobile-toggle {
     display: flex;
   }

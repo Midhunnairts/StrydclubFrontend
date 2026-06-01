@@ -9,7 +9,7 @@
 
 .dashboard-page-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1560px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -36,7 +36,7 @@
 
   &:hover {
     color: var(--text-white);
-    
+
     .back-arrow {
       transform: translateX(-4px);
     }
@@ -784,5 +784,3 @@
     color: #10b981;
   }
 }
-
-

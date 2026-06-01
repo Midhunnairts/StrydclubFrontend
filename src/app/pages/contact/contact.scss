@@ -9,7 +9,7 @@
 
 .contact-page-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1560px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -204,7 +204,7 @@
   .info-icon-container {
     background-color: var(--text-white);
     border-color: var(--text-white);
-    
+
     .info-icon {
       color: var(--bg-dark-pure);
     }
@@ -362,7 +362,7 @@
       background-color: rgba(255, 255, 255, 0.06);
       border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-3px);
-      
+
       .social-icon {
         color: var(--text-white);
         transform: scale(1.1);
@@ -411,11 +411,11 @@
   .business-inquiries-card {
     padding: 30px;
     margin-top: 32px;
-    
+
     .inquiries-title {
       font-size: 1.6rem;
     }
-    
+
     .inquiries-subtitle {
       font-size: 1rem;
     }

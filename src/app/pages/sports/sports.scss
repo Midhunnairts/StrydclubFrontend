@@ -8,7 +8,7 @@
 
 .sports-page-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1560px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -105,7 +105,7 @@
 .sport-list-card:hover .sport-trophy-badge {
   background-color: var(--text-white);
   border-color: var(--text-white);
-  
+
   .trophy-icon {
     color: var(--bg-dark-pure);
   }
@@ -182,7 +182,8 @@
 .sport-next-event-panel {
   display: flex;
   flex-direction: column;
-  margin-top: auto; /* Pushes to the bottom */
+  margin-top: auto;
+  /* Pushes to the bottom */
 }
 
 .panel-event-details {
@@ -315,7 +316,7 @@
     margin: 0 auto;
     gap: 24px;
   }
-  
+
   .page-title {
     font-size: 3.5rem;
   }
@@ -323,7 +324,7 @@
   .page-subtitle {
     font-size: 1.15rem;
   }
-  
+
   .sport-list-card {
     padding: 36px;
   }
@@ -333,15 +334,15 @@
   .page-title {
     font-size: 2.8rem;
   }
-  
+
   .sport-list-card {
     padding: 30px;
   }
-  
+
   .sport-title {
     font-size: 1.8rem;
   }
-  
+
   .sport-icon-display {
     font-size: 2.6rem;
   }
@@ -351,11 +352,11 @@
   .sports-page-section {
     padding: 120px 16px 80px;
   }
-  
+
   .page-title {
     font-size: 2.2rem;
   }
-  
+
   .page-subtitle {
     font-size: 1rem;
   }
