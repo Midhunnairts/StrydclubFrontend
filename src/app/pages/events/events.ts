@@ -1,7 +1,7 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 interface EventListItem {
@@ -26,6 +26,7 @@ interface EventListItem {
 export class EventsComponent implements OnInit {
   private apiService = inject(ApiService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   searchQuery = signal<string>('');
   selectedCategory = signal<string>('All');
@@ -45,15 +46,19 @@ export class EventsComponent implements OnInit {
   events = signal<EventListItem[]>([]);
 
   ngOnInit() {
-    const categoryParam = this.route.snapshot.queryParamMap.get('category');
-    if (categoryParam) {
-      const matchedCategory = this.categories.find(
-        c => c.toLowerCase() === categoryParam.toLowerCase()
-      );
-      if (matchedCategory) {
-        this.selectedCategory.set(matchedCategory);
+    this.route.queryParamMap.subscribe(params => {
+      const categoryParam = params.get('category');
+      if (categoryParam) {
+        const matchedCategory = this.categories.find(
+          c => c.toLowerCase() === categoryParam.toLowerCase()
+        );
+        if (matchedCategory) {
+          this.selectedCategory.set(matchedCategory);
+        }
+      } else {
+        this.selectedCategory.set('All');
       }
-    }
+    });
     this.loadEvents();
   }
 
@@ -185,7 +190,11 @@ export class EventsComponent implements OnInit {
   });
 
   selectCategory(category: string) {
-    this.selectedCategory.set(category);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { category: category === 'All' ? null : category },
+      queryParamsHandling: 'merge'
+    });
   }
 
   getSlotsPercentage(event: EventListItem): number {
