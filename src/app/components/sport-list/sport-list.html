@@ -10,7 +10,7 @@
     <!-- Sports Cards Grid -->
     <div class="sports-grid" id="sports-cards-grid">
       @for (sport of sports(); track sport.name) {
-        <div class="sport-card" id="sport-card-{{ sport.name.toLowerCase() }}">
+        <div [routerLink]="['/events']" [queryParams]="{ category: sport.name }" class="sport-card" id="sport-card-{{ sport.name.toLowerCase() }}" style="cursor: pointer;">
           <!-- Sport Emoji Graphic Icon -->
           <div class="sport-icon-container">
             <span class="sport-emoji">{{ sport.icon }}</span>

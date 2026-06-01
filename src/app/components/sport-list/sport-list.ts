@@ -1,5 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 interface SportItem {
   name: string;
@@ -10,11 +12,13 @@ interface SportItem {
 @Component({
   selector: 'app-sport-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './sport-list.html',
   styleUrl: './sport-list.scss'
 })
-export class SportListComponent {
+export class SportListComponent implements OnInit {
+  private apiService = inject(ApiService);
+
   sports = signal<SportItem[]>([
     { name: 'Running', icon: '🏃', eventsCount: 12 },
     { name: 'Badminton', icon: '🏸', eventsCount: 8 },
@@ -24,4 +28,28 @@ export class SportListComponent {
     { name: 'Pickleball', icon: '🎾', eventsCount: 6 },
     { name: 'Padel', icon: '🏓', eventsCount: 4 }
   ]);
+
+  ngOnInit() {
+    this.loadSports();
+  }
+
+  loadSports() {
+    this.apiService.getSports().subscribe({
+      next: (res) => {
+        if (res.success) {
+          // Map sports fields
+          const mapped = res.sports.map(s => ({
+            name: s.name,
+            icon: s.icon,
+            eventsCount: s.eventsCount
+          }));
+          this.sports.set(mapped);
+        }
+      },
+      error: (err) => {
+        console.warn('Backend server offline. Keeping sports listing fallback...');
+      }
+    });
+  }
 }
+

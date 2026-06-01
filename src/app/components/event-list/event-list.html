@@ -54,7 +54,7 @@
           </div>
 
           <!-- Action CTA Button -->
-          <a href="#" class="btn-register" id="btn-register-{{ event.category.toLowerCase() }}">
+          <a [routerLink]="['/events', event.id]" class="btn-register" id="btn-register-{{ event.category.toLowerCase() }}">
             Register Now
           </a>
 
@@ -64,7 +64,7 @@
 
     <!-- View All Button -->
     <div class="events-footer-actions">
-      <a href="#" class="btn-view-all" id="btn-view-all-events">
+      <a routerLink="/events" class="btn-view-all" id="btn-view-all-events">
         View All Events
       </a>
     </div>
