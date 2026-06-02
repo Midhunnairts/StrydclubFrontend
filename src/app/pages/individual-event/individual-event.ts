@@ -405,24 +405,112 @@ export class IndividualEventComponent implements OnInit {
       return;
     }
 
-    this.apiService.registerForEvent(details.id, token).subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.modalState.set({
-            show: true,
-            title: 'Registration Successful!',
-            message: 'You have successfully secured your spot for this event. View and track your schedule on your dashboard.',
-            type: 'success'
-          });
-          // Reload to show new slotsFilled count & updated participants roster!
-          this.loadEventDetails();
+    const price = Number(details.price) || 0;
+    if (price > 0) {
+      // Premium Event: Trigger Razorpay payment gateway order creation
+      this.apiService.createRazorpayOrder(details.id, token).subscribe({
+        next: (res) => {
+          if (res.success && res.order) {
+            if (!(window as any).Razorpay) {
+              alert('Razorpay Checkout SDK is still loading. Please try again in a few seconds.');
+              return;
+            }
+
+            // Retrieve profile details from local storage for prefill
+            let prefillName = '';
+            let prefillEmail = '';
+            let prefillPhone = '';
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+              try {
+                const user = JSON.parse(userStr);
+                prefillName = user.name || '';
+                prefillEmail = user.email || '';
+                prefillPhone = user.phone || '';
+              } catch (e) {
+                console.error('Error parsing user details for Razorpay prefill:', e);
+              }
+            }
+
+            const options = {
+              key: res.order.key_id || 'rzp_test_mockkeyid',
+              amount: res.order.amount,
+              currency: res.order.currency || 'INR',
+              name: 'Strydclub',
+              description: `Registration for ${details.title}`,
+              order_id: res.order.id,
+              prefill: {
+                name: prefillName,
+                email: prefillEmail,
+                contact: prefillPhone
+              },
+              theme: {
+                color: '#ff3b30'
+              },
+              handler: (response: any) => {
+                const verificationPayload = {
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature
+                };
+
+                this.apiService.verifyRazorpayPayment(details.id, verificationPayload, token).subscribe({
+                  next: (verifyRes) => {
+                    if (verifyRes.success) {
+                      this.modalState.set({
+                        show: true,
+                        title: 'Payment & Registration Successful!',
+                        message: 'Your payment was successfully verified and your spot is confirmed. Track your schedule on your dashboard!',
+                        type: 'success'
+                      });
+                      this.loadEventDetails();
+                    }
+                  },
+                  error: (verifyErr) => {
+                    const errorMsg = verifyErr.error?.message || 'Payment signature verification failed';
+                    alert(errorMsg);
+                  }
+                });
+              },
+              modal: {
+                ondismiss: () => {
+                  console.log('Payment modal closed by user.');
+                }
+              }
+            };
+
+            const rzp = new (window as any).Razorpay(options);
+            rzp.open();
+          } else {
+            alert('Failed to initiate payment. Please try again.');
+          }
+        },
+        error: (err) => {
+          const errorMsg = err.error?.message || 'Error creating payment order';
+          alert(errorMsg);
         }
-      },
-      error: (err) => {
-        const errorMsg = err.error?.message || 'Server connection error during registration';
-        alert(errorMsg);
-      }
-    });
+      });
+    } else {
+      // Free Event: Direct registration
+      this.apiService.registerForEvent(details.id, token).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.modalState.set({
+              show: true,
+              title: 'Registration Successful!',
+              message: 'You have successfully secured your spot for this event. View and track your schedule on your dashboard.',
+              type: 'success'
+            });
+            // Reload to show new slotsFilled count & updated participants roster!
+            this.loadEventDetails();
+          }
+        },
+        error: (err) => {
+          const errorMsg = err.error?.message || 'Server connection error during registration';
+          alert(errorMsg);
+        }
+      });
+    }
   }
 
   onShare() {

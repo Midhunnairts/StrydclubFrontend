@@ -39,6 +39,34 @@ export class ApiService {
   }
 
   /**
+   * Create a Razorpay payment order for paid event registrations.
+   */
+  createRazorpayOrder(slug: string, token: string): Observable<{ success: boolean; order: any }> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post<{ success: boolean; order: any }>(
+      `${this.apiUrl}/events/${slug}/create-order`,
+      {},
+      { headers }
+    );
+  }
+
+  /**
+   * Verify Razorpay payment and complete registration.
+   */
+  verifyRazorpayPayment(slug: string, payload: any, token: string): Observable<{ success: boolean; message: string }> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.apiUrl}/events/${slug}/verify-payment`,
+      payload,
+      { headers }
+    );
+  }
+
+  /**
    * Send simulated verification OTP to user via email or SMS.
    */
   sendOtp(channel: 'phone' | 'email', value: string): Observable<{ success: boolean; message: string }> {
