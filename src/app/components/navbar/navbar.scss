@@ -126,6 +126,61 @@
     transform: translateY(-1.5px);
     box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
   }
+
+  &.avatar-only {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-white);
+    box-shadow: none;
+
+    .avatar-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+.btn-host-event {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-family-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0b0c0e;
+  padding: 10px 22px;
+  border-radius: 50px;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+
+  .plus-icon {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.8px;
+  }
+
+  &:hover {
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
+    background-color: #f3f3f3;
+  }
 }
 
 .avatar-icon {

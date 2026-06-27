@@ -31,6 +31,21 @@ export class NavbarComponent {
     return false;
   }
 
+  get isAdmin(): boolean {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          return user.role === 'admin';
+        } catch (e) {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
   setActiveTab(tabName: string) {
     this.activeTab.set(tabName);
     this.isMobileMenuOpen.set(false);

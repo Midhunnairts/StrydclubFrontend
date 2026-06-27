@@ -39,6 +39,34 @@ export class ApiService {
   }
 
   /**
+   * Register the authenticated athlete for a specific event.
+   */
+  verifyRazorpayPayment(slug: string, payload: any, token: string): Observable<{ success: boolean; message: string }> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.apiUrl}/events/${slug}/verify-payment`,
+      payload,
+      { headers }
+    );
+  }
+
+  /**
+   * Create a new event (Admin only).
+   */
+  createEvent(eventData: any, token: string): Observable<{ success: boolean; event: any }> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post<{ success: boolean; event: any }>(
+      `${this.apiUrl}/events`,
+      eventData,
+      { headers }
+    );
+  }
+
+  /**
    * Send simulated verification OTP to user via email or SMS.
    */
   sendOtp(channel: 'phone' | 'email', value: string): Observable<{ success: boolean; message: string }> {
