@@ -31,18 +31,23 @@
       @if (!isLoggedIn) {
         <a routerLink="/login" class="btn-login" id="btn-login-action">Login</a>
       } @else {
-        <a routerLink="/host-event" class="btn-host-event" id="btn-host-event-action" (click)="setActiveTab('Host Event')">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="plus-icon">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          <span>Host Event</span>
-        </a>
-        <a routerLink="/dashboard" class="btn-dashboard avatar-only" id="btn-dashboard-action">
+        @if (isAdmin) {
+          <a routerLink="/host-event" class="btn-host-event" id="btn-host-event-action" (click)="setActiveTab('Host Event')">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="plus-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            <span>Host Event</span>
+          </a>
+        }
+        <a routerLink="/dashboard" class="btn-dashboard" [class.avatar-only]="isAdmin" id="btn-dashboard-action">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
             class="avatar-icon">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
           </svg>
+          @if (!isAdmin) {
+            <span>Dashboard</span>
+          }
         </a>
         <button (click)="logout()" class="btn-login" id="btn-logout-action" style="cursor: pointer;">Logout</button>
       }
@@ -66,12 +71,14 @@
       @if (!isLoggedIn) {
         <a routerLink="/login" class="btn-login" (click)="toggleMobileMenu()">Login</a>
       } @else {
-        <a routerLink="/host-event" class="btn-host-event" style="margin-bottom: 8px;" (click)="toggleMobileMenu()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="plus-icon" style="width: 14px; height: 14px; margin-right: 4px; display: inline-block; vertical-align: middle;">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          <span style="vertical-align: middle;">Host Event</span>
-        </a>
+        @if (isAdmin) {
+          <a routerLink="/host-event" class="btn-host-event" style="margin-bottom: 8px;" (click)="toggleMobileMenu()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="plus-icon" style="width: 14px; height: 14px; margin-right: 4px; display: inline-block; vertical-align: middle;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            <span style="vertical-align: middle;">Host Event</span>
+          </a>
+        }
         <a routerLink="/dashboard" class="btn-dashboard" (click)="toggleMobileMenu()">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
             class="avatar-icon">
