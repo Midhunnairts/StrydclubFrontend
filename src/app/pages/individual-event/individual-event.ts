@@ -401,11 +401,14 @@ export class IndividualEventComponent implements OnInit {
 
   confirmModalAction() {
     const type = this.modalState().type;
+    const title = this.modalState().title;
     this.closeModal();
     if (type === 'auth') {
       this.router.navigate(['/login']);
     } else if (type === 'success') {
-      this.router.navigate(['/dashboard']);
+      if (title !== 'Registration Cancelled') {
+        this.router.navigate(['/dashboard']);
+      }
     }
   }
 
@@ -442,6 +445,35 @@ export class IndividualEventComponent implements OnInit {
         alert(errorMsg);
       }
     });
+  }
+
+  onCancelRegistration() {
+    const details = this.eventDetails();
+    if (!details) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    if (confirm('Are you sure you want to cancel your registration for this event?')) {
+      this.apiService.cancelEventRegistration(details.id, token).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.modalState.set({
+              show: true,
+              title: 'Registration Cancelled',
+              message: 'Your registration has been cancelled successfully. Your slot has been released.',
+              type: 'success'
+            });
+            // Reload to show updated slotsFilled count & participants roster!
+            this.loadEventDetails();
+          }
+        },
+        error: (err) => {
+          const errorMsg = err.error?.message || 'Server connection error during cancellation';
+          alert(errorMsg);
+        }
+      });
+    }
   }
 
   onShare() {

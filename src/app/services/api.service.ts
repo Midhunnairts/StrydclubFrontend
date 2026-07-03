@@ -39,6 +39,20 @@ export class ApiService {
   }
 
   /**
+   * Cancel event registration for the authenticated athlete.
+   */
+  cancelEventRegistration(id: string, token: string): Observable<{ success: boolean; message: string }> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.apiUrl}/events/${id}/cancel`,
+      {},
+      { headers }
+    );
+  }
+
+  /**
    * Register the authenticated athlete for a specific event.
    */
   verifyRazorpayPayment(slug: string, payload: any, token: string): Observable<{ success: boolean; message: string }> {
