@@ -364,6 +364,25 @@ export class IndividualEventComponent implements OnInit {
     return false;
   });
 
+  isAdmin = computed(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          return user.role === 'admin';
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+    return false;
+  });
+
+  showParticipants = computed(() => {
+    return this.isAlreadyRegistered() || this.isAdmin();
+  });
+
   modalState = signal<{
     show: boolean;
     title: string;
