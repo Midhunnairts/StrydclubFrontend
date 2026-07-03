@@ -312,7 +312,7 @@ export class IndividualEventComponent implements OnInit {
           next: (res) => {
             if (res.success) {
               const mapped: EventDetails = {
-                id: res.event.id || (res.event as any).slug || '',
+                id: res.event._id || res.event.id || (res.event as any).slug || '',
                 title: res.event.title,
                 category: res.event.category,
                 description: res.event.description,
