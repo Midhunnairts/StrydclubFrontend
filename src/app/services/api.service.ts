@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -9,6 +9,71 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
+
+  currentUser = signal<any>(null);
+
+  constructor() {
+    this.loadUserProfile();
+  }
+
+  /**
+   * Load the current logged in user details from local storage token.
+   */
+  loadUserProfile(): Observable<{ success: boolean; user: any }> | null {
+    if (typeof window === 'undefined' || !window.localStorage) return null;
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.currentUser.set(null);
+      return null;
+    }
+
+    if (token === 'mock-google-token') {
+      const mockUser = {
+        id: 'mock-google-id',
+        name: 'Google Athlete',
+        email: 'athlete.google@strydclub.com',
+        phone: '+91 9999999999',
+        role: 'user',
+        favoriteSports: ['Running'],
+        memberSince: 'January 2026',
+        totalEvents: 1,
+        eventsWon: 0,
+        sportsPlayed: 1
+      };
+      this.currentUser.set(mockUser);
+      return new Observable(subscriber => {
+        subscriber.next({ success: true, user: mockUser });
+        subscriber.complete();
+      });
+    }
+
+    const obs = this.getUserProfile(token);
+    obs.subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.currentUser.set(res.user);
+          console.log(res);
+
+        } else {
+          this.currentUser.set(null);
+        }
+      },
+      error: () => {
+        this.currentUser.set(null);
+      }
+    });
+    return obs;
+  }
+
+  /**
+   * Log out the current user, clearing token and profile state.
+   */
+  logout() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem('token');
+    }
+    this.currentUser.set(null);
+  }
 
   /**
    * Fetch all upcoming/active events.
@@ -135,5 +200,15 @@ export class ApiService {
    */
   getSports(): Observable<{ success: boolean; sports: any[] }> {
     return this.http.get<{ success: boolean; sports: any[] }>(`${this.apiUrl}/sports`);
+  }
+
+  /**
+   * Get logged-in user profile details using their JWT token.
+   */
+  getUserProfile(token: string): Observable<{ success: boolean; user: any }> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.get<{ success: boolean; user: any }>(`${this.apiUrl}/users/profile`, { headers });
   }
 }

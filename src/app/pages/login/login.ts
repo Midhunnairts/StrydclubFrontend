@@ -75,8 +75,8 @@ export class LoginComponent {
         if (res.success) {
           if (typeof window !== 'undefined') {
             localStorage.setItem('token', res.token);
-            localStorage.setItem('user', JSON.stringify(res.user));
           }
+          this.apiService.loadUserProfile();
           this.router.navigate(['/dashboard']);
         }
       },
@@ -122,17 +122,8 @@ export class LoginComponent {
     console.log('Logging in with Google...');
     if (typeof window !== 'undefined') {
       localStorage.setItem('token', 'mock-google-token');
-      localStorage.setItem('user', JSON.stringify({
-        name: 'Google Athlete',
-        email: 'athlete.google@strydclub.com',
-        phone: '+91 9999999999',
-        favoriteSports: ['Running'],
-        memberSince: 'January 2026',
-        totalEvents: 1,
-        eventsWon: 0,
-        sportsPlayed: 1
-      }));
     }
+    this.apiService.loadUserProfile();
     this.router.navigate(['/dashboard']);
   }
 }

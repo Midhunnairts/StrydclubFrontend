@@ -1,6 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,6 +12,7 @@ import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 })
 export class NavbarComponent {
   private router = inject(Router);
+  private apiService = inject(ApiService);
 
   activeTab = signal<string>('Home');
   isMobileMenuOpen = signal<boolean>(false);
@@ -32,18 +34,8 @@ export class NavbarComponent {
   }
 
   get isAdmin(): boolean {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          return user.role === 'admin';
-        } catch (e) {
-          return false;
-        }
-      }
-    }
-    return false;
+    const user = this.apiService.currentUser();
+    return user ? user.role === 'admin' : false;
   }
 
   setActiveTab(tabName: string) {
@@ -56,10 +48,7 @@ export class NavbarComponent {
   }
 
   logout() {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-    }
+    this.apiService.logout();
     this.isMobileMenuOpen.set(false);
     this.router.navigate(['/login']);
   }

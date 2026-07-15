@@ -347,36 +347,16 @@ export class IndividualEventComponent implements OnInit {
     const details = this.eventDetails();
     if (!details) return false;
 
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          const userName = user.name;
-          if (userName && details.participants) {
-            return details.participants.some(p => p.name === userName);
-          }
-        } catch (e) {
-          console.error('Error parsing user details', e);
-        }
-      }
+    const user = this.apiService.currentUser();
+    if (user && user.name && details.participants) {
+      return details.participants.some(p => p.name === user.name);
     }
     return false;
   });
 
   isAdmin = computed(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          return user.role === 'admin';
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-    return false;
+    const user = this.apiService.currentUser();
+    return user ? user.role === 'admin' : false;
   });
 
   showParticipants = computed(() => {
