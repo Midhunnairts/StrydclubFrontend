@@ -118,6 +118,13 @@
               </button>
             }
           </div>
+
+          @if (selectedSport() === 'Other') {
+            <div class="input-group full-row animate-fade-in" style="margin-top: 24px; max-width: 400px; margin-left: auto; margin-right: auto; text-align: left;">
+              <label class="input-label" style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em; color: var(--text-muted);">SPECIFY SPORT NAME *</label>
+              <input type="text" [(ngModel)]="customSportName" placeholder="e.g. Swimming, Archery..." class="theme-text-input">
+            </div>
+          }
         </div>
       }
 
@@ -180,6 +187,12 @@
             <div class="input-group">
               <label class="input-label">CITY *</label>
               <input type="text" [(ngModel)]="city" placeholder="e.g. Bangalore" class="theme-text-input">
+            </div>
+
+            <!-- Venue URL -->
+            <div class="input-group full-row">
+              <label class="input-label">VENUE URL (Google Maps link, etc.)</label>
+              <input type="text" [(ngModel)]="venueUrl" placeholder="e.g. https://maps.google.com/..." class="theme-text-input">
             </div>
 
             <!-- Rules & Notes -->
@@ -287,7 +300,13 @@
             <!-- Sport -->
             <div class="preview-card">
               <span class="preview-card-label">SPORT</span>
-              <span class="preview-card-value">{{ getSportIcon(selectedSport()) }} {{ selectedSport() }}</span>
+              <span class="preview-card-value">
+                @if (selectedSport() === 'Other') {
+                  ✨ {{ customSportName() }}
+                } @else {
+                  {{ getSportIcon(selectedSport()) }} {{ selectedSport() }}
+                }
+              </span>
             </div>
 
             <!-- Title -->
@@ -313,6 +332,16 @@
               <span class="preview-card-label">VENUE</span>
               <span class="preview-card-value text-lowercase">{{ venueName() }}, {{ city() }}</span>
             </div>
+
+            <!-- Venue URL -->
+            @if (venueUrl()) {
+              <div class="preview-card">
+                <span class="preview-card-label">VENUE URL</span>
+                <span class="preview-card-value text-lowercase" style="word-break: break-all;">
+                  <a [href]="venueUrl()" target="_blank" style="color: var(--primary-accent); text-decoration: underline;">{{ venueUrl() }}</a>
+                </span>
+              </div>
+            }
 
             <!-- Date -->
             <div class="preview-card">

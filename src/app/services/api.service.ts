@@ -52,8 +52,6 @@ export class ApiService {
       next: (res) => {
         if (res.success) {
           this.currentUser.set(res.user);
-          console.log(res);
-
         } else {
           this.currentUser.set(null);
         }

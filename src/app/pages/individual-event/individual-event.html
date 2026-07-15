@@ -59,15 +59,30 @@
 
             <!-- Venue Card (Full Width) -->
             <div class="param-card full-width" id="param-card-venue">
-              <div class="param-icon-container">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="param-icon">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                </svg>
-              </div>
+              @if (details.venueUrl) {
+                <a [href]="details.venueUrl" target="_blank" class="param-icon-container clickable-location-icon" title="View location on map" id="btn-view-map">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="param-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                  </svg>
+                </a>
+              } @else {
+                <div class="param-icon-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="param-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                  </svg>
+                </div>
+              }
               <div class="param-text-frame">
                 <span class="param-label">Venue</span>
-                <h3 class="param-value">{{ details.location }}</h3>
+                <h3 class="param-value">
+                  @if (details.venueUrl) {
+                    <a [href]="details.venueUrl" target="_blank" style="color: inherit; text-decoration: none;" class="venue-link-hover" title="View location on map">{{ details.location }}</a>
+                  } @else {
+                    {{ details.location }}
+                  }
+                </h3>
               </div>
             </div>
 

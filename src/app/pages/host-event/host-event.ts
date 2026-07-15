@@ -35,18 +35,20 @@ export class HostEventComponent {
     { name: 'Volleyball', icon: '🏐' },
     { name: 'Pickleball', icon: '🏓' },
     { name: 'Kho Kho', icon: '🤸' },
-    { name: 'Padel', icon: '🎾' },
-    { name: 'Cricket', icon: '🏏' }
+    { name: 'Cricket', icon: '🏏' },
+    { name: 'Other', icon: '✨' },
   ];
 
   // Stepper Form States
   selectedSport = signal<string>('');
+  customSportName = signal<string>('');
   title = signal<string>('');
   description = signal<string>('');
   format = signal<string>('');
   skillLevel = signal<string>('');
   venueName = signal<string>('');
   city = signal<string>('');
+  venueUrl = signal<string>('');
   rulesNotes = signal<string>('');
   price = signal<number>(0);
 
@@ -73,7 +75,14 @@ export class HostEventComponent {
   showSuccessModal = signal<boolean>(false);
 
   // Step Validation Computeds
-  isStep1Valid = computed(() => !!this.selectedSport());
+  isStep1Valid = computed(() => {
+    const sport = this.selectedSport();
+    if (!sport) return false;
+    if (sport === 'Other') {
+      return !!this.customSportName().trim();
+    }
+    return true;
+  });
   isStep2Valid = computed(() => !!this.title().trim() && !!this.venueName().trim() && !!this.city().trim());
   isStep3Valid = computed(() => !!this.date() && !!this.time());
   isStep4Valid = computed(() => !!this.slotsTotal() && this.slotsTotal() > 0);
@@ -91,6 +100,9 @@ export class HostEventComponent {
 
   selectSport(sport: string) {
     this.selectedSport.set(sport);
+    if (sport !== 'Other') {
+      this.customSportName.set('');
+    }
   }
 
   getSportIcon(sportName: string): string {
@@ -142,7 +154,7 @@ export class HostEventComponent {
 
     const payload = {
       title: this.title(),
-      category: this.selectedSport(),
+      category: this.selectedSport() === 'Other' ? this.customSportName() : this.selectedSport(),
       description: this.description(),
       format: this.format() || 'Single Match',
       skillLevel: this.skillLevel() || 'Open',
@@ -152,6 +164,7 @@ export class HostEventComponent {
       endTime: this.endTime() ? this.formatTime(this.endTime()) : '',
       registrationCloses: this.registrationCloses() ? this.formatDate(this.registrationCloses()) : '',
       location: `${this.venueName()}, ${this.city()}`,
+      venueUrl: this.venueUrl(),
       price: this.price(),
       slotsTotal: this.slotsTotal(),
       playersPerTeam: this.playersPerTeam() || 0,

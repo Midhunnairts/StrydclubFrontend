@@ -141,6 +141,20 @@
       color: var(--text-muted);
       transition: var(--transition-smooth);
     }
+
+    &.clickable-location-icon {
+      cursor: pointer;
+
+      &:hover {
+        transform: scale(1.08);
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+
+        .param-icon {
+          color: var(--text-white);
+        }
+      }
+    }
   }
 
   .param-text-frame {
@@ -164,6 +178,14 @@
     font-weight: 700;
     color: var(--text-white);
     margin: 0;
+
+    .venue-link-hover {
+      transition: var(--transition-smooth);
+      &:hover {
+        text-decoration: underline !important;
+        color: var(--primary-accent) !important;
+      }
+    }
   }
 
   &:hover {

@@ -34,6 +34,7 @@ interface EventDetails {
   participants: ParticipantItem[];
   organizedBy: string;
   contact: string;
+  venueUrl?: string;
 }
 
 @Component({
@@ -327,7 +328,8 @@ export class IndividualEventComponent implements OnInit {
                 schedule: res.event.schedule || [],
                 participants: res.event.participants || [],
                 organizedBy: res.event.organizedBy,
-                contact: res.event.contact
+                contact: res.event.contact,
+                venueUrl: res.event.venueUrl || ''
               };
               this.eventDetails.set(mapped);
             }
