@@ -2,6 +2,9 @@ import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { environment } from '../../../environments/environment';
+
+declare var Razorpay: any;
 
 interface RuleItem {
   text: string;
@@ -409,24 +412,86 @@ export class IndividualEventComponent implements OnInit {
       return;
     }
 
-    this.apiService.registerForEvent(details.id, token).subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.modalState.set({
-            show: true,
-            title: 'Registration Successful!',
-            message: 'You have successfully secured your spot for this event. View and track your schedule on your dashboard.',
-            type: 'success'
-          });
-          // Reload to show new slotsFilled count & updated participants roster!
-          this.loadEventDetails();
+    if (details.price && details.price > 0) {
+      this.apiService.createRazorpayOrder(details.id, token).subscribe({
+        next: (orderRes) => {
+          if (orderRes.success) {
+            const options = {
+              key: environment.razorpayKeyId,
+              amount: orderRes.amount,
+              currency: orderRes.currency,
+              name: 'Strydclub',
+              description: `Register for ${details.title}`,
+              order_id: orderRes.order_id,
+              handler: (paymentRes: any) => {
+                const payload = {
+                  razorpay_payment_id: paymentRes.razorpay_payment_id,
+                  razorpay_order_id: paymentRes.razorpay_order_id,
+                  razorpay_signature: paymentRes.razorpay_signature
+                };
+                this.apiService.verifyRazorpayPayment(details.id, payload, token).subscribe({
+                  next: (verifyRes) => {
+                    if (verifyRes.success) {
+                      this.modalState.set({
+                        show: true,
+                        title: 'Registration Successful!',
+                        message: 'Payment verified successfully. You have secured your spot for this event!',
+                        type: 'success'
+                      });
+                      this.loadEventDetails();
+                    }
+                  },
+                  error: (verifyErr) => {
+                    const errorMsg = verifyErr.error?.message || 'Payment verification failed.';
+                    alert(errorMsg);
+                  }
+                });
+              },
+              prefill: {
+                name: this.apiService.currentUser()?.name || '',
+                email: this.apiService.currentUser()?.email || '',
+                contact: this.apiService.currentUser()?.phone || ''
+              },
+              theme: {
+                color: '#ef4444'
+              },
+              modal: {
+                ondismiss: () => {
+                  console.log('Razorpay modal closed by user.');
+                }
+              }
+            };
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', (response: any) => {
+              alert(`Payment failed: ${response.error.description}`);
+            });
+            rzp.open();
+          }
+        },
+        error: (orderErr) => {
+          const errorMsg = orderErr.error?.message || 'Failed to create payment order.';
+          alert(errorMsg);
         }
-      },
-      error: (err) => {
-        const errorMsg = err.error?.message || 'Server connection error during registration';
-        alert(errorMsg);
-      }
-    });
+      });
+    } else {
+      this.apiService.registerForEvent(details.id, token).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.modalState.set({
+              show: true,
+              title: 'Registration Successful!',
+              message: 'You have successfully secured your spot for this event. View and track your schedule on your dashboard.',
+              type: 'success'
+            });
+            this.loadEventDetails();
+          }
+        },
+        error: (err) => {
+          const errorMsg = err.error?.message || 'Server connection error during registration';
+          alert(errorMsg);
+        }
+      });
+    }
   }
 
   onCancelRegistration() {

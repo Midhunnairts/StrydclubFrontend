@@ -116,6 +116,20 @@ export class ApiService {
   }
 
   /**
+   * Create a Razorpay payment order for the event.
+   */
+  createRazorpayOrder(slug: string, token: string): Observable<{ success: boolean; order_id: string; amount: number; currency: string }> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post<{ success: boolean; order_id: string; amount: number; currency: string }>(
+      `${this.apiUrl}/events/${slug}/create-order`,
+      {},
+      { headers }
+    );
+  }
+
+  /**
    * Register the authenticated athlete for a specific event.
    */
   verifyRazorpayPayment(slug: string, payload: any, token: string): Observable<{ success: boolean; message: string }> {
