@@ -380,6 +380,8 @@ export class IndividualEventComponent implements OnInit {
     type: 'auth'
   });
 
+  copied = signal<boolean>(false);
+
   closeModal() {
     this.modalState.update(state => ({ ...state, show: false }));
   }
@@ -525,8 +527,44 @@ export class IndividualEventComponent implements OnInit {
 
   onShare() {
     const details = this.eventDetails();
-    if (details) {
-      alert(`Successfully shared event details for ${details.title}!`);
+    if (!details) return;
+
+    const shareData = {
+      title: details.title,
+      text: `Check out this event on Strydclub: ${details.title}`,
+      url: window.location.href
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData)
+        .then(() => {
+          console.log('Successfully shared event via Web Share API');
+        })
+        .catch((err) => {
+          console.warn('Error sharing event:', err);
+        });
+    } else {
+      this.copyLinkToClipboard();
+    }
+  }
+
+  onCopyLink() {
+    this.copyLinkToClipboard();
+  }
+
+  private copyLinkToClipboard() {
+    if (typeof window !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        this.copied.set(true);
+        setTimeout(() => {
+          this.copied.set(false);
+        }, 2000);
+      }).catch((err) => {
+        console.error('Failed to copy link to clipboard:', err);
+        alert('Could not copy link automatically. Please copy the URL from your browser address bar.');
+      });
+    } else {
+      alert('Clipboard access not supported in your browser.');
     }
   }
 }

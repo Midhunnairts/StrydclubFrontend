@@ -457,6 +457,16 @@
       transform: scale(1.05);
     }
   }
+
+  &.copied {
+    border-color: rgba(16, 185, 129, 0.3);
+    background-color: rgba(16, 185, 129, 0.05);
+
+    &:hover {
+      background-color: rgba(16, 185, 129, 0.1);
+      border-color: #10b981;
+    }
+  }
 }
 
 .panel-horizontal-divider {
