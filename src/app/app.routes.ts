@@ -12,15 +12,15 @@ import { HostEventComponent } from './pages/host-event/host-event';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent, canActivate: [authGuard] },
+  { path: '', component: HomeComponent },
   { path: 'dashboard', component: UserDashboardComponent, canActivate: [authGuard] },
   { path: 'host-event', component: HostEventComponent, canActivate: [authGuard] },
-  { path: 'events/:id', component: IndividualEventComponent, canActivate: [authGuard] },
-  { path: 'events', component: EventsComponent, canActivate: [authGuard] },
-  { path: 'sports', component: SportsComponent, canActivate: [authGuard] },
-  { path: 'community', component: CommunityComponent, canActivate: [authGuard] },
-  { path: 'about', component: AboutComponent, canActivate: [authGuard] },
-  { path: 'contact', component: ContactComponent, canActivate: [authGuard] },
+  { path: 'events/:id', component: IndividualEventComponent },
+  { path: 'events', component: EventsComponent },
+  { path: 'sports', component: SportsComponent },
+  { path: 'community', component: CommunityComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'contact', component: ContactComponent },
   { path: 'login', component: LoginComponent }
 ];
 
