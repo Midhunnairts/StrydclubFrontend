@@ -10,6 +10,8 @@ interface StatsCard {
 }
 
 interface RegisteredEvent {
+  id?: string;
+  slug?: string;
   title: string;
   category: string;
   date: string;
@@ -19,6 +21,8 @@ interface RegisteredEvent {
 }
 
 interface PastEvent {
+  id?: string;
+  slug?: string;
   title: string;
   category: string;
   date: string;
@@ -74,7 +78,7 @@ export class UserDashboardComponent implements OnInit {
 
   loadDashboardData() {
     const token = localStorage.getItem('token');
-    
+
     if (!token) {
       console.warn('Unauthorized access. Redirecting to login route...');
       this.router.navigate(['/login']);
@@ -102,41 +106,16 @@ export class UserDashboardComponent implements OnInit {
         console.warn('Backend server offline or auth failed. Utilizing dashboard mock fallbacks...');
         // Bootstrapping seeded looking fallbacks
         this.registeredEvents.set([
-          {
-            title: 'Weekend 5K Marathon',
-            category: 'Running',
-            date: 'May 28, 2026',
-            time: '6:00 AM',
-            location: 'Cubbon Park, Bangalore',
-            status: 'Confirmed'
-          },
-          {
-            title: 'Friday Night Football League',
-            category: 'Football',
-            date: 'May 25, 2026',
-            time: '7:00 PM',
-            location: 'Green Field Arena, Delhi',
-            status: 'Confirmed'
-          }
-        ]);
 
-        this.pastParticipation.set([
-          {
-            title: 'Spring Badminton Championship',
-            category: 'Badminton',
-            date: 'May 15, 2026',
-            result: '2nd Place',
-            won: true
-          },
-          {
-            title: 'Urban Football League',
-            category: 'Football',
-            date: 'May 10, 2026',
-            result: 'Participant',
-            won: false
-          }
         ]);
       }
     });
+  }
+
+  viewEvent(event: any) {
+    const eventId = event.id;
+    if (eventId) {
+      this.router.navigate(['/events', eventId]);
+    }
   }
 }

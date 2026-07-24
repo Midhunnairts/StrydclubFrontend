@@ -60,7 +60,7 @@
         
         <div class="events-cards-stack">
           @for (event of registeredEvents(); track event.title) {
-            <div class="registered-event-card">
+            <div class="registered-event-card" (click)="viewEvent(event)" style="cursor: pointer;">
               <!-- Event Header Row -->
               <div class="event-card-header">
                 <h3 class="event-card-title">{{ event.title }}</h3>
@@ -107,7 +107,7 @@
         
         <div class="events-cards-stack">
           @for (past of pastParticipation(); track past.title) {
-            <div class="past-participation-card">
+            <div class="past-participation-card" (click)="viewEvent(past)" style="cursor: pointer;">
               <!-- Event Header Row -->
               <div class="event-card-header">
                 <h3 class="event-card-title">{{ past.title }}</h3>
