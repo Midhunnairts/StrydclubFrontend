@@ -13,7 +13,6 @@ interface LeaderboardItem {
   name: string;
   sport: string;
   eventsCount: number;
-  winsCount: number;
 }
 
 interface CityItem {
@@ -51,36 +50,31 @@ export class CommunityComponent implements OnInit {
       rank: 1,
       name: 'Vikram Singh',
       sport: 'Running',
-      eventsCount: 24,
-      winsCount: 12
+      eventsCount: 24
     },
     {
       rank: 2,
       name: 'Anjali Verma',
       sport: 'Badminton',
-      eventsCount: 22,
-      winsCount: 11
+      eventsCount: 22
     },
     {
       rank: 3,
       name: 'Rohan Patel',
       sport: 'Football',
-      eventsCount: 20,
-      winsCount: 9
+      eventsCount: 20
     },
     {
       rank: 4,
       name: 'Sneha Reddy',
       sport: 'Volleyball',
-      eventsCount: 18,
-      winsCount: 8
+      eventsCount: 18
     },
     {
       rank: 5,
       name: 'Karthik Iyer',
       sport: 'Running',
-      eventsCount: 16,
-      winsCount: 7
+      eventsCount: 16
     }
   ]);
 
@@ -124,8 +118,7 @@ export class CommunityComponent implements OnInit {
               rank: e.rank,
               name: e.name,
               sport: e.sport,
-              eventsCount: parseInt(e.eventsCount) || 10,
-              winsCount: Math.round(parseInt(e.points.replace(/,/g, '')) / 200) || 5
+              eventsCount: parseInt(e.eventsCount) || 0
             }));
             this.leaderboard.set(mapped);
           }
