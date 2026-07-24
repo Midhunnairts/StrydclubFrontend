@@ -39,7 +39,8 @@ export class EventsComponent implements OnInit {
     'Volleyball',
     'Pickleball',
     'Kho Kho',
-    'Padel'
+    'Padel',
+    'Other'
   ];
 
   // Initialize events list signal
@@ -95,7 +96,12 @@ export class EventsComponent implements OnInit {
     // Filter by Category
     const category = this.selectedCategory();
     if (category !== 'All') {
-      list = list.filter(e => e.category.toLowerCase() === category.toLowerCase());
+      const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'kho kho', 'padel'];
+      if (category.toLowerCase() === 'other') {
+        list = list.filter(e => !standardCategories.includes(e.category.toLowerCase()));
+      } else {
+        list = list.filter(e => e.category.toLowerCase() === category.toLowerCase());
+      }
     }
 
     // Filter by Search Query

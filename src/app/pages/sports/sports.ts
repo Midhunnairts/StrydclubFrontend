@@ -120,6 +120,19 @@ export class SportsComponent implements OnInit {
         time: '6:00 PM',
         location: 'Padel Arena, Hyderabad'
       }
+    },
+    {
+      name: 'Other',
+      icon: '✨',
+      description: 'Custom hosted events covering a wide variety of exciting sports.',
+      eventsCount: 2,
+      membersCount: 450,
+      nextEvent: {
+        title: 'Community Hosted Event',
+        date: 'TBD',
+        time: 'TBD',
+        location: 'Strydclub Center'
+      }
     }
   ]);
 
