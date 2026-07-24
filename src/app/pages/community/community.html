@@ -65,7 +65,7 @@
       <!-- Leaderboard cards list -->
       <div class="leaderboard-list" id="leaderboard-cards-list">
         @for (row of leaderboard(); track row.name) {
-        <div class="leaderboard-card" [class.top-three]="row.rank <= 3" id="leaderboard-card-rank-{{ row.rank }}">
+        <div class="leaderboard-card" [class.top-three]="row.rank <= 3" (click)="viewUserProfile(row)" style="cursor: pointer;" id="leaderboard-card-rank-{{ row.rank }}">
 
           <!-- Rank & Profile Info (Left Side) -->
           <div class="card-left-section">

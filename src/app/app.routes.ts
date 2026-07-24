@@ -9,12 +9,14 @@ import { LoginComponent } from './pages/login/login';
 import { IndividualEventComponent } from './pages/individual-event/individual-event';
 import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard';
 import { HostEventComponent } from './pages/host-event/host-event';
+import { UserProfileComponent } from './pages/user-profile/user-profile';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'dashboard', component: UserDashboardComponent, canActivate: [authGuard] },
   { path: 'host-event', component: HostEventComponent, canActivate: [authGuard] },
+  { path: 'profile/:id', component: UserProfileComponent },
   { path: 'events/:id', component: IndividualEventComponent },
   { path: 'events', component: EventsComponent },
   { path: 'sports', component: SportsComponent },

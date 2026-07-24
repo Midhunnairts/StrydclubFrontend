@@ -81,6 +81,13 @@ export class ApiService {
   }
 
   /**
+   * Fetch public user profile details.
+   */
+  getPublicUserProfile(id: string): Observable<{ success: boolean; user: any }> {
+    return this.http.get<{ success: boolean; user: any }>(`${this.apiUrl}/users/public/${id}`);
+  }
+
+  /**
    * Fetch details for a specific event by ID or slug.
    */
   getEventDetails(id: string): Observable<{ success: boolean; event: any }> {

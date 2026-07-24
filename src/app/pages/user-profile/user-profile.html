@@ -1,0 +1,78 @@
+<section class="profile-page-section" id="profile-main-view">
+  <div class="profile-page-container">
+
+    @if (loading()) {
+      <!-- Loading State -->
+      <div class="loading-box" id="profile-loading-indicator">
+        <p>Loading athlete profile...</p>
+      </div>
+    } @else if (errorMsg()) {
+      <!-- Error State -->
+      <div class="error-box" id="profile-error-indicator">
+        <p>{{ errorMsg() }}</p>
+        <a routerLink="/community" class="btn-back" id="profile-error-back-btn">Back to Community</a>
+      </div>
+    } @else if (userProfile(); as profile) {
+      <!-- Profile Card Container -->
+      <div class="profile-card" id="profile-card-details">
+        
+        <!-- Profile Avatar Wrapper -->
+        <div class="profile-avatar-wrapper" id="profile-avatar-circle">
+          @if (profile.avatarUrl) {
+            <img [src]="profile.avatarUrl" alt="Avatar" class="avatar-image" id="profile-avatar-img" />
+          } @else {
+            <span class="avatar-initials" id="profile-avatar-text">{{ profile.initials }}</span>
+          }
+        </div>
+
+        <!-- Name and Role -->
+        <h1 class="profile-name" id="profile-athlete-name">{{ profile.name }}</h1>
+        
+        <div class="profile-meta-row" id="profile-meta-info">
+          <span>Strydclub Athlete</span>
+          <span class="meta-divider"></span>
+          <span>Joined {{ profile.memberSince }}</span>
+        </div>
+
+        <!-- Stats Grid Row -->
+        <div class="profile-stats-grid" id="profile-stats-container">
+          <!-- Total Events -->
+          <div class="profile-stat-box" id="profile-stat-events">
+            <span class="stat-val">{{ profile.totalEvents }}</span>
+            <span class="stat-lbl">Events Attended</span>
+          </div>
+
+          <!-- Sports Played -->
+          <div class="profile-stat-box" id="profile-stat-sports">
+            <span class="stat-val">{{ profile.sportsPlayed }}</span>
+            <span class="stat-lbl">Sports Played</span>
+          </div>
+        </div>
+
+        <!-- Favorite Sports Badges -->
+        @if (profile.favoriteSports && profile.favoriteSports.length > 0) {
+          <div class="favorite-sports-block" id="profile-sports-block">
+            <span class="block-title">Favorite Sports</span>
+            <div class="badges-list" id="profile-sports-badges">
+              @for (sport of profile.favoriteSports; track sport) {
+                <span class="sport-badge">{{ sport }}</span>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Footer Back Action -->
+        <div class="profile-footer-block" id="profile-footer-actions">
+          <a routerLink="/community" class="btn-back-home" id="profile-back-community-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            <span>Back to Community</span>
+          </a>
+        </div>
+
+      </div>
+    }
+
+  </div>
+</section>

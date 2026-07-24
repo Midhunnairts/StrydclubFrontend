@@ -1,5 +1,6 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 interface StatItem {
@@ -9,6 +10,7 @@ interface StatItem {
 }
 
 interface LeaderboardItem {
+  id?: string;
   rank: number;
   name: string;
   sport: string;
@@ -36,6 +38,8 @@ interface TestimonialItem {
 })
 export class CommunityComponent implements OnInit {
   private apiService = inject(ApiService);
+
+  private router = inject(Router);
 
   stats = signal<StatItem[]>([
     { iconName: 'members', value: '12,500+', label: 'Active Members' },
@@ -115,6 +119,7 @@ export class CommunityComponent implements OnInit {
         next: (res) => {
           if (res.success) {
             const mapped = res.leaderboard.map(e => ({
+              id: e.id || e._id || '',
               rank: e.rank,
               name: e.name,
               sport: e.sport,
@@ -127,5 +132,19 @@ export class CommunityComponent implements OnInit {
           console.warn('Backend server offline. Keeping static community ranks fallback...');
         }
       });
+  }
+
+  viewUserProfile(row: any) {
+    if (row.id) {
+      this.router.navigate(['/profile', row.id]);
+    } else {
+      this.router.navigate(['/profile', 'mock'], {
+        queryParams: {
+          name: row.name,
+          sport: row.sport || 'Sports',
+          events: row.eventsCount
+        }
+      });
+    }
   }
 }
