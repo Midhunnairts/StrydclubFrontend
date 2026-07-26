@@ -372,7 +372,7 @@ export class IndividualEventComponent implements OnInit {
     show: boolean;
     title: string;
     message: string;
-    type: 'auth' | 'success';
+    type: 'auth' | 'success' | 'confirm_cancel';
   }>({
     show: false,
     title: '',
@@ -503,26 +503,45 @@ export class IndividualEventComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    if (confirm('Are you sure you want to cancel your registration for this event?')) {
-      this.apiService.cancelEventRegistration(details.id, token).subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.modalState.set({
-              show: true,
-              title: 'Registration Cancelled',
-              message: 'Your registration has been cancelled successfully. Your slot has been released.',
-              type: 'success'
-            });
-            // Reload to show updated slotsFilled count & participants roster!
-            this.loadEventDetails();
-          }
-        },
-        error: (err) => {
-          const errorMsg = err.error?.message || 'Server connection error during cancellation';
-          alert(errorMsg);
+    this.modalState.set({
+      show: true,
+      title: 'Cancel Registration?',
+      message: `Are you sure you want to cancel your spot for "${details.title}"? ${
+        details.price > 0
+          ? `Your registration fee of ₹${details.price} will be refunded back to your original payment method.`
+          : 'Your reserved slot will be released instantly.'
+      }`,
+      type: 'confirm_cancel'
+    });
+  }
+
+  executeCancelRegistration() {
+    const details = this.eventDetails();
+    if (!details) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    this.closeModal();
+
+    this.apiService.cancelEventRegistration(details.id, token).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.modalState.set({
+            show: true,
+            title: 'Registration Cancelled',
+            message: res.message || 'Your registration has been cancelled successfully. Your slot has been released.',
+            type: 'success'
+          });
+          // Reload to show updated slotsFilled count & participants roster!
+          this.loadEventDetails();
         }
-      });
-    }
+      },
+      error: (err) => {
+        const errorMsg = err.error?.message || 'Server connection error during cancellation';
+        alert(errorMsg);
+      }
+    });
   }
 
   onShare() {

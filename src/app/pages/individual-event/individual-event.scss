@@ -725,6 +725,12 @@
       color: #10b981;
     }
 
+    &.type-confirm {
+      background-color: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: #f59e0b;
+    }
+
     .modal-icon {
       width: 28px;
       height: 28px;
@@ -770,6 +776,27 @@
     &:hover {
       transform: translateY(-1.5px);
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .btn-modal-danger {
+    flex: 1;
+    padding: 14px 24px;
+    border-radius: 50px;
+    background-color: #ef4444;
+    border: 1px solid #ef4444;
+    font-family: var(--font-family-body);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+
+    &:hover {
+      transform: translateY(-1.5px);
+      background-color: #dc2626;
+      border-color: #dc2626;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
     }
   }
 
