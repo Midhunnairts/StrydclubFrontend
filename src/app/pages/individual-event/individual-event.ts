@@ -380,6 +380,9 @@ export class IndividualEventComponent implements OnInit {
     type: 'auth'
   });
 
+  isProcessing = signal<boolean>(false);
+  processingText = signal<string>('Processing your request...');
+
   copied = signal<boolean>(false);
 
   closeModal() {
@@ -415,8 +418,12 @@ export class IndividualEventComponent implements OnInit {
     }
 
     if (details.price && details.price > 0) {
+      this.isProcessing.set(true);
+      this.processingText.set('Preparing Razorpay checkout...');
+
       this.apiService.createRazorpayOrder(details.id, token).subscribe({
         next: (orderRes) => {
+          this.isProcessing.set(false);
           if (orderRes.success) {
             const options = {
               key: environment.razorpayKeyId,
@@ -426,6 +433,9 @@ export class IndividualEventComponent implements OnInit {
               description: `Register for ${details.title}`,
               order_id: orderRes.order_id,
               handler: (paymentRes: any) => {
+                this.isProcessing.set(true);
+                this.processingText.set('Verifying payment & securing spot...');
+
                 const payload = {
                   razorpay_payment_id: paymentRes.razorpay_payment_id,
                   razorpay_order_id: paymentRes.razorpay_order_id,
@@ -433,6 +443,7 @@ export class IndividualEventComponent implements OnInit {
                 };
                 this.apiService.verifyRazorpayPayment(details.id, payload, token).subscribe({
                   next: (verifyRes) => {
+                    this.isProcessing.set(false);
                     if (verifyRes.success) {
                       this.modalState.set({
                         show: true,
@@ -444,6 +455,7 @@ export class IndividualEventComponent implements OnInit {
                     }
                   },
                   error: (verifyErr) => {
+                    this.isProcessing.set(false);
                     const errorMsg = verifyErr.error?.message || 'Payment verification failed.';
                     alert(errorMsg);
                   }
@@ -459,25 +471,32 @@ export class IndividualEventComponent implements OnInit {
               },
               modal: {
                 ondismiss: () => {
+                  this.isProcessing.set(false);
                   console.log('Razorpay modal closed by user.');
                 }
               }
             };
             const rzp = new Razorpay(options);
             rzp.on('payment.failed', (response: any) => {
+              this.isProcessing.set(false);
               alert(`Payment failed: ${response.error.description}`);
             });
             rzp.open();
           }
         },
         error: (orderErr) => {
+          this.isProcessing.set(false);
           const errorMsg = orderErr.error?.message || 'Failed to create payment order.';
           alert(errorMsg);
         }
       });
     } else {
+      this.isProcessing.set(true);
+      this.processingText.set('Securing your event spot...');
+
       this.apiService.registerForEvent(details.id, token).subscribe({
         next: (res) => {
+          this.isProcessing.set(false);
           if (res.success) {
             this.modalState.set({
               show: true,
@@ -489,6 +508,7 @@ export class IndividualEventComponent implements OnInit {
           }
         },
         error: (err) => {
+          this.isProcessing.set(false);
           const errorMsg = err.error?.message || 'Server connection error during registration';
           alert(errorMsg);
         }
@@ -524,8 +544,14 @@ export class IndividualEventComponent implements OnInit {
 
     this.closeModal();
 
+    this.isProcessing.set(true);
+    this.processingText.set(
+      details.price > 0 ? 'Processing Razorpay refund & releasing slot...' : 'Cancelling event registration...'
+    );
+
     this.apiService.cancelEventRegistration(details.id, token).subscribe({
       next: (res) => {
+        this.isProcessing.set(false);
         if (res.success) {
           this.modalState.set({
             show: true,
@@ -538,6 +564,7 @@ export class IndividualEventComponent implements OnInit {
         }
       },
       error: (err) => {
+        this.isProcessing.set(false);
         const errorMsg = err.error?.message || 'Server connection error during cancellation';
         alert(errorMsg);
       }

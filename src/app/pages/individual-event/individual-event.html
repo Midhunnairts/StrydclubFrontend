@@ -281,3 +281,14 @@
   </div>
 </div>
 
+<!-- Fullscreen Glassmorphism Processing Loading Overlay -->
+@if (isProcessing()) {
+  <div class="processing-loading-overlay">
+    <div class="processing-loading-card">
+      <div class="spinner-ring"></div>
+      <h3 class="processing-text">{{ processingText() }}</h3>
+      <span class="processing-subtext">Please do not refresh or navigate away from this page.</span>
+    </div>
+  </div>
+}
+
