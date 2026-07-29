@@ -265,13 +265,13 @@ export class IndividualEventComponent implements OnInit {
       contact: '+91 98765 98765'
     },
     {
-      id: 'padel-club-challenge',
-      title: 'Padel Club Challenge',
-      category: 'Padel',
-      description: 'Test your skills in this premium, glass-walled doubles padel sport. Rapid rallies, wall rebounds, and tactical play make this an unforgettable experience.',
+      id: 'cricket-club-challenge',
+      title: 'Cricket Club Challenge',
+      category: 'Cricket',
+      description: 'Test your skills in this premium, glass-walled doubles cricket sport. Rapid rallies, wall rebounds, and tactical play make this an unforgettable experience.',
       date: 'June 25, 2026',
       time: '6:00 PM',
-      location: 'Padel Arena, Hyderabad',
+      location: 'Cricket Arena, Hyderabad',
       status: 'Spots Available',
       price: 550,
       slotsFilled: 10,
@@ -280,8 +280,8 @@ export class IndividualEventComponent implements OnInit {
         { text: 'Matches are doubles format only; scoring is same as tennis' },
         { text: 'Serves must be underhand and struck at or below waist level' },
         { text: 'The ball must bounce on the ground before hitting any glass or mesh walls' },
-        { text: 'Padel rackets must have safety cords securely around the wrist' },
-        { text: 'Padel-specific non-slip shoes are highly recommended' }
+        { text: 'Cricket rackets must have safety cords securely around the wrist' },
+        { text: 'Cricket-specific non-slip shoes are highly recommended' }
       ],
       schedule: [
         { time: '5:30 PM', activity: 'Racket Check & Court Warm-up' },
@@ -296,7 +296,7 @@ export class IndividualEventComponent implements OnInit {
         { name: 'Samantha Ruth', role: 'Participant' },
         { name: 'Rashmika Mandanna', role: 'Participant' }
       ],
-      organizedBy: 'Strydclub Padel',
+      organizedBy: 'Strydclub Cricket',
       contact: '+91 98765 12345'
     }
   ];
@@ -526,11 +526,10 @@ export class IndividualEventComponent implements OnInit {
     this.modalState.set({
       show: true,
       title: 'Cancel Registration?',
-      message: `Are you sure you want to cancel your spot for "${details.title}"? ${
-        details.price > 0
-          ? `Your registration fee of ₹${details.price} will be refunded back to your original payment method.`
-          : 'Your reserved slot will be released instantly.'
-      }`,
+      message: `Are you sure you want to cancel your spot for "${details.title}"? ${details.price > 0
+        ? `Your registration fee of ₹${details.price} will be refunded back to your original payment method.`
+        : 'Your reserved slot will be released instantly.'
+        }`,
       type: 'confirm_cancel'
     });
   }

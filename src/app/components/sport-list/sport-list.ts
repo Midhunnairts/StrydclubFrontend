@@ -26,7 +26,7 @@ export class SportListComponent implements OnInit {
     { name: 'Football', icon: '⚽', eventsCount: 15 },
     { name: 'Volleyball', icon: '🏐', eventsCount: 10 },
     { name: 'Pickleball', icon: '🎾', eventsCount: 6 },
-    { name: 'Padel', icon: '🏓', eventsCount: 4 },
+    { name: 'Cricket', icon: '🏏', eventsCount: 4 },
     { name: 'Other', icon: '✨', eventsCount: 2 }
   ]);
 

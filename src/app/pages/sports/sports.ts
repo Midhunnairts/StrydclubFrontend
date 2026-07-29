@@ -109,16 +109,16 @@ export class SportsComponent implements OnInit {
       }
     },
     {
-      name: 'Padel',
-      icon: '🏓',
+      name: 'Cricket',
+      icon: '🏏',
       description: 'Exciting court sport blending tennis and squash inside glass enclosures.',
       eventsCount: 4,
       membersCount: 650,
       nextEvent: {
-        title: 'Padel Club Challenge',
+        title: 'Cricket Club Challenge',
         date: 'June 12, 2026',
         time: '6:00 PM',
-        location: 'Padel Arena, Hyderabad'
+        location: 'Cricket Arena, Hyderabad'
       }
     },
     {

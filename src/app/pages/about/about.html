@@ -1,6 +1,6 @@
 <section class="about-page-section" id="about-main-view">
   <div class="about-page-container">
-    
+
     <!-- Title Headers -->
     <div class="about-page-header">
       <h1 class="page-title" id="about-main-title">About Strydclub</h1>
@@ -10,16 +10,20 @@
     <!-- Story Card -->
     <div class="about-story-card" id="about-story-card-container">
       <h2 class="story-title" id="about-story-title">Our Story</h2>
-      
+
       <div class="story-content" id="about-story-paragraphs">
         <p class="story-paragraph">
-          Strydclub was born from a simple observation: sports bring people together, but finding the right events, teammates, and communities shouldn't be hard.
+          Strydclub was born from a simple observation: sports bring people together, but finding the right events,
+          teammates, and communities shouldn't be hard.
         </p>
         <p class="story-paragraph">
-          We set out to create more than just an event platform. We built a movement — a space where every athlete, from weekend warriors to serious competitors, could discover their next challenge and connect with people who share their passion.
+          We set out to create more than just an event platform. We built a movement — a space where every athlete, from
+          weekend warriors to serious competitors, could discover their next challenge and connect with people who share
+          their passion.
         </p>
         <p class="story-paragraph">
-          Today, we're India's fastest-growing multi-sport community, hosting hundreds of events across running, badminton, football, volleyball, pickleball, padel, and kho kho. But we're just getting started.
+          Today, we're India's fastest-growing multi-sport community, hosting hundreds of events across running,
+          badminton, football, volleyball, pickleball, cricket, and kho kho. But we're just getting started.
         </p>
       </div>
     </div>
@@ -27,40 +31,47 @@
     <!-- What We Stand For Section -->
     <div class="values-section" id="about-values-section">
       <h2 class="values-title" id="about-values-header">What We Stand For</h2>
-      
+
       <!-- Values 2x2 Grid -->
       <div class="values-grid" id="about-values-grid-container">
         @for (item of values(); track item.title) {
-          <div class="value-card" id="value-card-{{ item.iconName }}">
-            <div class="value-icon-container">
-              @switch (item.iconName) {
-                @case ('mission') {
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="value-icon">
-                    <circle cx="12" cy="12" r="9" />
-                    <circle cx="12" cy="12" r="5" />
-                    <circle cx="12" cy="12" r="1.5" />
-                  </svg>
-                }
-                @case ('energy') {
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="value-icon">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-                  </svg>
-                }
-                @case ('community') {
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="value-icon">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                  </svg>
-                }
-                @case ('everyone') {
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="value-icon">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-                  </svg>
-                }
-              }
-            </div>
-            <h3 class="value-card-title">{{ item.title }}</h3>
-            <p class="value-card-description">{{ item.description }}</p>
+        <div class="value-card" id="value-card-{{ item.iconName }}">
+          <div class="value-icon-container">
+            @switch (item.iconName) {
+            @case ('mission') {
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+              stroke="currentColor" class="value-icon">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="5" />
+              <circle cx="12" cy="12" r="1.5" />
+            </svg>
+            }
+            @case ('energy') {
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+              stroke="currentColor" class="value-icon">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+            </svg>
+            }
+            @case ('community') {
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+              stroke="currentColor" class="value-icon">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+            </svg>
+            }
+            @case ('everyone') {
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+              stroke="currentColor" class="value-icon">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+            </svg>
+            }
+            }
           </div>
+          <h3 class="value-card-title">{{ item.title }}</h3>
+          <p class="value-card-description">{{ item.description }}</p>
+        </div>
         }
       </div>
     </div>
@@ -68,29 +79,29 @@
     <!-- Our Journey Section -->
     <div class="journey-section" id="about-journey-section">
       <h2 class="journey-title" id="about-journey-header">Our Journey</h2>
-      
+
       <!-- Timeline Component -->
       <div class="timeline" id="about-timeline-track">
         <!-- Timeline Line -->
         <div class="timeline-line"></div>
-        
+
         <!-- Timeline Items -->
         @for (milestone of journey(); track milestone.year) {
-          <div class="timeline-item {{ milestone.side }}" id="journey-item-{{ milestone.year }}">
-            
-            <!-- Timeline Dot Node -->
-            <div class="timeline-dot-wrapper">
-              <div class="timeline-dot"></div>
-            </div>
-            
-            <!-- Timeline Card -->
-            <div class="timeline-card">
-              <span class="timeline-year">{{ milestone.year }}</span>
-              <h3 class="timeline-card-title">{{ milestone.title }}</h3>
-              <p class="timeline-card-description">{{ milestone.description }}</p>
-            </div>
-            
+        <div class="timeline-item {{ milestone.side }}" id="journey-item-{{ milestone.year }}">
+
+          <!-- Timeline Dot Node -->
+          <div class="timeline-dot-wrapper">
+            <div class="timeline-dot"></div>
           </div>
+
+          <!-- Timeline Card -->
+          <div class="timeline-card">
+            <span class="timeline-year">{{ milestone.year }}</span>
+            <h3 class="timeline-card-title">{{ milestone.title }}</h3>
+            <p class="timeline-card-description">{{ milestone.description }}</p>
+          </div>
+
+        </div>
         }
       </div>
     </div>

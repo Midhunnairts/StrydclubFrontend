@@ -39,7 +39,7 @@ export class EventsComponent implements OnInit {
     'Volleyball',
     'Pickleball',
     'Kho Kho',
-    'Padel',
+    'Cricket',
     'Other'
   ];
 
@@ -105,7 +105,7 @@ export class EventsComponent implements OnInit {
     // Filter by Category
     const category = this.selectedCategory();
     if (category !== 'All') {
-      const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'kho kho', 'padel'];
+      const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'kho kho', 'cricket'];
       if (category.toLowerCase() === 'other') {
         list = list.filter(e => !standardCategories.includes(e.category.toLowerCase()));
       } else {
