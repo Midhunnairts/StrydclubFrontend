@@ -4,7 +4,32 @@
     <!-- Title Headers -->
     <div class="events-page-header">
       <h1 class="page-title" id="events-main-title">All Events</h1>
-      <p class="page-subtitle" id="events-main-subtitle">Discover and register for upcoming sports events across India</p>
+      <p class="page-subtitle" id="events-main-subtitle">Discover and register for sports events across India</p>
+    </div>
+
+    <!-- Tab Switcher (Upcoming Events vs Past Events) -->
+    <div class="event-tabs-container" id="event-tabs-toggle">
+      <button 
+        class="event-tab-btn" 
+        [class.active]="activeTab() === 'upcoming'" 
+        (click)="activeTab.set('upcoming')"
+        id="tab-btn-upcoming">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="tab-icon">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+        </svg>
+        <span>Upcoming Events</span>
+      </button>
+
+      <button 
+        class="event-tab-btn" 
+        [class.active]="activeTab() === 'past'" 
+        (click)="activeTab.set('past')"
+        id="tab-btn-past">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="tab-icon">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <span>Past Events</span>
+      </button>
     </div>
 
     <!-- Search & Filter Controls -->
@@ -53,7 +78,9 @@
           <!-- Badges Header -->
           <div class="card-badges-header">
             <span class="category-tag">{{ event.category }}</span>
-            <span class="status-tag upcoming">{{ event.status }}</span>
+            <span class="status-tag" [class.upcoming]="event.status !== 'Completed' && event.status !== 'completed'" [class.past]="event.status === 'Completed' || event.status === 'completed'">
+              {{ event.status }}
+            </span>
           </div>
 
           <!-- Title -->

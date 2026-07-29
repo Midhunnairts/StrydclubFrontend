@@ -90,8 +90,17 @@ export class EventsComponent implements OnInit {
       });
   }
 
+  activeTab = signal<'upcoming' | 'past'>('upcoming');
+
   filteredEvents = computed(() => {
     let list = this.events();
+
+    // Filter by Active Tab (Upcoming vs Past)
+    const tab = this.activeTab();
+    list = list.filter(e => {
+      const isPast = e.status === 'Completed' || e.status === 'completed' || e.status === 'Event Completed' || this.isEventPast(e.date);
+      return tab === 'past' ? isPast : !isPast;
+    });
 
     // Filter by Category
     const category = this.selectedCategory();
@@ -116,6 +125,14 @@ export class EventsComponent implements OnInit {
 
     return list;
   });
+
+  isEventPast(dateStr: string): boolean {
+    if (!dateStr) return false;
+    const eventDate = new Date(dateStr);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return !isNaN(eventDate.getTime()) && eventDate < now;
+  }
 
   selectCategory(category: string) {
     this.router.navigate([], {
