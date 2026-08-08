@@ -33,7 +33,7 @@ export class LoginComponent {
 
   onSubmit() {
     const channel = this.activeTab();
-    const value = channel === 'phone' ? this.phoneNumber : this.emailAddress;
+    const value = channel === 'phone' ? this.phoneNumber.trim() : this.emailAddress.trim();
 
     if (!value) return;
 
@@ -59,7 +59,7 @@ export class LoginComponent {
 
   onVerifyOtp() {
     const channel = this.activeTab();
-    const value = channel === 'phone' ? this.phoneNumber : this.emailAddress;
+    const value = channel === 'phone' ? this.phoneNumber.trim() : this.emailAddress.trim();
     const code = this.otpCode;
 
     if (!code || code.length !== 6) {
@@ -90,7 +90,7 @@ export class LoginComponent {
 
   resendOtp() {
     const channel = this.activeTab();
-    const value = channel === 'phone' ? this.phoneNumber : this.emailAddress;
+    const value = channel === 'phone' ? this.phoneNumber.trim() : this.emailAddress.trim();
     if (!value) return;
 
     this.loading.set(true);
