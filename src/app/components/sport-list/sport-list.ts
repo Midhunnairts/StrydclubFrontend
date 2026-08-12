@@ -5,7 +5,8 @@ import { ApiService } from '../../services/api.service';
 
 interface SportItem {
   name: string;
-  icon: string;
+  badge: string;
+  image: string;
   eventsCount: number;
 }
 
@@ -20,14 +21,48 @@ export class SportListComponent implements OnInit {
   private apiService = inject(ApiService);
 
   sports = signal<SportItem[]>([
-    { name: 'Running', icon: '🏃', eventsCount: 12 },
-    { name: 'Badminton', icon: '🏸', eventsCount: 8 },
-    { name: 'Kho Kho', icon: '🎯', eventsCount: 5 },
-    { name: 'Football', icon: '⚽', eventsCount: 15 },
-    { name: 'Volleyball', icon: '🏐', eventsCount: 10 },
-    { name: 'Pickleball', icon: '🎾', eventsCount: 6 },
-    { name: 'Cricket', icon: '🏏', eventsCount: 4 },
-    { name: 'Other', icon: '✨', eventsCount: 2 }
+    {
+      name: 'Running',
+      badge: 'MOST POPULAR',
+      image: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80',
+      eventsCount: 12
+    },
+    {
+      name: 'Badminton',
+      badge: 'INDOOR',
+      image: 'https://images.unsplash.com/photo-1626225967045-94408422615d?auto=format&fit=crop&w=800&q=80',
+      eventsCount: 8
+    },
+    {
+      name: 'Football',
+      badge: 'TEAM SPORT',
+      image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80',
+      eventsCount: 15
+    },
+    {
+      name: 'Volleyball',
+      badge: 'BEACH & INDOOR',
+      image: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
+      eventsCount: 10
+    },
+    {
+      name: 'Pickleball',
+      badge: 'FAST GROWING',
+      image: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=800&q=80',
+      eventsCount: 6
+    },
+    {
+      name: 'Padel',
+      badge: 'NEW',
+      image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=800&q=80',
+      eventsCount: 4
+    },
+    {
+      name: 'Kho Kho',
+      badge: 'TRADITIONAL',
+      image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80',
+      eventsCount: 5
+    }
   ]);
 
   ngOnInit() {
@@ -37,18 +72,36 @@ export class SportListComponent implements OnInit {
   loadSports() {
     this.apiService.getSports().subscribe({
       next: (res) => {
-        if (res.success) {
-          // Map sports fields
+        if (res.success && res.sports && res.sports.length > 0) {
+          const defaultBadges: Record<string, string> = {
+            'Running': 'MOST POPULAR',
+            'Badminton': 'INDOOR',
+            'Football': 'TEAM SPORT',
+            'Volleyball': 'BEACH & INDOOR',
+            'Pickleball': 'FAST GROWING',
+            'Padel': 'NEW',
+            'Kho Kho': 'TRADITIONAL'
+          };
+          const defaultImages: Record<string, string> = {
+            'Running': 'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80',
+            'Badminton': 'https://images.unsplash.com/photo-1626225967045-94408422615d?auto=format&fit=crop&w=800&q=80',
+            'Football': 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80',
+            'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
+            'Pickleball': 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=800&q=80',
+            'Padel': 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=800&q=80',
+            'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80'
+          };
           const mapped = res.sports.map(s => ({
             name: s.name,
-            icon: s.icon,
+            badge: s.badge || defaultBadges[s.name] || 'FEATURED',
+            image: s.image || defaultImages[s.name] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80',
             eventsCount: s.eventsCount
           }));
           this.sports.set(mapped);
         }
       },
-      error: (err) => {
-        console.warn('Backend server offline. Keeping sports listing fallback...');
+      error: () => {
+        console.warn('Backend server offline. Utilizing sports listing fallback...');
       }
     });
   }

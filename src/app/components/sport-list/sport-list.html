@@ -1,26 +1,48 @@
 <section class="sports-section" id="sports-selection-section">
   <div class="sports-container">
     
-    <!-- Heading Title -->
-    <div class="sports-header">
-      <h2 class="sports-title" id="sports-title-header">Choose Your Sport</h2>
-      <p class="sports-subtitle" id="sports-subtitle-text">Seven sports. Endless possibilities.</p>
+    <!-- Heading Header Row -->
+    <div class="sports-header-row">
+      <div class="sports-title-block">
+        <span class="sports-eyebrow">7 SPORTS</span>
+        <h2 class="sports-title" id="sports-title-header">
+          <span>Choose</span>
+          <span>Your Game</span>
+        </h2>
+      </div>
+
+      <a routerLink="/sports" class="link-all-sports" id="link-all-sports">
+        <span>All sports</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="icon-right-arrow">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+      </a>
     </div>
 
     <!-- Sports Cards Grid -->
     <div class="sports-grid" id="sports-cards-grid">
       @for (sport of sports(); track sport.name) {
-        <div [routerLink]="['/events']" [queryParams]="{ category: sport.name }" class="sport-card" id="sport-card-{{ sport.name.toLowerCase() }}" style="cursor: pointer;">
-          <!-- Sport Emoji Graphic Icon -->
-          <div class="sport-icon-container">
-            <span class="sport-emoji">{{ sport.icon }}</span>
+        <div 
+          [routerLink]="['/events']" 
+          [queryParams]="{ category: sport.name }" 
+          class="sport-card" 
+          id="sport-card-{{ sport.name.toLowerCase() }}" 
+          style="cursor: pointer; background-image: url('{{ sport.image }}');">
+          
+          <!-- Gradient overlay -->
+          <div class="card-gradient-overlay"></div>
+
+          <!-- Top Badge Pill -->
+          <div class="card-top-badge">
+            <span>{{ sport.badge }}</span>
           </div>
 
-          <!-- Sport Info -->
-          <div class="sport-info">
+          <!-- Bottom Info Block -->
+          <div class="card-bottom-info">
             <h3 class="sport-name">{{ sport.name }}</h3>
             <p class="sport-events-count">{{ sport.eventsCount }} upcoming events</p>
           </div>
+
         </div>
       }
     </div>

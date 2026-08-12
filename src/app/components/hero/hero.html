@@ -1,53 +1,72 @@
 <section class="hero-section" id="hero-main-section">
-  <!-- Dynamic radial glow overlay on background -->
-  <div class="radial-glow"></div>
-  
+  <!-- Background Dark Image Overlay -->
+  <div class="hero-bg-image"></div>
+  <div class="hero-bg-overlay"></div>
+
   <div class="hero-container">
-    
-    <!-- Capsule Badge -->
-    <div class="badge-capsule" id="hero-badge">
-      <span>INDIA'S NEXT-GENERATION SPORTS PLATFORM</span>
+
+    <!-- Left Column: Main Hero Content -->
+    <div class="hero-left-content">
+      
+      <!-- Pill Badge -->
+      <div class="badge-capsule" id="hero-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="badge-icon">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+        </svg>
+        <span>A COMMUNITY BUILT AROUND MOVEMENT</span>
+      </div>
+
+      <!-- Main Heading Title -->
+      <h1 class="hero-title" id="hero-title-main">
+        <span class="title-row"><span class="solid-word">Move</span> <span class="muted-word">Together.</span></span>
+        <span class="title-row"><span class="solid-word">Grow</span> <span class="muted-word">Together.</span></span>
+      </h1>
+
+      <!-- Subtitle Description -->
+      <p class="hero-description" id="hero-description-text">
+        STRYD Club brings together running, sports, wellness, and curated experiences to build a community where movement creates meaningful connections.
+      </p>
+
+      <!-- CTA Action Buttons -->
+      <div class="hero-actions" id="hero-actions-container">
+        <!-- Primary CTA: Explore Events -->
+        <a routerLink="/events" class="btn-primary" id="btn-explore-events">
+          <span>Explore Events</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="icon-arrow">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+          </svg>
+        </a>
+
+        <!-- Secondary CTA: Join the Club -->
+        @if (!isLoggedIn) {
+          <a routerLink="/login" class="btn-secondary" id="btn-join-club">
+            <span>Join the Club</span>
+          </a>
+        } @else {
+          <a routerLink="/dashboard" class="btn-secondary" id="btn-join-club">
+            <span>Go to Dashboard</span>
+          </a>
+        }
+      </div>
+
     </div>
 
-    <!-- H1 Main Heading -->
-    <h1 class="hero-title" id="hero-title-main">
-      <span class="gradient-text text-line-1">Move Together.</span>
-      <span class="gradient-text text-line-2">Compete Together.</span>
-    </h1>
+    <!-- Right Column: Floating Stat Pill Cards Stack -->
+    <div class="hero-right-stats" id="hero-floating-stats">
+      <div class="stat-pill-card">
+        <span class="stat-num">12,500+</span>
+        <span class="stat-lbl">Athletes</span>
+      </div>
 
-    <!-- Paragraph Subheading -->
-    <p class="hero-description" id="hero-description-text">
-      Join India's largest multi-sport community. Discover events,<br class="desktop-br"> compete with athletes, and celebrate every victory.
-    </p>
+      <div class="stat-pill-card">
+        <span class="stat-num">850+</span>
+        <span class="stat-lbl">Events</span>
+      </div>
 
-    <!-- CTA Action Buttons -->
-    <div class="hero-actions" id="hero-actions-container">
-      
-      <!-- Primary CTA: Explore Events -->
-      <a routerLink="/events" class="btn-primary" id="btn-explore-events">
-        <span>Explore Events</span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="icon-arrow">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-        </svg>
-      </a>
-
-      <!-- Secondary CTA: Join the Club -->
-      @if (!isLoggedIn) {
-        <a routerLink="/login" class="btn-secondary" id="btn-join-club">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="icon-play">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-          </svg>
-          <span>Join the Club</span>
-        </a>
-      } @else {
-        <a routerLink="/dashboard" class="btn-secondary" id="btn-join-club">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="icon-play">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-          </svg>
-          <span>Go to Dashboard</span>
-        </a>
-      }
-
+      <div class="stat-pill-card">
+        <span class="stat-num">24</span>
+        <span class="stat-lbl">Cities</span>
+      </div>
     </div>
 
   </div>
