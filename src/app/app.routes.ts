@@ -16,9 +16,11 @@ import { authGuard } from './guards/auth.guard';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'dashboard', component: UserDashboardComponent, canActivate: [authGuard] },
+  { path: 'user-profile', component: UserProfileComponent, canActivate: [authGuard] },
+  { path: 'profile', component: UserProfileComponent, canActivate: [authGuard] },
+  { path: 'profile/:id', component: UserProfileComponent },
   { path: 'complete-profile', component: CompleteProfileComponent, canActivate: [authGuard] },
   { path: 'host-event', component: HostEventComponent, canActivate: [authGuard] },
-  { path: 'profile/:id', component: UserProfileComponent },
   { path: 'events/:id', component: IndividualEventComponent },
   { path: 'events', component: EventsComponent },
   { path: 'sports', component: SportsComponent },
