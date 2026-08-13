@@ -70,14 +70,22 @@ export class LoginComponent {
     this.loading.set(true);
 
     this.apiService.verifyOtp(channel, value, code).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.loading.set(false);
         if (res.success) {
           if (typeof window !== 'undefined') {
             localStorage.setItem('token', res.token);
           }
-          this.apiService.loadUserProfile();
-          this.router.navigate(['/dashboard']);
+          if (res.user) {
+            this.apiService.currentUser.set(res.user);
+          }
+
+          const isProfileComplete = res.user?.isProfileComplete;
+          if (!isProfileComplete || res.isNewUser) {
+            this.router.navigate(['/complete-profile']);
+          } else {
+            this.router.navigate(['/dashboard']);
+          }
         }
       },
       error: (err) => {

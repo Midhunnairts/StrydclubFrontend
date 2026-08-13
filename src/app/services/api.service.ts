@@ -230,4 +230,18 @@ export class ApiService {
     });
     return this.http.get<{ success: boolean; user: any }>(`${this.apiUrl}/users/profile`, { headers });
   }
+
+  /**
+   * Complete or update logged-in user profile details (Name, Location, Email/Phone, Favorite Sports).
+   */
+  updateUserProfile(profileData: { name: string; location: string; email?: string; phone?: string; favoriteSports?: string[] }, token: string): Observable<{ success: boolean; message: string; user: any }> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.put<{ success: boolean; message: string; user: any }>(
+      `${this.apiUrl}/users/profile`,
+      profileData,
+      { headers }
+    );
+  }
 }
