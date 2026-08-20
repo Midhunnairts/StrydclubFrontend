@@ -16,6 +16,13 @@
         <!-- Column 1: Main Event Info (Left Side) -->
         <div class="main-details-column" id="dashboard-left-column">
           
+          <!-- Event Banner Image Hero -->
+          @if (details.bannerUrl) {
+            <div class="event-banner-hero-box" style="width: 100%; height: 260px; border-radius: 20px; overflow: hidden; margin-bottom: 24px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);">
+              <img [src]="details.bannerUrl" [alt]="details.title" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            </div>
+          }
+
           <!-- Badges Row -->
           <div class="badges-row">
             <span class="badge-capsule badge-sport">{{ details.category }}</span>

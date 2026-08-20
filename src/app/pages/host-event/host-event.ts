@@ -66,6 +66,9 @@ export class HostEventComponent {
   playersPerTeam = signal<number | null>(null);
   prizePool = signal<number | null>(null);
   bannerUrl = signal<string>('');
+  imageFileName = signal<string>('');
+  imageFileSize = signal<string>('');
+  isDragging = signal<boolean>(false);
   rules = signal<RuleItem[]>([
     { text: 'Participants must arrive 15 minutes prior to scheduling.' },
     { text: 'Proper athletic footwear and equipment are mandatory.' }
@@ -124,6 +127,95 @@ export class HostEventComponent {
 
   removeRule(index: number) {
     this.rules.update(items => items.filter((_, i) => i !== index));
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.processImageFile(input.files[0]);
+    }
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(true);
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(false);
+  }
+
+  onFileDropped(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(false);
+    if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+      const file = event.dataTransfer.files[0];
+      if (file.type.startsWith('image/')) {
+        this.processImageFile(file);
+      } else {
+        alert('Please upload a valid image file (PNG, JPG, WebP).');
+      }
+    }
+  }
+
+  processImageFile(file: File) {
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image file size should be less than 10MB.');
+      return;
+    }
+
+    this.imageFileName.set(file.name);
+    const sizeKB = (file.size / 1024).toFixed(1);
+    this.imageFileSize.set(file.size > 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${sizeKB} KB`);
+
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (e.target?.result) {
+        const rawDataUrl = e.target.result as string;
+        // Compress & resize image via HTML Canvas to avoid huge payloads
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 1200;
+          let width = img.width;
+          let height = img.height;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+            this.bannerUrl.set(compressedDataUrl);
+          } else {
+            this.bannerUrl.set(rawDataUrl);
+          }
+        };
+        img.onerror = () => {
+          this.bannerUrl.set(rawDataUrl);
+        };
+        img.src = rawDataUrl;
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeImage() {
+    this.bannerUrl.set('');
+    this.imageFileName.set('');
+    this.imageFileSize.set('');
   }
 
   nextStep() {

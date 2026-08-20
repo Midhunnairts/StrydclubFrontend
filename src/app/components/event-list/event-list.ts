@@ -78,7 +78,7 @@ export class EventListComponent implements OnInit {
             id: e.slug || e._id,
             title: e.title,
             category: e.category.toUpperCase(),
-            image: e.image || defaultImages[e.category] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80',
+            image: e.bannerUrl || e.image || defaultImages[e.category] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80',
             price: e.price || 499,
             date: `${e.date} · ${e.time}`,
             location: e.location,

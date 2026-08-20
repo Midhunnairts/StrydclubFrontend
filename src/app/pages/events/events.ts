@@ -109,7 +109,7 @@ export class EventsComponent implements OnInit {
               title: e.title,
               category: e.category,
               icon: categoryIcons[e.category] || '🎯',
-              image: e.image || categoryImages[e.category] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80',
+              image: e.bannerUrl || e.image || categoryImages[e.category] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80',
               price: e.price || 499,
               date: e.date,
               time: e.time,
