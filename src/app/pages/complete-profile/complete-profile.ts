@@ -32,7 +32,7 @@ export class CompleteProfileComponent implements OnInit {
     { name: 'Volleyball', icon: '🏐' },
     { name: 'Pickleball', icon: '🎾' },
     { name: 'Kho Kho', icon: '🏹' },
-    { name: 'Padel', icon: '🏓' }
+    { name: 'Cricket', icon: '🏏' }
   ];
 
   ngOnInit() {

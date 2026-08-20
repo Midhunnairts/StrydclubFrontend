@@ -51,10 +51,10 @@ export class UserDashboardComponent implements OnInit {
 
   // Stats Counters Cards Writable Signal
   statsCards = signal<StatsCard[]>([
-    { label: 'Events Won', value: '3', icon: 'trophy' },
-    { label: 'Total Events', value: '12', icon: 'ribbon' },
-    { label: 'Win Rate', value: '25%', icon: 'chart' },
-    { label: 'Upcoming', value: '2', icon: 'calendar' }
+    { label: 'Events Won', value: '0', icon: 'trophy' },
+    { label: 'Total Events', value: '0', icon: 'ribbon' },
+    { label: 'Win Rate', value: '0%', icon: 'chart' },
+    { label: 'Upcoming', value: '0', icon: 'calendar' }
   ]);
 
   // Registered Active Events Writable Signal
@@ -65,11 +65,11 @@ export class UserDashboardComponent implements OnInit {
 
   // Player Profile Information Writable Signal
   profileStats = signal<ProfileStats>({
-    totalEvents: 12,
-    eventsWon: 3,
-    sportsPlayed: 3,
+    totalEvents: 0,
+    eventsWon: 0,
+    sportsPlayed: 0,
     memberSince: 'January 2026',
-    favoriteSports: ['Running', 'Football', 'Badminton']
+    favoriteSports: []
   });
 
   ngOnInit() {
@@ -80,7 +80,6 @@ export class UserDashboardComponent implements OnInit {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      console.warn('Unauthorized access. Redirecting to login route...');
       this.router.navigate(['/login']);
       return;
     }
@@ -90,24 +89,23 @@ export class UserDashboardComponent implements OnInit {
         if (res.success) {
           // Set stats counters signals
           this.statsCards.set([
-            { label: 'Events Won', value: res.stats.eventsWon.toString(), icon: 'trophy' },
-            { label: 'Total Events', value: res.stats.totalEvents.toString(), icon: 'ribbon' },
-            { label: 'Win Rate', value: res.stats.winRate, icon: 'chart' },
-            { label: 'Upcoming', value: res.stats.upcomingCount.toString(), icon: 'calendar' }
+            { label: 'Events Won', value: (res.stats.eventsWon || 0).toString(), icon: 'trophy' },
+            { label: 'Total Events', value: (res.stats.totalEvents || 0).toString(), icon: 'ribbon' },
+            { label: 'Win Rate', value: res.stats.winRate || '0%', icon: 'chart' },
+            { label: 'Upcoming', value: (res.stats.upcomingCount || 0).toString(), icon: 'calendar' }
           ]);
 
           // Set logs and profile details signals
           this.registeredEvents.set(res.registeredEvents || []);
           this.pastParticipation.set(res.pastParticipation || []);
-          this.profileStats.set(res.profileStats);
+          if (res.profileStats) {
+            this.profileStats.set(res.profileStats);
+          }
         }
       },
-      error: (err) => {
-        console.warn('Backend server offline or auth failed. Utilizing dashboard mock fallbacks...');
-        // Bootstrapping seeded looking fallbacks
-        this.registeredEvents.set([
-
-        ]);
+      error: () => {
+        this.registeredEvents.set([]);
+        this.pastParticipation.set([]);
       }
     });
   }

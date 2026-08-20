@@ -27,26 +27,6 @@ export class ApiService {
       return null;
     }
 
-    if (token === 'mock-google-token') {
-      const mockUser = {
-        id: 'mock-google-id',
-        name: 'Google Athlete',
-        email: 'athlete.google@strydclub.com',
-        phone: '+91 9999999999',
-        role: 'user',
-        favoriteSports: ['Running'],
-        memberSince: 'January 2026',
-        totalEvents: 1,
-        eventsWon: 0,
-        sportsPlayed: 1
-      };
-      this.currentUser.set(mockUser);
-      return new Observable(subscriber => {
-        subscriber.next({ success: true, user: mockUser });
-        subscriber.complete();
-      });
-    }
-
     const obs = this.getUserProfile(token);
     obs.subscribe({
       next: (res) => {

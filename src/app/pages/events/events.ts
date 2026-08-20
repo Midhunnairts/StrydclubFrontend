@@ -43,7 +43,7 @@ export class EventsComponent implements OnInit {
     { name: 'Volleyball', icon: '🏐' },
     { name: 'Pickleball', icon: '🎾' },
     { name: 'Kho Kho', icon: '🏹' },
-    { name: 'Padel', icon: '🏓' },
+    { name: 'Cricket', icon: '🏏' },
     { name: 'Other', icon: '🎯' }
   ];
 
@@ -78,7 +78,7 @@ export class EventsComponent implements OnInit {
             'Volleyball': '🏐',
             'Pickleball': '🎾',
             'Kho Kho': '🏹',
-            'Padel': '🏓',
+            'Cricket': '🏏',
             'Other': '🎯'
           };
           const categoryImages: Record<string, string> = {
@@ -143,7 +143,7 @@ export class EventsComponent implements OnInit {
     const category = this.selectedCategory();
     if (category !== 'All') {
       if (category.toLowerCase() === 'other') {
-        const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'kho kho', 'padel'];
+        const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'kho kho', 'cricket'];
         list = list.filter(e => !standardCategories.includes(e.category.toLowerCase()) || e.category.toLowerCase() === 'other');
       } else {
         list = list.filter(e => e.category.toLowerCase() === category.toLowerCase());

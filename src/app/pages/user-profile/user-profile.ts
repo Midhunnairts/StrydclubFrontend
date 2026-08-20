@@ -62,7 +62,7 @@ export class UserProfileComponent implements OnInit {
     { name: 'Volleyball', icon: '🏐' },
     { name: 'Pickleball', icon: '🎾' },
     { name: 'Kho Kho', icon: '🏹' },
-    { name: 'Padel', icon: '🏓' }
+    { name: 'Cricket', icon: '🏏' }
   ];
 
   winRatePercentage = computed(() => {
@@ -98,12 +98,12 @@ export class UserProfileComponent implements OnInit {
           if (res.success && res.user) {
             this.populateProfile(res.user);
           } else {
-            this.loadFallbackMock();
+            this.userProfile.set(null);
           }
           this.loading.set(false);
         },
         error: () => {
-          this.loadFallbackMock();
+          this.userProfile.set(null);
           this.loading.set(false);
         }
       });
@@ -119,7 +119,7 @@ export class UserProfileComponent implements OnInit {
         error: () => {}
       });
     } else {
-      this.loadFallbackMock();
+      this.userProfile.set(null);
       this.loading.set(false);
     }
   }
@@ -131,48 +131,48 @@ export class UserProfileComponent implements OnInit {
         if (res.success && res.user) {
           this.populateProfile(res.user);
         } else {
-          this.loadFallbackMock();
+          this.userProfile.set(null);
         }
         this.loading.set(false);
       },
       error: () => {
-        this.loadFallbackMock();
+        this.userProfile.set(null);
         this.loading.set(false);
       }
     });
   }
 
   populateProfile(user: any) {
-    const name = user.name || 'Arjun Sharma';
+    const name = user.name || 'Athlete';
     const initials = name
       .split(' ')
       .map((n: string) => n[0])
       .join('')
       .toUpperCase()
-      .slice(0, 2);
+      .slice(0, 2) || 'ST';
 
     const username = user.username || `@${name.toLowerCase().replace(/\s+/g, '')}_stryd`;
-    const bio = user.bio || 'Passionate runner & badminton player. Chasing PRs every weekend. 🏃';
-    const location = user.location || 'Bangalore';
-    const role = (user.role || 'ORGANIZER').toUpperCase();
+    const bio = user.bio || '';
+    const location = user.location || '';
+    const role = (user.role || 'USER').toUpperCase();
 
     const profileData: ProfileData = {
       id: user.id || user._id,
       name,
       username,
       bio,
-      email: user.email || 'arjun@email.com',
-      phone: user.phone || '+91 9876543210',
+      email: user.email || '',
+      phone: user.phone || '',
       location,
       role,
       avatarUrl: user.avatarUrl,
-      favoriteSports: user.favoriteSports && user.favoriteSports.length > 0 ? user.favoriteSports : ['Running', 'Badminton', 'Football'],
+      favoriteSports: user.favoriteSports || [],
       memberSince: user.memberSince || 'January 2026',
-      totalEvents: user.totalEvents ?? 12,
-      eventsWon: user.eventsWon ?? 3,
-      sportsPlayed: user.sportsPlayed ?? 3,
-      points: user.points ?? 840,
-      rank: user.rank || '#47',
+      totalEvents: user.totalEvents ?? 0,
+      eventsWon: user.eventsWon ?? 0,
+      sportsPlayed: user.sportsPlayed ?? 0,
+      points: user.points ?? 0,
+      rank: user.rank || '#--',
       initials
     };
 
@@ -185,23 +185,6 @@ export class UserProfileComponent implements OnInit {
     this.editEmail = profileData.email;
     this.editPhone = profileData.phone;
     this.editFavoriteSports = [...profileData.favoriteSports];
-  }
-
-  loadFallbackMock() {
-    this.populateProfile({
-      name: 'Arjun Sharma',
-      username: '@arjun_stryd',
-      bio: 'Passionate runner & badminton player. Chasing PRs every weekend. 🏃',
-      location: 'Bangalore',
-      role: 'ORGANIZER',
-      favoriteSports: ['Running', 'Badminton', 'Football'],
-      memberSince: 'January 2026',
-      totalEvents: 12,
-      eventsWon: 3,
-      sportsPlayed: 3,
-      points: 840,
-      rank: '#47'
-    });
   }
 
   setTab(tab: 'overview' | 'my-events' | 'edit-profile' | 'settings') {
