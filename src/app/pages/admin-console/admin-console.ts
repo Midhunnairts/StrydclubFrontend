@@ -77,6 +77,35 @@ export class AdminConsoleComponent implements OnInit {
   allEvents = signal<any[]>([]);
   allUsers = signal<any[]>([]);
 
+  // Analytics Data matching screenshot
+  analyticsData = signal({
+    monthlyEvents: [
+      { month: 'Jan', count: 12, heightPct: 32 },
+      { month: 'Feb', count: 18, heightPct: 47 },
+      { month: 'Mar', count: 24, heightPct: 63 },
+      { month: 'Apr', count: 31, heightPct: 81 },
+      { month: 'May', count: 28, heightPct: 73 },
+      { month: 'Jun', count: 38, heightPct: 100 }
+    ],
+    topSports: [
+      { name: 'Running', count: 42, widthPct: 84 },
+      { name: 'Football', count: 28, widthPct: 56 },
+      { name: 'Badminton', count: 24, widthPct: 48 },
+      { name: 'Volleyball', count: 18, widthPct: 36 },
+      { name: 'Pickleball', count: 14, widthPct: 28 },
+      { name: 'Padel', count: 9, widthPct: 18 }
+    ],
+    topCities: [
+      { rank: 1, name: 'Bangalore', count: 28 },
+      { rank: 2, name: 'Mumbai', count: 21 },
+      { rank: 3, name: 'Delhi', count: 18 },
+      { rank: 4, name: 'Pune', count: 12 },
+      { rank: 5, name: 'Chennai', count: 9 },
+      { rank: 6, name: 'Hyderabad', count: 8 },
+      { rank: 7, name: 'Goa', count: 5 }
+    ]
+  });
+
   // Search queries for tab filters
   eventSearchQuery = '';
   userSearchQuery = '';
@@ -92,7 +121,20 @@ export class AdminConsoleComponent implements OnInit {
       this.loadAdminEvents();
     } else if (tab === 'users') {
       this.loadAdminUsers();
+    } else if (tab === 'analytics') {
+      this.loadAdminAnalytics();
     }
+  }
+
+  loadAdminAnalytics() {
+    this.apiService.getAdminAnalytics().subscribe({
+      next: (res) => {
+        if (res.success && res.analytics) {
+          this.analyticsData.set(res.analytics);
+        }
+      },
+      error: () => {}
+    });
   }
 
   loadAdminData() {

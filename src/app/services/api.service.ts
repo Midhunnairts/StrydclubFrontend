@@ -318,4 +318,13 @@ export class ApiService {
       { headers }
     );
   }
+
+  /**
+   * Fetch platform analytics metrics.
+   */
+  getAdminAnalytics(): Observable<{ success: boolean; analytics: any }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get<{ success: boolean; analytics: any }>(`${this.apiUrl}/admin/analytics`, { headers });
+  }
 }

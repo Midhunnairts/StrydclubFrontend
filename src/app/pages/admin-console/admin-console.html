@@ -516,20 +516,62 @@
 
     <!-- ANALYTICS TAB -->
     <div class="tab-content" *ngIf="activeTab() === 'analytics'">
-      <section class="section-card">
-        <h2 class="section-title">Platform Performance Analytics</h2>
-        <div class="analytics-preview-grid">
-          <div class="analytics-box">
-            <span class="box-stat">87.4%</span>
-            <span class="box-label">Monthly Retention</span>
+      <section class="section-card analytics-tab-card">
+        <!-- Analytics Tab Header -->
+        <div class="tab-header-row mb-6">
+          <div>
+            <h2 class="section-title">Platform Analytics</h2>
+            <p class="section-subtitle">Growth, sport distribution, and city coverage</p>
           </div>
-          <div class="analytics-box">
-            <span class="box-stat">₹4.2L</span>
-            <span class="box-label">Gross Event Volume</span>
+        </div>
+
+        <!-- Top Card: EVENTS PER MONTH Bar Chart -->
+        <div class="analytics-card mb-6">
+          <h3 class="analytics-card-title">EVENTS PER MONTH</h3>
+          
+          <div class="monthly-chart-container">
+            <div class="chart-bars-wrapper">
+              <div class="chart-col" *ngFor="let m of analyticsData().monthlyEvents">
+                <span class="bar-value-label">{{ m.count }}</span>
+                <div class="bar-track">
+                  <div class="bar-fill" [style.height.%]="m.heightPct"></div>
+                </div>
+                <span class="bar-month-label">{{ m.month }}</span>
+              </div>
+            </div>
           </div>
-          <div class="analytics-box">
-            <span class="box-stat">4.9 / 5</span>
-            <span class="box-label">Average Athlete Rating</span>
+        </div>
+
+        <!-- Bottom Grid: TOP SPORTS & TOP CITIES -->
+        <div class="analytics-bottom-grid">
+          <!-- TOP SPORTS Card -->
+          <div class="analytics-card">
+            <h3 class="analytics-card-title">TOP SPORTS</h3>
+            
+            <div class="sports-distribution-list">
+              <div class="sport-dist-row" *ngFor="let s of analyticsData().topSports">
+                <div class="sport-label-line">
+                  <span class="sport-name-text">{{ s.name }}</span>
+                  <span class="sport-count-text">{{ s.count }}</span>
+                </div>
+                <div class="sport-progress-track">
+                  <div class="sport-progress-fill" [style.width.%]="s.widthPct"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOP CITIES Card -->
+          <div class="analytics-card">
+            <h3 class="analytics-card-title">TOP CITIES</h3>
+            
+            <div class="cities-leaderboard-list">
+              <div class="city-rank-row" *ngFor="let c of analyticsData().topCities; let i = index">
+                <span class="city-rank-num">{{ i + 1 }}</span>
+                <span class="city-name-text">{{ c.name }}</span>
+                <span class="city-count-text">{{ c.count }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
