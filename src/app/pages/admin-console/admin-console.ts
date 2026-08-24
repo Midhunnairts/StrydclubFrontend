@@ -47,77 +47,34 @@ export class AdminConsoleComponent implements OnInit {
   loading = signal<boolean>(false);
   actionToast = signal<string | null>(null);
 
-  // Overview metrics
+  // Overview metrics (initialized to 0)
   stats = signal({
-    totalEvents: 141,
-    registeredUsers: 3842,
-    activeNow: 28,
-    avgFillRate: '68%',
-    pendingCount: 3
+    totalEvents: 0,
+    registeredUsers: 0,
+    activeNow: 0,
+    avgFillRate: '0%',
+    pendingCount: 0,
+    eventsTrend: '0 this month',
+    usersTrend: '0 this month',
+    activeTrend: 'Active users',
+    fillRateTrend: 'Fill rate'
   });
 
-  // Approval queue
-  approvalQueue = signal<ApprovalItem[]>([
-    {
-      id: 'mock-1',
-      title: 'Weekend 10K Sprint',
-      category: 'RUNNING',
-      organizer: 'Arjun Sharma',
-      location: 'Bangalore',
-      date: '12 Jul',
-      slots: '80 slots',
-      price: '₹299',
-      submittedTimeAgo: '2 hours ago'
-    },
-    {
-      id: 'mock-2',
-      title: 'Padel Open Cup',
-      category: 'CRICKET',
-      organizer: 'Priya Menon',
-      location: 'Mumbai',
-      date: '18 Jul',
-      slots: '32 slots',
-      price: '₹599',
-      submittedTimeAgo: '5 hours ago'
-    },
-    {
-      id: 'mock-3',
-      title: 'Junior Badminton League',
-      category: 'BADMINTON',
-      organizer: 'Coach Ramesh',
-      location: 'Chennai',
-      date: '22 Jul',
-      slots: '64 slots',
-      price: '₹150',
-      submittedTimeAgo: '1 day ago'
-    }
-  ]);
+  // Approval queue (populated from API)
+  approvalQueue = signal<ApprovalItem[]>([]);
 
-  // Highlights
+  // Highlights (populated from API)
   highlights = signal({
-    topSport: { name: 'Running', subtext: '42 registrations today', icon: '🏃' },
-    hottestCity: { name: 'Bangalore', subtext: '28 active events', icon: '📍' },
-    revenue: { value: '₹2.4L', subtext: '+18% vs last month' }
+    topSport: { name: 'None', subtext: '0 registrations', icon: '🏃' },
+    hottestCity: { name: 'None', subtext: '0 active events', icon: '📍' },
+    revenue: { value: '₹0', subtext: 'No revenue recorded' }
   });
 
-  // Recent activity feed
-  recentActivity = signal<ActivityItem[]>([
-    { id: '1', icon: '✔', type: 'success', text: 'Padel Open Cup approved and published', time: '2m ago' },
-    { id: '2', icon: '👤', type: 'user', text: 'Kavya Singh registered for Volleyball Championship', time: '8m ago' },
-    { id: '3', icon: '⭐', type: 'star', text: 'Weekend 5K received a 5-star review', time: '15m ago' },
-    { id: '4', icon: '⚡', type: 'organizer', text: 'New organizer onboarded: Coach Ramesh', time: '34m ago' },
-    { id: '5', icon: '⚠️', type: 'warning', text: "Event 'Kho Kho Challenge' reported by a user", time: '1h ago' }
-  ]);
+  // Recent activity feed (populated from API)
+  recentActivity = signal<ActivityItem[]>([]);
 
   // Full Events and Users for Tabs
-  allEvents = signal<any[]>([
-    { id: '1', title: 'Weekend 5K Marathon', category: 'Running', organizedBy: 'Admin', location: 'Bangalore', date: '28 May', slotsFilled: 55, slotsTotal: 100, status: 'LIVE' },
-    { id: '2', title: 'Inter-City Badminton', category: 'Badminton', organizedBy: 'Club A', location: 'Mumbai', date: '2 Jun', slotsFilled: 20, slotsTotal: 32, status: 'LIVE' },
-    { id: '3', title: 'Friday Night Football', category: 'Football', organizedBy: 'Admin', location: 'Delhi', date: '25 May', slotsFilled: 14, slotsTotal: 22, status: 'LIVE' },
-    { id: '4', title: 'Volleyball Championship', category: 'Volleyball', organizedBy: 'Beach Sports', location: 'Goa', date: '30 May', slotsFilled: 8, slotsTotal: 24, status: 'LIVE' },
-    { id: '5', title: 'Pickleball Pro League', category: 'Pickleball', organizedBy: 'Admin', location: 'Pune', date: '5 Jun', slotsFilled: 20, slotsTotal: 40, status: 'LIVE' },
-    { id: '6', title: 'Traditional Kho Kho', category: 'Kho Kho', organizedBy: 'Sports Club B', location: 'Hyderabad', date: '8 Jun', slotsFilled: 18, slotsTotal: 50, status: 'LIVE' }
-  ]);
+  allEvents = signal<any[]>([]);
   allUsers = signal<any[]>([]);
 
   // Search queries for tab filters
@@ -131,9 +88,9 @@ export class AdminConsoleComponent implements OnInit {
 
   setTab(tab: 'overview' | 'events' | 'users' | 'analytics') {
     this.activeTab.set(tab);
-    if (tab === 'events' && this.allEvents().length === 0) {
+    if (tab === 'events') {
       this.loadAdminEvents();
-    } else if (tab === 'users' && this.allUsers().length === 0) {
+    } else if (tab === 'users') {
       this.loadAdminUsers();
     }
   }
@@ -145,9 +102,9 @@ export class AdminConsoleComponent implements OnInit {
         this.loading.set(false);
         if (res.success) {
           if (res.stats) this.stats.set(res.stats);
-          if (res.approvalQueue && res.approvalQueue.length > 0) this.approvalQueue.set(res.approvalQueue);
+          this.approvalQueue.set(res.approvalQueue || []);
           if (res.highlights) this.highlights.set(res.highlights);
-          if (res.recentActivity && res.recentActivity.length > 0) this.recentActivity.set(res.recentActivity);
+          this.recentActivity.set(res.recentActivity || []);
         }
       },
       error: () => {
@@ -159,11 +116,13 @@ export class AdminConsoleComponent implements OnInit {
   loadAdminEvents() {
     this.apiService.getAdminEvents().subscribe({
       next: (res) => {
-        if (res.success && res.events && res.events.length > 0) {
-          this.allEvents.set(res.events);
+        if (res.success) {
+          this.allEvents.set(res.events || []);
         }
       },
-      error: () => {}
+      error: () => {
+        this.allEvents.set([]);
+      }
     });
   }
 
