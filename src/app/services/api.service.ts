@@ -224,4 +224,98 @@ export class ApiService {
       { headers }
     );
   }
+
+  /**
+   * Fetch admin overview data including metrics, approval queue, highlights, and activity logs.
+   */
+  getAdminOverview(): Observable<{ success: boolean; stats: any; approvalQueue: any[]; highlights: any; recentActivity: any[] }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get<{ success: boolean; stats: any; approvalQueue: any[]; highlights: any; recentActivity: any[] }>(
+      `${this.apiUrl}/admin/overview`,
+      { headers }
+    );
+  }
+
+  /**
+   * Approve a pending event by ID.
+   */
+  approveEvent(id: string): Observable<{ success: boolean; message: string }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.apiUrl}/admin/events/${id}/approve`,
+      {},
+      { headers }
+    );
+  }
+
+  /**
+   * Reject a pending event by ID.
+   */
+  rejectEvent(id: string): Observable<{ success: boolean; message: string }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.apiUrl}/admin/events/${id}/reject`,
+      {},
+      { headers }
+    );
+  }
+
+  /**
+   * Fetch all events for admin panel.
+   */
+  getAdminEvents(): Observable<{ success: boolean; events: any[] }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get<{ success: boolean; events: any[] }>(`${this.apiUrl}/admin/events`, { headers });
+  }
+
+  /**
+   * Fetch all users for admin panel.
+   */
+  getAdminUsers(): Observable<{ success: boolean; users: any[] }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get<{ success: boolean; users: any[] }>(`${this.apiUrl}/admin/users`, { headers });
+  }
+
+  /**
+   * Delete an event by ID as admin.
+   */
+  deleteAdminEvent(id: string): Observable<{ success: boolean; message: string }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.delete<{ success: boolean; message: string }>(
+      `${this.apiUrl}/admin/events/${id}`,
+      { headers }
+    );
+  }
+
+  /**
+   * Update event details as admin.
+   */
+  updateAdminEvent(id: string, data: any): Observable<{ success: boolean; event: any }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.put<{ success: boolean; event: any }>(
+      `${this.apiUrl}/admin/events/${id}`,
+      data,
+      { headers }
+    );
+  }
+
+  /**
+   * Toggle role for a user (admin <-> user).
+   */
+  toggleUserRole(id: string, role?: string): Observable<{ success: boolean; user: any }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<{ success: boolean; user: any }>(
+      `${this.apiUrl}/admin/users/${id}/role`,
+      { role },
+      { headers }
+    );
+  }
 }

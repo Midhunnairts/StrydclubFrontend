@@ -1,0 +1,518 @@
+<div class="admin-console-page">
+  <!-- Toast Notification -->
+  <div class="toast-notification" *ngIf="actionToast()">
+    <span>⚡</span> {{ actionToast() }}
+  </div>
+
+  <div class="admin-container">
+    <!-- Header Sub-Bar -->
+    <header class="admin-header">
+      <div class="header-left">
+        <div class="admin-shield-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h1 class="admin-title">ADMIN CONSOLE</h1>
+        <span class="version-badge">v1.0</span>
+      </div>
+
+      <div class="header-right">
+        <div class="warning-badge" *ngIf="stats().pendingCount > 0" (click)="setTab('overview')">
+          <span class="warning-icon">⚠️</span>
+          <span class="warning-text">{{ stats().pendingCount }} pending review</span>
+        </div>
+
+        <button class="bell-button" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="bell-dot"></span>
+        </button>
+
+        <a routerLink="/" class="public-site-link">
+          <span>&larr;</span> Public site
+        </a>
+      </div>
+    </header>
+
+    <!-- Sub Navigation Pill Tabs -->
+    <nav class="admin-nav-tabs">
+      <button 
+        class="nav-tab-pill" 
+        [class.active]="activeTab() === 'overview'" 
+        (click)="setTab('overview')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        <span>Overview</span>
+        <span class="tab-badge" *ngIf="stats().pendingCount > 0">{{ stats().pendingCount }}</span>
+      </button>
+
+      <button 
+        class="nav-tab-pill" 
+        [class.active]="activeTab() === 'events'" 
+        (click)="setTab('events')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span>Events</span>
+      </button>
+
+      <button 
+        class="nav-tab-pill" 
+        [class.active]="activeTab() === 'users'" 
+        (click)="setTab('users')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Users</span>
+      </button>
+
+      <button 
+        class="nav-tab-pill" 
+        [class.active]="activeTab() === 'analytics'" 
+        (click)="setTab('analytics')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        <span>Analytics</span>
+      </button>
+    </nav>
+
+    <!-- OVERVIEW TAB -->
+    <div class="tab-content" *ngIf="activeTab() === 'overview'">
+      <!-- 4 Metric Cards Grid -->
+      <section class="metrics-grid">
+        <!-- Card 1: TOTAL EVENTS -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-icon-wrapper">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <span class="trend-badge positive">
+              <span class="trend-arrow">&nearr;</span> +12% this month
+            </span>
+          </div>
+          <div class="metric-number">{{ stats().totalEvents }}</div>
+          <div class="metric-label">TOTAL EVENTS</div>
+        </div>
+
+        <!-- Card 2: REGISTERED USERS -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-icon-wrapper">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span class="trend-badge positive">
+              <span class="trend-arrow">&nearr;</span> +22% this month
+            </span>
+          </div>
+          <div class="metric-number">{{ stats().registeredUsers | number }}</div>
+          <div class="metric-label">REGISTERED USERS</div>
+        </div>
+
+        <!-- Card 3: ACTIVE NOW -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-icon-wrapper">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <span class="trend-badge negative">
+              <span class="trend-arrow">&searr;</span> -3 from yesterday
+            </span>
+          </div>
+          <div class="metric-number">{{ stats().activeNow }}</div>
+          <div class="metric-label">ACTIVE NOW</div>
+        </div>
+
+        <!-- Card 4: AVG FILL RATE -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-icon-wrapper">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                <polyline points="17 6 23 6 23 12"/>
+              </svg>
+            </div>
+            <span class="trend-badge positive">
+              <span class="trend-arrow">&nearr;</span> +5% vs last month
+            </span>
+          </div>
+          <div class="metric-number">{{ stats().avgFillRate }}</div>
+          <div class="metric-label">AVG FILL RATE</div>
+        </div>
+      </section>
+
+      <!-- Approval Queue Section -->
+      <section class="section-card approval-queue-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Approval Queue</h2>
+            <p class="section-subtitle">Events submitted by organizers awaiting review</p>
+          </div>
+          <span class="status-pill pending-pill" *ngIf="approvalQueue().length > 0">
+            {{ approvalQueue().length }} pending
+          </span>
+        </div>
+
+        <div class="queue-list" *ngIf="approvalQueue().length > 0; else emptyQueue">
+          <div class="queue-card" *ngFor="let item of approvalQueue()">
+            <div class="queue-details">
+              <div class="queue-title-row">
+                <h3 class="item-title">{{ item.title }}</h3>
+                <span class="category-badge">{{ item.category }}</span>
+              </div>
+              <p class="item-subtext">
+                by {{ item.organizer }} &middot; {{ item.location }} &middot; {{ item.date }} &middot; {{ item.slots }} &middot; {{ item.price }}
+              </p>
+            </div>
+
+            <div class="queue-actions">
+              <span class="time-ago">{{ item.submittedTimeAgo }}</span>
+              
+              <button class="reject-icon-btn" (click)="rejectEvent(item)" title="Reject Event">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="15" y1="9" x2="9" y2="15"/>
+                  <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+              </button>
+
+              <button class="approve-capsule-btn" (click)="approveEvent(item)">
+                <span class="check-icon">&#10003;</span> Approve
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #emptyQueue>
+          <div class="empty-queue-box">
+            <span class="empty-icon">✨</span>
+            <p>All caught up! No events currently awaiting review.</p>
+          </div>
+        </ng-template>
+      </section>
+
+      <!-- Highlights Row Cards -->
+      <section class="highlights-grid">
+        <!-- Top Sport Today -->
+        <div class="highlight-card">
+          <div class="highlight-label">TOP SPORT TODAY</div>
+          <div class="highlight-value">
+            <span class="sport-emoji">{{ highlights().topSport.icon }}</span>
+            <span class="value-text">{{ highlights().topSport.name }}</span>
+          </div>
+          <div class="highlight-subtext">{{ highlights().topSport.subtext }}</div>
+        </div>
+
+        <!-- Hottest City -->
+        <div class="highlight-card">
+          <div class="highlight-label">HOTTEST CITY</div>
+          <div class="highlight-value">
+            <span class="pin-emoji">{{ highlights().hottestCity.icon }}</span>
+            <span class="value-text">{{ highlights().hottestCity.name }}</span>
+          </div>
+          <div class="highlight-subtext">{{ highlights().hottestCity.subtext }}</div>
+        </div>
+
+        <!-- Revenue This Month -->
+        <div class="highlight-card">
+          <div class="highlight-label">REVENUE THIS MONTH</div>
+          <div class="highlight-value">
+            <span class="value-text font-bold">{{ highlights().revenue.value }}</span>
+          </div>
+          <div class="highlight-subtext positive-text">{{ highlights().revenue.subtext }}</div>
+        </div>
+      </section>
+
+      <!-- Recent Activity Section -->
+      <section class="section-card recent-activity-section">
+        <h2 class="section-title">Recent Activity</h2>
+
+        <div class="activity-list">
+          <div class="activity-row" *ngFor="let act of recentActivity()">
+            <div class="activity-icon-col">
+              <span class="activity-status-icon" [ngClass]="act.type">{{ act.icon }}</span>
+            </div>
+            <div class="activity-text-col">
+              <span class="activity-text">{{ act.text }}</span>
+            </div>
+            <div class="activity-time-col">
+              <span class="activity-time">{{ act.time }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- EVENTS MANAGEMENT TAB -->
+    <div class="tab-content" *ngIf="activeTab() === 'events'">
+      <section class="section-card events-tab-card">
+        <!-- Events Tab Header -->
+        <div class="tab-header-row">
+          <div>
+            <h2 class="section-title">All Events</h2>
+            <p class="section-subtitle">Manage, edit, and moderate published events</p>
+          </div>
+          
+          <a routerLink="/host-event" class="new-event-btn">
+            <span class="bolt-icon">⚡</span> New Event
+          </a>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="search-filter-bar">
+          <div class="search-input-wrapper">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input 
+              type="text" 
+              class="search-events-input" 
+              placeholder="Search events..." 
+              [(ngModel)]="eventSearchQuery">
+          </div>
+
+          <button class="filter-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+            <span>Filter</span>
+          </button>
+        </div>
+
+        <!-- Events Data Table -->
+        <div class="events-table-wrapper">
+          <table class="admin-table events-table">
+            <thead>
+              <tr>
+                <th>EVENT</th>
+                <th>SPORT</th>
+                <th>ORGANIZER</th>
+                <th>CITY</th>
+                <th>DATE</th>
+                <th>SLOTS</th>
+                <th>STATUS</th>
+                <th class="text-right">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ev of filteredEvents">
+                <td class="font-bold event-name-td">{{ ev.title }}</td>
+                <td class="muted-td">{{ ev.category }}</td>
+                <td class="muted-td">{{ ev.organizedBy || 'Admin' }}</td>
+                <td class="muted-td">{{ ev.location.split(',')[0] }}</td>
+                <td class="muted-td">{{ ev.date }}</td>
+                <td>
+                  <div class="slots-cell-wrapper">
+                    <div class="slots-progress-track">
+                      <div class="slots-progress-fill" [style.width.%]="getSlotsPercent(ev.slotsFilled, ev.slotsTotal)"></div>
+                    </div>
+                    <span class="slots-text">{{ ev.slotsFilled || 0 }}/{{ ev.slotsTotal || 50 }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="status-chip live-chip">
+                    {{ (ev.status || 'LIVE') | uppercase }}
+                  </span>
+                </td>
+                <td class="actions-cell text-right">
+                  <div class="row-action-btns">
+                    <!-- View Icon -->
+                    <button class="action-icon-btn view-btn" (click)="viewEvent(ev)" title="View Event">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
+
+                    <!-- Edit Icon -->
+                    <button class="action-icon-btn edit-btn" (click)="openEditModal(ev)" title="Edit Event">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                    </button>
+
+                    <!-- Delete Icon -->
+                    <button class="action-icon-btn delete-btn" (click)="deleteEventAction(ev)" title="Delete Event">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        <line x1="10" y1="11" x2="10" y2="17"/>
+                        <line x1="14" y1="11" x2="14" y2="17"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="filteredEvents.length === 0">
+                <td colspan="8" class="empty-table-td">No published events found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- EDIT EVENT MODAL POPUP -->
+    <div class="modal-backdrop" *ngIf="editingEvent()" (click)="closeEditModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Edit Event Details</h3>
+          <button class="close-btn" (click)="closeEditModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Event Title</label>
+            <input type="text" class="modal-input" [(ngModel)]="editTitle" placeholder="Event title">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label class="form-label">Sport Category</label>
+              <select class="modal-select" [(ngModel)]="editCategory">
+                <option value="Running">Running</option>
+                <option value="Badminton">Badminton</option>
+                <option value="Football">Football</option>
+                <option value="Volleyball">Volleyball</option>
+                <option value="Pickleball">Pickleball</option>
+                <option value="Cricket">Cricket</option>
+                <option value="Kho Kho">Kho Kho</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group half">
+              <label class="form-label">City / Location</label>
+              <input type="text" class="modal-input" [(ngModel)]="editLocation" placeholder="City or venue">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label class="form-label">Date</label>
+              <input type="text" class="modal-input" [(ngModel)]="editDate" placeholder="e.g. 28 May">
+            </div>
+
+            <div class="form-group half">
+              <label class="form-label">Total Slots</label>
+              <input type="number" class="modal-input" [(ngModel)]="editSlotsTotal">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Price (₹)</label>
+            <input type="number" class="modal-input" [(ngModel)]="editPrice" placeholder="0 for Free">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="modal-cancel-btn" (click)="closeEditModal()">Cancel</button>
+          <button class="modal-save-btn" (click)="saveEditEvent()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS MANAGEMENT TAB -->
+    <div class="tab-content" *ngIf="activeTab() === 'users'">
+      <section class="section-card">
+        <div class="tab-controls-row">
+          <h2 class="section-title">Registered Users</h2>
+          
+          <div class="controls-right">
+            <input 
+              type="text" 
+              class="admin-search-input" 
+              placeholder="Search users..." 
+              [(ngModel)]="userSearchQuery">
+          </div>
+        </div>
+
+        <div class="users-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Athlete Name</th>
+                <th>Contact</th>
+                <th>Channel</th>
+                <th>Role</th>
+                <th>Events Joined</th>
+                <th>Member Since</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let u of filteredUsers">
+                <td class="font-bold">{{ u.name || 'Athlete' }}</td>
+                <td>{{ u.email || u.phone || 'N/A' }}</td>
+                <td>{{ u.loginChannel || 'phone' }}</td>
+                <td>
+                  <span class="role-badge" [class.admin]="u.role === 'admin'">
+                    {{ u.role || 'user' }}
+                  </span>
+                </td>
+                <td>{{ u.totalEvents || 0 }}</td>
+                <td>{{ u.memberSince || 'Jan 2026' }}</td>
+                <td>
+                  <button class="role-toggle-btn" (click)="toggleUserRole(u)">
+                    Make {{ u.role === 'admin' ? 'User' : 'Admin' }}
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="filteredUsers.length === 0">
+                <td colspan="7" class="empty-table-td">No registered users found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ANALYTICS TAB -->
+    <div class="tab-content" *ngIf="activeTab() === 'analytics'">
+      <section class="section-card">
+        <h2 class="section-title">Platform Performance Analytics</h2>
+        <div class="analytics-preview-grid">
+          <div class="analytics-box">
+            <span class="box-stat">87.4%</span>
+            <span class="box-label">Monthly Retention</span>
+          </div>
+          <div class="analytics-box">
+            <span class="box-stat">₹4.2L</span>
+            <span class="box-label">Gross Event Volume</span>
+          </div>
+          <div class="analytics-box">
+            <span class="box-stat">4.9 / 5</span>
+            <span class="box-label">Average Athlete Rating</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

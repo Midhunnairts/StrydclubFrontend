@@ -11,10 +11,13 @@ import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard';
 import { HostEventComponent } from './pages/host-event/host-event';
 import { UserProfileComponent } from './pages/user-profile/user-profile';
 import { CompleteProfileComponent } from './pages/complete-profile/complete-profile';
+import { AdminConsoleComponent } from './pages/admin-console/admin-console';
 import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'admin', component: AdminConsoleComponent, canActivate: [adminGuard] },
   { path: 'dashboard', component: UserDashboardComponent, canActivate: [authGuard] },
   { path: 'user-profile', component: UserProfileComponent, canActivate: [authGuard] },
   { path: 'profile', component: UserProfileComponent, canActivate: [authGuard] },
