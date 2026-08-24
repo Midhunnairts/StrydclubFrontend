@@ -929,64 +929,155 @@
 }
 
 
-.role-badge {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #a0a0a0;
-  font-size: 11px;
-  font-weight: 800;
-  padding: 3px 10px;
-  border-radius: 6px;
-  text-transform: uppercase;
+/* Users Tab Specific Styles matching screenshot */
+.users-tab-card {
+  padding: 32px;
+}
 
-  &.admin {
-    background-color: rgba(191, 90, 242, 0.2);
-    color: #bf5af2;
-    border: 1px solid rgba(191, 90, 242, 0.3);
+.shown-count-text {
+  font-size: 13.5px;
+  color: #6c6c70;
+  font-weight: 500;
+}
+
+.user-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.user-card-row {
+  background-color: #121316;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    background-color: #16171b;
   }
 }
 
-.approve-sm-btn {
-  background-color: #ffffff;
-  color: #000000;
-  border: none;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-right: 6px;
+.user-card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-.reject-sm-btn {
-  background-color: rgba(255, 69, 58, 0.15);
-  color: #ff453a;
-  border: 1px solid rgba(255, 69, 58, 0.3);
-  font-size: 12px;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.role-toggle-btn {
+.user-avatar-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
+  font-size: 17px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+.user-info-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-name-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .user-name-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
   }
 }
 
-.empty-table-td {
+.role-pill-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &.organizer {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #d1d1d6;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  &.athlete {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #8e8e93;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+.status-pill-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  &.suspended {
+    background-color: rgba(255, 69, 58, 0.18);
+    color: #ff453a;
+    border: 1px solid rgba(255, 69, 58, 0.3);
+  }
+}
+
+.user-submeta-text {
+  font-size: 13.5px;
+  color: #8e8e93;
+  font-weight: 400;
+}
+
+.user-card-right {
+  display: flex;
+  align-items: center;
+}
+
+.events-count-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+
+  .events-count-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+  }
+
+  .events-count-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6c6c70;
+  }
+}
+
+.empty-users-card {
+  padding: 36px;
   text-align: center;
-  padding: 32px;
   color: #6c6c70;
+  font-size: 14px;
+  background-color: #121316;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Analytics Tab Preview */

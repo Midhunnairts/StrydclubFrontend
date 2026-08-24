@@ -441,55 +441,75 @@
 
     <!-- USERS MANAGEMENT TAB -->
     <div class="tab-content" *ngIf="activeTab() === 'users'">
-      <section class="section-card">
-        <div class="tab-controls-row">
-          <h2 class="section-title">Registered Users</h2>
+      <section class="section-card users-tab-card">
+        <!-- Users Tab Header -->
+        <div class="tab-header-row">
+          <div>
+            <h2 class="section-title">User Management</h2>
+            <p class="section-subtitle">Athletes, organizers, and their activity</p>
+          </div>
           
-          <div class="controls-right">
+          <div class="shown-count-text">
+            {{ filteredUsers.length }} users shown
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-filter-bar">
+          <div class="search-input-wrapper">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
             <input 
               type="text" 
-              class="admin-search-input" 
+              class="search-events-input" 
               placeholder="Search users..." 
               [(ngModel)]="userSearchQuery">
           </div>
         </div>
 
-        <div class="users-table-wrapper">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Athlete Name</th>
-                <th>Contact</th>
-                <th>Channel</th>
-                <th>Role</th>
-                <th>Events Joined</th>
-                <th>Member Since</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let u of filteredUsers">
-                <td class="font-bold">{{ u.name || 'Athlete' }}</td>
-                <td>{{ u.email || u.phone || 'N/A' }}</td>
-                <td>{{ u.loginChannel || 'phone' }}</td>
-                <td>
-                  <span class="role-badge" [class.admin]="u.role === 'admin'">
-                    {{ u.role || 'user' }}
+        <!-- User Cards List -->
+        <div class="user-cards-list">
+          <div class="user-card-row" *ngFor="let u of filteredUsers">
+            <div class="user-card-left">
+              <div class="user-avatar-circle">
+                {{ (u.name || u.email || u.phone || 'A').charAt(0).toUpperCase() }}
+              </div>
+
+              <div class="user-info-meta">
+                <div class="user-name-line">
+                  <span class="user-name-text">{{ u.name || u.email || 'Athlete' }}</span>
+                  <span 
+                    class="role-pill-badge" 
+                    [class.organizer]="u.role === 'admin' || u.role === 'organizer'"
+                    [class.athlete]="u.role !== 'admin' && u.role !== 'organizer'"
+                    (click)="toggleUserRole(u)"
+                    title="Click to toggle role">
+                    {{ (u.role === 'admin' ? 'ORGANIZER' : (u.role === 'organizer' ? 'ORGANIZER' : 'ATHLETE')) }}
                   </span>
-                </td>
-                <td>{{ u.totalEvents || 0 }}</td>
-                <td>{{ u.memberSince || 'Jan 2026' }}</td>
-                <td>
-                  <button class="role-toggle-btn" (click)="toggleUserRole(u)">
-                    Make {{ u.role === 'admin' ? 'User' : 'Admin' }}
-                  </button>
-                </td>
-              </tr>
-              <tr *ngIf="filteredUsers.length === 0">
-                <td colspan="7" class="empty-table-td">No registered users found.</td>
-              </tr>
-            </tbody>
-          </table>
+                  <span class="status-pill-badge suspended" *ngIf="u.status === 'suspended'">
+                    SUSPENDED
+                  </span>
+                </div>
+
+                <div class="user-submeta-text">
+                  {{ u.email || u.phone || 'no-contact' }} · {{ (u.favoriteSports && u.favoriteSports.length > 0) ? u.favoriteSports[0] : 'Running' }} · Joined {{ u.memberSince || 'Jan 2026' }}
+                </div>
+              </div>
+            </div>
+
+            <div class="user-card-right">
+              <div class="events-count-box">
+                <span class="events-count-num">{{ u.totalEvents || 0 }}</span>
+                <span class="events-count-label">events</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-users-card" *ngIf="filteredUsers.length === 0">
+            No users found matching search criteria.
+          </div>
         </div>
       </section>
     </div>
