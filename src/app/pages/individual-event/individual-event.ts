@@ -4,7 +4,7 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { environment } from '../../../environments/environment';
 
-declare var Razorpay: any;
+declare var Cashfree: any;
 
 interface RuleItem {
   text: string;
@@ -170,36 +170,38 @@ export class IndividualEventComponent implements OnInit {
 
     if (details.price && details.price > 0) {
       this.isProcessing.set(true);
-      this.processingText.set('Preparing Razorpay checkout...');
+      this.processingText.set('Preparing Cashfree checkout...');
 
-      this.apiService.createRazorpayOrder(details.id, token).subscribe({
+      this.apiService.createCashfreeOrder(details.id, token).subscribe({
         next: (orderRes) => {
           this.isProcessing.set(false);
-          if (orderRes.success) {
-            const options = {
-              key: environment.razorpayKeyId,
-              amount: orderRes.amount,
-              currency: orderRes.currency,
-              name: 'Strydclub',
-              description: `Register for ${details.title}`,
-              order_id: orderRes.order_id,
-              handler: (paymentRes: any) => {
-                this.isProcessing.set(true);
-                this.processingText.set('Verifying payment & securing spot...');
+          if (orderRes.success && orderRes.payment_session_id) {
+            try {
+              const cashfreeMode = orderRes.cf_environment || environment.cashfreeEnv || 'sandbox';
+              const cashfree = Cashfree({ mode: cashfreeMode });
 
-                const payload = {
-                  razorpay_payment_id: paymentRes.razorpay_payment_id,
-                  razorpay_order_id: paymentRes.razorpay_order_id,
-                  razorpay_signature: paymentRes.razorpay_signature
-                };
-                this.apiService.verifyRazorpayPayment(details.id, payload, token).subscribe({
+              const checkoutOptions = {
+                paymentSessionId: orderRes.payment_session_id,
+                redirectTarget: '_modal'
+              };
+
+              cashfree.checkout(checkoutOptions).then((result: any) => {
+                if (result && result.error) {
+                  console.warn('Cashfree payment modal closed or error:', result.error);
+                }
+
+                // Verify Cashfree payment status with backend
+                this.isProcessing.set(true);
+                this.processingText.set('Verifying Cashfree payment & securing spot...');
+
+                this.apiService.verifyCashfreePayment(details.id, { order_id: orderRes.order_id }, token).subscribe({
                   next: (verifyRes) => {
                     this.isProcessing.set(false);
                     if (verifyRes.success) {
                       this.modalState.set({
                         show: true,
                         title: 'Registration Successful!',
-                        message: 'Payment verified successfully. You have secured your spot for this event!',
+                        message: 'Cashfree payment verified successfully. You have secured your spot for this event!',
                         type: 'success'
                       });
                       this.loadEventDetails();
@@ -207,37 +209,40 @@ export class IndividualEventComponent implements OnInit {
                   },
                   error: (verifyErr) => {
                     this.isProcessing.set(false);
-                    const errorMsg = verifyErr.error?.message || 'Payment verification failed.';
+                    const errorMsg = verifyErr.error?.message || 'Cashfree payment verification failed.';
                     alert(errorMsg);
                   }
                 });
-              },
-              prefill: {
-                name: this.apiService.currentUser()?.name || '',
-                email: this.apiService.currentUser()?.email || '',
-                contact: this.apiService.currentUser()?.phone || ''
-              },
-              theme: {
-                color: '#ef4444'
-              },
-              modal: {
-                ondismiss: () => {
+              });
+            } catch (sdkErr) {
+              console.warn('Cashfree SDK modal fallback, verifying order:', sdkErr);
+              // Direct payment verification fallback
+              this.isProcessing.set(true);
+              this.processingText.set('Verifying Cashfree payment...');
+              this.apiService.verifyCashfreePayment(details.id, { order_id: orderRes.order_id }, token).subscribe({
+                next: (verifyRes) => {
                   this.isProcessing.set(false);
-                  console.log('Razorpay modal closed by user.');
+                  if (verifyRes.success) {
+                    this.modalState.set({
+                      show: true,
+                      title: 'Registration Successful!',
+                      message: 'Cashfree payment verified successfully!',
+                      type: 'success'
+                    });
+                    this.loadEventDetails();
+                  }
+                },
+                error: (verifyErr) => {
+                  this.isProcessing.set(false);
+                  alert(verifyErr.error?.message || 'Cashfree payment verification failed.');
                 }
-              }
-            };
-            const rzp = new Razorpay(options);
-            rzp.on('payment.failed', (response: any) => {
-              this.isProcessing.set(false);
-              alert(`Payment failed: ${response.error.description}`);
-            });
-            rzp.open();
+              });
+            }
           }
         },
         error: (orderErr) => {
           this.isProcessing.set(false);
-          const errorMsg = orderErr.error?.message || 'Failed to create payment order.';
+          const errorMsg = orderErr.error?.message || 'Failed to create Cashfree payment order.';
           alert(errorMsg);
         }
       });

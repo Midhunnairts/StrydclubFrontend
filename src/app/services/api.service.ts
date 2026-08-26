@@ -103,31 +103,40 @@ export class ApiService {
   }
 
   /**
-   * Create a Razorpay payment order for the event.
+   * Create a Cashfree payment order for the event.
    */
-  createRazorpayOrder(slug: string, token: string): Observable<{ success: boolean; order_id: string; amount: number; currency: string }> {
+  createCashfreeOrder(slug: string, token: string): Observable<{ success: boolean; order_id: string; payment_session_id: string; cf_environment: string }> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-    return this.http.post<{ success: boolean; order_id: string; amount: number; currency: string }>(
-      `${this.apiUrl}/events/${slug}/create-order`,
+    return this.http.post<{ success: boolean; order_id: string; payment_session_id: string; cf_environment: string }>(
+      `${this.apiUrl}/events/${slug}/cashfree-order`,
       {},
       { headers }
     );
   }
 
   /**
-   * Register the authenticated athlete for a specific event.
+   * Verify Cashfree payment for the event registration.
    */
-  verifyRazorpayPayment(slug: string, payload: any, token: string): Observable<{ success: boolean; message: string }> {
+  verifyCashfreePayment(slug: string, payload: { order_id: string }, token: string): Observable<{ success: boolean; message: string }> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
     return this.http.post<{ success: boolean; message: string }>(
-      `${this.apiUrl}/events/${slug}/verify-payment`,
+      `${this.apiUrl}/events/${slug}/verify-cashfree`,
       payload,
       { headers }
     );
+  }
+
+  // Backward compatibility alias methods
+  createRazorpayOrder(slug: string, token: string) {
+    return this.createCashfreeOrder(slug, token);
+  }
+
+  verifyRazorpayPayment(slug: string, payload: any, token: string) {
+    return this.verifyCashfreePayment(slug, payload, token);
   }
 
   /**
