@@ -36,9 +36,14 @@ export class EventListComponent implements OnInit {
       next: (res) => {
         if (res.success && res.events) {
           const defaultImages: Record<string, string> = {
-            'Running': 'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80',
-            'Badminton': 'https://images.unsplash.com/photo-1626225967045-94408422615d?auto=format&fit=crop&w=800&q=80',
-            'Football': 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80'
+            'Running': '/assets/Run.jpg',
+            'Badminton': '/assets/Badminton.jpg',
+            'Football': '/assets/Football.jpg',
+            'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
+            'Pickleball': '/assets/Pickleball.webp',
+            'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
+            'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80',
+            'Other': '/assets/Other.jpg'
           };
           const featured = res.events.slice(0, 3).map(e => ({
             id: e._id || e.slug,
