@@ -44,8 +44,7 @@ export class CommunityComponent implements OnInit {
   stats = signal<StatItem[]>([
     { iconName: 'members', value: '12,500+', label: 'Active Members' },
     { iconName: 'cities', value: '24', label: 'Cities Covered' },
-    { iconName: 'events', value: '850+', label: 'Total Events' },
-    { iconName: 'champions', value: '2,400+', label: 'Champions Crowned' }
+    { iconName: 'events', value: '850+', label: 'Total Events' }
   ]);
 
   // Initialized with offline static fallbacks, updated dynamically via API
@@ -111,25 +110,47 @@ export class CommunityComponent implements OnInit {
 
   ngOnInit() {
     this.loadLeaderboard();
+    this.loadPublicStats();
+  }
+
+  loadPublicStats() {
+    this.apiService.getPublicStats().subscribe({
+      next: (res) => {
+        if (res && res.success && res.stats) {
+          this.stats.set([
+            { iconName: 'members', value: res.stats.athletesText || '12,500+', label: 'Active Members' },
+            { iconName: 'cities', value: res.stats.citiesText || '24', label: 'Cities Covered' },
+            { iconName: 'events', value: res.stats.eventsText || '850+', label: 'Total Events' }
+          ]);
+
+          if (res.stats.cityList && res.stats.cityList.length > 0) {
+            this.cities.set(res.stats.cityList);
+          }
+        }
+      },
+      error: (err) => {
+        console.warn('Could not load dynamic community stats:', err);
+      }
+    });
   }
 
   loadLeaderboard() {
     this.apiService.getLeaderboard()
       .subscribe({
         next: (res) => {
-          if (res.success) {
+          if (res && res.success && Array.isArray(res.leaderboard)) {
             const mapped = res.leaderboard.map(e => ({
               id: e.id || e._id || '',
               rank: e.rank,
-              name: e.name,
-              sport: e.sport,
-              eventsCount: parseInt(e.eventsCount) || 0
+              name: e.name || 'Athlete',
+              sport: e.sport || 'Sports',
+              eventsCount: typeof e.eventsCount === 'number' ? e.eventsCount : (parseInt(String(e.eventsCount || 0), 10) || 0)
             }));
             this.leaderboard.set(mapped);
           }
         },
         error: (err) => {
-          console.warn('Backend server offline. Keeping static community ranks fallback...');
+          console.warn('Backend server offline. Keeping static community ranks fallback...', err);
         }
       });
   }

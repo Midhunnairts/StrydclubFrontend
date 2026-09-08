@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 interface StatItem {
   value: string;
@@ -22,7 +23,9 @@ interface TestimonialItem {
   templateUrl: './community-home.html',
   styleUrl: './community-home.scss'
 })
-export class CommunityHomeComponent {
+export class CommunityHomeComponent implements OnInit {
+  private apiService = inject(ApiService);
+
   stats = signal<StatItem[]>([
     {
       value: '12,500+',
@@ -61,6 +64,39 @@ export class CommunityHomeComponent {
       avatar: 'PM'
     }
   ]);
+
+  ngOnInit() {
+    this.loadStats();
+  }
+
+  loadStats() {
+    this.apiService.getPublicStats().subscribe({
+      next: (res) => {
+        if (res && res.success && res.stats) {
+          this.stats.set([
+            {
+              value: res.stats.athletesText || '12,500+',
+              label: 'Active Members',
+              iconName: 'members'
+            },
+            {
+              value: res.stats.citiesText || '24',
+              label: 'Cities',
+              iconName: 'cities'
+            },
+            {
+              value: res.stats.eventsText || '850+',
+              label: 'Events Hosted',
+              iconName: 'events'
+            }
+          ]);
+        }
+      },
+      error: (err) => {
+        console.warn('Could not load dynamic public stats for community section:', err);
+      }
+    });
+  }
 
   get isLoggedIn(): boolean {
     if (typeof window !== 'undefined' && window.localStorage) {

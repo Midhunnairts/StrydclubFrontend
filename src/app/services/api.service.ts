@@ -61,6 +61,29 @@ export class ApiService {
   }
 
   /**
+   * Fetch public platform stats (Total Events, Total Athletes, Total Cities).
+   */
+  getPublicStats(): Observable<{
+    success: boolean;
+    stats: {
+      totalEvents: number;
+      totalAthletes: number;
+      totalCities: number;
+      eventsText: string;
+      athletesText: string;
+      citiesText: string;
+      championsText?: string;
+      cityList?: Array<{
+        name: string;
+        membersCount: number;
+        eventsCount: number;
+      }>;
+    };
+  }> {
+    return this.http.get<any>(`${this.apiUrl}/events/stats`);
+  }
+
+  /**
    * Fetch public user profile details.
    */
   getPublicUserProfile(id: string): Observable<{ success: boolean; user: any }> {
