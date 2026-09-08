@@ -34,7 +34,7 @@ export class HostEventComponent {
     { name: 'Football', icon: '⚽' },
     { name: 'Volleyball', icon: '🏐' },
     { name: 'Pickleball', icon: '🏓' },
-    { name: 'Kho Kho', icon: '🤸' },
+    { name: 'Kho Kho', icon: '🏃‍♂️' },
     { name: 'Cricket', icon: '🏏' },
     { name: 'Other', icon: '✨' },
   ];

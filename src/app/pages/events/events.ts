@@ -41,8 +41,8 @@ export class EventsComponent implements OnInit {
     { name: 'Badminton', icon: '🏸' },
     { name: 'Football', icon: '⚽' },
     { name: 'Volleyball', icon: '🏐' },
-    { name: 'Pickleball', icon: '🎾' },
-    { name: 'Kho Kho', icon: '🏹' },
+    { name: 'Pickleball', icon: '🏓' },
+    { name: 'Kho Kho', icon: '🏃‍♂️' },
     { name: 'Cricket', icon: '🏏' },
     { name: 'Other', icon: '🎯' }
   ];
@@ -76,18 +76,20 @@ export class EventsComponent implements OnInit {
             'Badminton': '🏸',
             'Football': '⚽',
             'Volleyball': '🏐',
-            'Pickleball': '🎾',
-            'Kho Kho': '🏹',
+            'Pickleball': '🏓',
+            'Kho Kho': '🏃‍♂️',
             'Cricket': '🏏',
             'Other': '🎯'
           };
           const categoryImages: Record<string, string> = {
-            'Running': 'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80',
-            'Badminton': 'https://images.unsplash.com/photo-1626225967045-94408422615d?auto=format&fit=crop&w=800&q=80',
-            'Football': 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80',
+            'Running': '/assets/Run.jpg',
+            'Badminton': '/assets/Badminton.jpg',
+            'Football': '/assets/Football.jpg',
             'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
-            'Pickleball': 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=800&q=80',
-            'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80'
+            'Pickleball': '/assets/Pickleball.webp',
+            'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
+            'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80',
+            'Other': '/assets/Other.jpg'
           };
           const mapped = res.events.map(e => {
             const slotsTotal = e.slotsTotal || 50;
@@ -206,8 +208,8 @@ export class EventsComponent implements OnInit {
       'Badminton': '🏸',
       'Football': '⚽',
       'Volleyball': '🏐',
-      'Pickleball': '🎾',
-      'Kho Kho': '🏹'
+      'Pickleball': '🏓',
+      'Kho Kho': '🏃‍♂️'
     };
     return icons[event.category] || '✨';
   }
@@ -215,14 +217,16 @@ export class EventsComponent implements OnInit {
   getEventImage(event: EventListItem): string {
     if (event.image) return event.image;
     const defaultImages: Record<string, string> = {
-      'Running': 'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80',
-      'Badminton': 'https://images.unsplash.com/photo-1626225967045-94408422615d?auto=format&fit=crop&w=800&q=80',
-      'Football': 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80',
+      'Running': '/assets/Run.jpg',
+      'Badminton': '/assets/Badminton.jpg',
+      'Football': '/assets/Football.jpg',
       'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
-      'Pickleball': 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=800&q=80',
-      'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80'
+      'Pickleball': '/assets/Pickleball.webp',
+      'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
+      'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80',
+      'Other': '/assets/Other.jpg'
     };
-    return defaultImages[event.category] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80';
+    return defaultImages[event.category] || '/assets/Other.jpg';
   }
 
   getEventPrice(event: EventListItem): number | null {

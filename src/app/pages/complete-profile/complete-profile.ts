@@ -30,8 +30,8 @@ export class CompleteProfileComponent implements OnInit {
     { name: 'Badminton', icon: '🏸' },
     { name: 'Football', icon: '⚽' },
     { name: 'Volleyball', icon: '🏐' },
-    { name: 'Pickleball', icon: '🎾' },
-    { name: 'Kho Kho', icon: '🏹' },
+    { name: 'Pickleball', icon: '🏓' },
+    { name: 'Kho Kho', icon: '🏃‍♂️' },
     { name: 'Cricket', icon: '🏏' }
   ];
 

@@ -69,6 +69,16 @@ export class IndividualEventComponent implements OnInit {
         .subscribe({
           next: (res) => {
             if (res.success) {
+              const defaultCategoryImages: Record<string, string> = {
+                'Running': '/assets/Run.jpg',
+                'Badminton': '/assets/Badminton.jpg',
+                'Football': '/assets/Football.jpg',
+                'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
+                'Pickleball': '/assets/Pickleball.webp',
+                'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
+                'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80',
+                'Other': '/assets/Other.jpg'
+              };
               const mapped: EventDetails = {
                 id: res.event._id || res.event.id || (res.event as any).slug || '',
                 title: res.event.title,
@@ -87,7 +97,7 @@ export class IndividualEventComponent implements OnInit {
                 organizedBy: res.event.organizedBy,
                 contact: res.event.contact,
                 venueUrl: res.event.venueUrl || '',
-                bannerUrl: res.event.bannerUrl || ''
+                bannerUrl: res.event.bannerUrl || res.event.image || defaultCategoryImages[res.event.category] || '/assets/Other.jpg'
               };
               this.eventDetails.set(mapped);
             }
