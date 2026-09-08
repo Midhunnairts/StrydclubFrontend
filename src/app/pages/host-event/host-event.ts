@@ -108,6 +108,17 @@ export class HostEventComponent {
     }
   }
 
+  openPicker(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input && typeof (input as any).showPicker === 'function') {
+      try {
+        (input as any).showPicker();
+      } catch (e) {
+        // Fallback for browsers
+      }
+    }
+  }
+
   getSportIcon(sportName: string): string {
     const found = this.sportsOptions.find(s => s.name === sportName);
     return found ? found.icon : '';

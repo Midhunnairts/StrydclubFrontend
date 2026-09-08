@@ -94,7 +94,7 @@ export class EventsComponent implements OnInit {
             const slotsFilled = e.slotsFilled || 0;
             const fillPercentage = (slotsFilled / slotsTotal) * 100;
             let computedStatus = e.status || 'OPEN';
-            
+
             const isPast = computedStatus.toUpperCase() === 'COMPLETED' || this.isEventPast(e.date);
             if (isPast) {
               computedStatus = 'COMPLETED';
@@ -110,7 +110,7 @@ export class EventsComponent implements OnInit {
               category: e.category,
               icon: categoryIcons[e.category] || '🎯',
               image: e.bannerUrl || e.image || categoryImages[e.category] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80',
-              price: e.price || 499,
+              price: e.price || "Free",
               date: e.date,
               time: e.time,
               location: e.location,

@@ -311,6 +311,48 @@
   }
 }
 
+/* Custom Date & Time Picker Wrapper & Inputs */
+.date-picker-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  .picker-icon {
+    position: absolute;
+    right: 16px;
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+    transition: color 0.2s ease;
+  }
+
+  &:hover .picker-icon {
+    color: #ff3b30;
+  }
+}
+
+.date-time-picker-input {
+  width: 100%;
+  color-scheme: dark;
+  cursor: pointer;
+  padding-right: 48px;
+
+  &::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+  }
+}
+
 .select-wrapper {
   position: relative;
   display: flex;
