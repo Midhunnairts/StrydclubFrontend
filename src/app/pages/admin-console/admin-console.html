@@ -10,7 +10,7 @@
       <div class="header-left">
         <div class="admin-shield-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
         </div>
         <h1 class="admin-title">ADMIN CONSOLE</h1>
@@ -25,8 +25,8 @@
 
         <button class="bell-button" aria-label="Notifications">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
           <span class="bell-dot"></span>
         </button>
@@ -39,54 +39,42 @@
 
     <!-- Sub Navigation Pill Tabs -->
     <nav class="admin-nav-tabs">
-      <button 
-        class="nav-tab-pill" 
-        [class.active]="activeTab() === 'overview'" 
-        (click)="setTab('overview')">
+      <button class="nav-tab-pill" [class.active]="activeTab() === 'overview'" (click)="setTab('overview')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="14" width="7" height="7" rx="1"/>
-          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
         </svg>
         <span>Overview</span>
         <span class="tab-badge" *ngIf="stats().pendingCount > 0">{{ stats().pendingCount }}</span>
       </button>
 
-      <button 
-        class="nav-tab-pill" 
-        [class.active]="activeTab() === 'events'" 
-        (click)="setTab('events')">
+      <button class="nav-tab-pill" [class.active]="activeTab() === 'events'" (click)="setTab('events')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-          <line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
         </svg>
         <span>Events</span>
       </button>
 
-      <button 
-        class="nav-tab-pill" 
-        [class.active]="activeTab() === 'users'" 
-        (click)="setTab('users')">
+      <button class="nav-tab-pill" [class.active]="activeTab() === 'users'" (click)="setTab('users')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
         <span>Users</span>
       </button>
 
-      <button 
-        class="nav-tab-pill" 
-        [class.active]="activeTab() === 'analytics'" 
-        (click)="setTab('analytics')">
+      <button class="nav-tab-pill" [class.active]="activeTab() === 'analytics'" (click)="setTab('analytics')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="20" x2="18" y2="10"/>
-          <line x1="12" y1="20" x2="12" y2="4"/>
-          <line x1="6" y1="20" x2="6" y2="14"/>
+          <line x1="18" y1="20" x2="18" y2="10" />
+          <line x1="12" y1="20" x2="12" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="14" />
         </svg>
         <span>Analytics</span>
       </button>
@@ -101,10 +89,10 @@
           <div class="metric-header">
             <div class="metric-icon-wrapper">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
               </svg>
             </div>
             <span class="trend-badge positive">
@@ -120,8 +108,8 @@
           <div class="metric-header">
             <div class="metric-icon-wrapper">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
               </svg>
             </div>
             <span class="trend-badge positive">
@@ -137,7 +125,7 @@
           <div class="metric-header">
             <div class="metric-icon-wrapper">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
               </svg>
             </div>
             <span class="trend-badge positive">
@@ -153,8 +141,8 @@
           <div class="metric-header">
             <div class="metric-icon-wrapper">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                <polyline points="17 6 23 6 23 12"/>
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
               </svg>
             </div>
             <span class="trend-badge positive">
@@ -167,7 +155,7 @@
       </section>
 
       <!-- Approval Queue Section -->
-      <section class="section-card approval-queue-section">
+      <!-- <section class="section-card approval-queue-section">
         <div class="section-header">
           <div>
             <h2 class="section-title">Approval Queue</h2>
@@ -214,7 +202,7 @@
             <p>All caught up! No events currently awaiting review.</p>
           </div>
         </ng-template>
-      </section>
+      </section> -->
 
       <!-- Highlights Row Cards -->
       <section class="highlights-grid">
@@ -277,7 +265,7 @@
             <h2 class="section-title">All Events</h2>
             <p class="section-subtitle">Manage, edit, and moderate published events</p>
           </div>
-          
+
           <a routerLink="/host-event" class="new-event-btn">
             <span class="bolt-icon">⚡</span> New Event
           </a>
@@ -286,20 +274,18 @@
         <!-- Search & Filter Bar -->
         <div class="search-filter-bar">
           <div class="search-input-wrapper">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              class="search-icon">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
-            <input 
-              type="text" 
-              class="search-events-input" 
-              placeholder="Search events..." 
+            <input type="text" class="search-events-input" placeholder="Search events..."
               [(ngModel)]="eventSearchQuery">
           </div>
 
           <button class="filter-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
             </svg>
             <span>Filter</span>
           </button>
@@ -330,7 +316,8 @@
                 <td>
                   <div class="slots-cell-wrapper">
                     <div class="slots-progress-track">
-                      <div class="slots-progress-fill" [style.width.%]="getSlotsPercent(ev.slotsFilled, ev.slotsTotal)"></div>
+                      <div class="slots-progress-fill" [style.width.%]="getSlotsPercent(ev.slotsFilled, ev.slotsTotal)">
+                      </div>
                     </div>
                     <span class="slots-text">{{ ev.slotsFilled || 0 }}/{{ ev.slotsTotal || 50 }}</span>
                   </div>
@@ -344,27 +331,30 @@
                   <div class="row-action-btns">
                     <!-- View Icon -->
                     <button class="action-icon-btn view-btn" (click)="viewEvent(ev)" title="View Event">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                        <circle cx="12" cy="12" r="3"/>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
                       </svg>
                     </button>
 
                     <!-- Edit Icon -->
                     <button class="action-icon-btn edit-btn" (click)="openEditModal(ev)" title="Edit Event">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                       </svg>
                     </button>
 
                     <!-- Delete Icon -->
                     <button class="action-icon-btn delete-btn" (click)="deleteEventAction(ev)" title="Delete Event">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="3 6 5 6 21 6"/>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                        <line x1="10" y1="11" x2="10" y2="17"/>
-                        <line x1="14" y1="11" x2="14" y2="17"/>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <line x1="10" y1="11" x2="10" y2="17" />
+                        <line x1="14" y1="11" x2="14" y2="17" />
                       </svg>
                     </button>
                   </div>
@@ -448,7 +438,7 @@
             <h2 class="section-title">User Management</h2>
             <p class="section-subtitle">Athletes, organizers, and their activity</p>
           </div>
-          
+
           <div class="shown-count-text">
             {{ filteredUsers.length }} users shown
           </div>
@@ -457,15 +447,12 @@
         <!-- Search Bar -->
         <div class="search-filter-bar">
           <div class="search-input-wrapper">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              class="search-icon">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
-            <input 
-              type="text" 
-              class="search-events-input" 
-              placeholder="Search users..." 
-              [(ngModel)]="userSearchQuery">
+            <input type="text" class="search-events-input" placeholder="Search users..." [(ngModel)]="userSearchQuery">
           </div>
         </div>
 
@@ -480,11 +467,8 @@
               <div class="user-info-meta">
                 <div class="user-name-line">
                   <span class="user-name-text">{{ u.name || u.email || 'Athlete' }}</span>
-                  <span 
-                    class="role-pill-badge" 
-                    [class.organizer]="u.role === 'admin' || u.role === 'organizer'"
-                    [class.athlete]="u.role !== 'admin' && u.role !== 'organizer'"
-                    (click)="toggleUserRole(u)"
+                  <span class="role-pill-badge" [class.organizer]="u.role === 'admin' || u.role === 'organizer'"
+                    [class.athlete]="u.role !== 'admin' && u.role !== 'organizer'" (click)="toggleUserRole(u)"
                     title="Click to toggle role">
                     {{ (u.role === 'admin' ? 'ORGANIZER' : (u.role === 'organizer' ? 'ORGANIZER' : 'ATHLETE')) }}
                   </span>
@@ -494,7 +478,8 @@
                 </div>
 
                 <div class="user-submeta-text">
-                  {{ u.email || u.phone || 'no-contact' }} · {{ (u.favoriteSports && u.favoriteSports.length > 0) ? u.favoriteSports[0] : 'Running' }} · Joined {{ u.memberSince || 'Jan 2026' }}
+                  {{ u.email || u.phone || 'no-contact' }} · {{ (u.favoriteSports && u.favoriteSports.length > 0) ?
+                  u.favoriteSports[0] : 'Running' }} · Joined {{ u.memberSince || 'Jan 2026' }}
                 </div>
               </div>
             </div>
@@ -528,7 +513,7 @@
         <!-- Top Card: EVENTS PER MONTH Bar Chart -->
         <div class="analytics-card mb-6">
           <h3 class="analytics-card-title">EVENTS PER MONTH</h3>
-          
+
           <div class="monthly-chart-container">
             <div class="chart-bars-wrapper">
               <div class="chart-col" *ngFor="let m of analyticsData().monthlyEvents">
@@ -547,7 +532,7 @@
           <!-- TOP SPORTS Card -->
           <div class="analytics-card">
             <h3 class="analytics-card-title">TOP SPORTS</h3>
-            
+
             <div class="sports-distribution-list">
               <div class="sport-dist-row" *ngFor="let s of analyticsData().topSports">
                 <div class="sport-label-line">
@@ -564,7 +549,7 @@
           <!-- TOP CITIES Card -->
           <div class="analytics-card">
             <h3 class="analytics-card-title">TOP CITIES</h3>
-            
+
             <div class="cities-leaderboard-list">
               <div class="city-rank-row" *ngFor="let c of analyticsData().topCities; let i = index">
                 <span class="city-rank-num">{{ i + 1 }}</span>
