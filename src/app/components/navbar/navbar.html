@@ -2,17 +2,9 @@
   <div class="nav-container">
 
     <!-- Branding Logo -->
-    <a routerLink="/" class="brand-logo" id="nav-brand">
+    <a routerLink="/" class="brand-logo" id="nav-brand" (click)="closeDropdown()">
       STRYDCLUB
     </a>
-
-    <!-- Hamburger Mobile Toggle -->
-    <button class="mobile-toggle" aria-label="Toggle navigation menu" (click)="toggleMobileMenu()"
-      [class.open]="isMobileMenuOpen()">
-      <span class="bar bar-1"></span>
-      <span class="bar bar-2"></span>
-      <span class="bar bar-3"></span>
-    </button>
 
     <!-- Desktop Navigation Links -->
     <ul class="nav-links" id="nav-links-list">
@@ -29,7 +21,7 @@
     <!-- Action Call to Actions -->
     <div class="nav-actions" id="nav-actions-container">
       @if (!isLoggedIn) {
-        <a routerLink="/login" class="btn-login" id="btn-login-action">Login</a>
+        <a routerLink="/login" class="btn-login" id="btn-login-action" (click)="closeDropdown()">Login</a>
       } @else {
         <!-- User Profile Avatar Button -->
         <div class="profile-avatar-wrapper">
@@ -42,10 +34,9 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="avatar-icon">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
-            <span class="avatar-badge">0</span>
           </button>
 
-          <!-- User Profile Dropdown Card Panel (Exact Screenshot Alignment) -->
+          <!-- User Profile Dropdown Card Panel -->
           @if (isProfileDropdownOpen()) {
             <div class="profile-dropdown-card" id="profile-dropdown-menu" (click)="$event.stopPropagation()">
               
@@ -132,40 +123,89 @@
       }
     </div>
 
+    <!-- Right Container for Mobile: Avatar/Login + Hamburger Toggle -->
+    <div class="mobile-right-group">
+      <!-- Hamburger Mobile Toggle -->
+      <button class="mobile-toggle" aria-label="Toggle navigation menu" (click)="toggleMobileMenu()"
+        [class.open]="isMobileMenuOpen()">
+        <span class="bar bar-1"></span>
+        <span class="bar bar-2"></span>
+        <span class="bar bar-3"></span>
+      </button>
+    </div>
+
   </div>
 
   <!-- Mobile Dropdown Menu Drawer -->
   <div class="mobile-menu" [class.open]="isMobileMenuOpen()" id="nav-mobile-menu">
-    <ul class="mobile-nav-links">
-      @for (item of navItems; track item.label) {
-      <li>
-        <a [routerLink]="item.link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-          (click)="setActiveTab(item.label)">
-          {{ item.label }}
-        </a>
-      </li>
+    <div class="mobile-menu-scroll">
+      
+      @if (isLoggedIn) {
+        <!-- Mobile Profile Summary Card -->
+        <div class="mobile-user-card">
+          <div class="mobile-user-avatar">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="avatar-svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+          </div>
+          <div class="mobile-user-details">
+            <h4 class="mobile-user-name">{{ userDisplayName }}</h4>
+            <p class="mobile-user-email">{{ userDisplayEmail }}</p>
+            <span class="mobile-role-badge">{{ userRoleBadge }}</span>
+          </div>
+        </div>
       }
-    </ul>
-    <div class="mobile-nav-actions">
-      @if (!isLoggedIn) {
-        <a routerLink="/login" class="btn-login" (click)="toggleMobileMenu()">Login</a>
-      } @else {
-        <a routerLink="/user-profile" class="btn-dashboard" (click)="toggleMobileMenu()">
-          <span>My Profile</span>
-        </a>
-        <a routerLink="/dashboard" class="btn-dashboard" (click)="toggleMobileMenu()">
-          <span>Dashboard</span>
-        </a>
-        @if (isAdmin) {
-          <a routerLink="/host-event" class="btn-host-event" (click)="toggleMobileMenu()">
-            <span>Host Event</span>
+
+      <ul class="mobile-nav-links">
+        @for (item of navItems; track item.label) {
+        <li>
+          <a [routerLink]="item.link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+            (click)="setActiveTab(item.label)">
+            {{ item.label }}
           </a>
-          <a routerLink="/admin" class="btn-host-event" (click)="toggleMobileMenu()" style="margin-top: 6px;">
-            <span>Admin Console</span>
-          </a>
+        </li>
         }
-        <button (click)="logout()" class="btn-login" style="cursor: pointer;">Logout</button>
-      }
+      </ul>
+
+      <div class="mobile-nav-actions">
+        @if (!isLoggedIn) {
+          <a routerLink="/login" class="mobile-action-btn primary-btn" (click)="toggleMobileMenu()">Login / Sign Up</a>
+        } @else {
+          <a routerLink="/user-profile" class="mobile-action-btn" (click)="toggleMobileMenu()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="btn-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+            <span>My Profile</span>
+          </a>
+          <a routerLink="/dashboard" class="mobile-action-btn" (click)="toggleMobileMenu()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="btn-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+            </svg>
+            <span>Dashboard</span>
+          </a>
+          @if (isAdmin) {
+            <a routerLink="/host-event" class="mobile-action-btn highlight-btn" (click)="toggleMobileMenu()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="btn-icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              <span>Host Event</span>
+            </a>
+            <a routerLink="/admin" class="mobile-action-btn highlight-btn" (click)="toggleMobileMenu()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="btn-icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+              <span>Admin Console</span>
+            </a>
+          }
+          <button (click)="logout()" class="mobile-action-btn logout-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="btn-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+            </svg>
+            <span>Sign Out</span>
+          </button>
+        }
+      </div>
+
     </div>
   </div>
 </header>
