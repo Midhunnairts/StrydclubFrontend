@@ -92,6 +92,8 @@
   border-radius: 20px;
   overflow: hidden;
   transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
 
   &:hover {
     transform: translateY(-6px);

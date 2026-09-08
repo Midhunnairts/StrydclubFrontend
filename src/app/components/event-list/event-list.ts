@@ -41,7 +41,7 @@ export class EventListComponent implements OnInit {
             'Football': 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80'
           };
           const featured = res.events.slice(0, 3).map(e => ({
-            id: e.slug || e._id,
+            id: e._id || e.slug,
             title: e.title,
             category: e.category.toUpperCase(),
             image: e.bannerUrl || e.image || defaultImages[e.category] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80',

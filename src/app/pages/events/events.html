@@ -79,7 +79,7 @@
     <!-- Dynamic 3-Column Events Grid (Pixel-Perfect Screenshot Alignment) -->
     <div class="events-page-grid" id="events-list-results-grid">
       @for (event of filteredEvents(); track event.id) {
-        <div class="events-list-card" id="list-card-{{ event.id }}">
+        <div class="events-list-card" id="list-card-{{ event.id }}" [routerLink]="['/events', event.id]">
 
           <!-- Card Top Image Container -->
           <div class="card-image-container" [style.background-image]="'url(' + getEventImage(event) + ')'">
@@ -164,12 +164,12 @@
             </div>
 
             <!-- View Details Action Button -->
-            <a [routerLink]="['/events', event.id]" class="btn-view-details-capsule" id="btn-details-{{ event.id }}">
+            <div class="btn-view-details-capsule" id="btn-details-{{ event.id }}">
               <span>View Details</span>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="btn-arrow">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
               </svg>
-            </a>
+            </div>
 
           </div>
 

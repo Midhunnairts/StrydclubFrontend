@@ -22,7 +22,7 @@
     <!-- Events Cards Grid -->
     <div class="events-grid" id="events-cards-grid">
       @for (event of events(); track event.title) {
-        <div class="event-card" id="event-card-{{ event.category.toLowerCase() }}">
+        <div class="event-card" id="event-card-{{ event.category.toLowerCase() }}" [routerLink]="['/events', event.id]">
           
           <!-- Card Top Image Header -->
           <div class="card-image-wrapper" style="background-image: url('{{ event.image }}');">
@@ -74,9 +74,9 @@
             </div>
 
             <!-- Full Width White Capsule Action CTA Button -->
-            <a [routerLink]="['/events', event.id]" class="btn-register-action" id="btn-register-{{ event.category.toLowerCase() }}">
+            <div class="btn-register-action" id="btn-register-{{ event.category.toLowerCase() }}">
               Register Now
-            </a>
+            </div>
           </div>
 
         </div>
