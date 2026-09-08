@@ -25,43 +25,43 @@ export class AboutComponent {
   values = signal<ValueItem[]>([
     {
       iconName: 'mission',
-      title: 'Mission Driven',
-      description: "Building India's most inclusive and energetic multi-sport community platform."
+      title: 'Move with Purpose',
+      description: "Every experience is designed to inspire an active, fulfilling lifestyle."
     },
     {
       iconName: 'energy',
-      title: 'High Energy',
-      description: 'Every event, every match, every moment designed to fuel your competitive spirit.'
+      title: 'Built on Community',
+      description: 'Real connections are at the heart of everything we do.'
     },
     {
       iconName: 'community',
-      title: 'Community First',
-      description: 'More than competitions - we create connections that last beyond the finish line.'
+      title: 'Experience More',
+      description: 'Thoughtfully curated sports, adventures, and social experiences that bring people together.'
     },
     {
       iconName: 'everyone',
-      title: 'For Everyone',
-      description: 'From beginners to champions, every athlete finds their place in our community.'
+      title: 'Everyone Belongs',
+      description: 'No matter your background or skill level, STRYD is a community where everyone can thrive.'
     }
   ]);
 
   journey = signal<JourneyItem[]>([
     {
       year: '2025',
-      title: 'The Beginning',
-      description: "Founded with a vision to unite India's sports enthusiasts under one platform.",
+      title: 'Where It All Began',
+      description: "STRYD was founded with a simple idea—to create a community where people could connect through sports, movement, and shared experiences.",
       side: 'left'
     },
     {
       year: '2026',
-      title: 'Rapid Growth',
-      description: "Expanded to 24 cities with over 12,500 active members and 850+ events.",
+      title: 'Today Building the Community',
+      description: "From runs and racquet sports to fitness sessions and weekend adventures, STRYD continues to bring together a growing community through thoughtfully curated experiences across Chennai.",
       side: 'right'
     },
     {
       year: '2027',
-      title: 'The Future',
-      description: "Scaling to 100+ cities, introducing new sports, and building the ultimate sports ecosystem.",
+      title: 'The Future Growing Beyond Boundaries',
+      description: "Our vision is to make STRYD the go-to lifestyle community for sports, wellness, and experiences expanding into new cities, new activities, and creating even more ways for people to move and connect.",
       side: 'left'
     }
   ]);
