@@ -65,7 +65,8 @@
       <!-- Leaderboard cards list -->
       <div class="leaderboard-list" id="leaderboard-cards-list">
         @for (row of leaderboard(); track row.name) {
-        <div class="leaderboard-card" [class.top-three]="row.rank <= 3" (click)="viewUserProfile(row)" style="cursor: pointer;" id="leaderboard-card-rank-{{ row.rank }}">
+        <div class="leaderboard-card" [class.top-three]="row.rank <= 3" (click)="viewUserProfile(row)"
+          style="cursor: pointer;" id="leaderboard-card-rank-{{ row.rank }}">
 
           <!-- Rank & Profile Info (Left Side) -->
           <div class="card-left-section">
@@ -149,15 +150,13 @@
     </div>
 
     <!-- Testimonials Section -->
-    <div class="testimonials-section">
+    <!-- <div class="testimonials-section">
       <h2 class="testimonials-title" id="testimonials-title-header">What Members Say</h2>
 
-      <!-- Testimonials Cards Grid -->
       <div class="testimonials-grid" id="testimonials-cards-grid">
         @for (item of testimonials(); track item.name) {
         <div class="testimonial-card" id="testimonial-card-{{ item.name.toLowerCase().split(' ').join('-') }}">
 
-          <!-- Stars row -->
           <div class="stars-row">
             <span class="star-symbol">★</span>
             <span class="star-symbol">★</span>
@@ -166,10 +165,8 @@
             <span class="star-symbol">★</span>
           </div>
 
-          <!-- Quote Description -->
           <p class="quote-text">{{ item.quote }}</p>
 
-          <!-- User Info Frame (Bottom) -->
           <div class="user-info-frame">
             <div class="user-avatar-circle">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
@@ -187,7 +184,7 @@
         </div>
         }
       </div>
-    </div>
+    </div> -->
 
     <!-- Closing CTA Banner -->
     <div class="community-cta-banner" id="community-closing-cta">
