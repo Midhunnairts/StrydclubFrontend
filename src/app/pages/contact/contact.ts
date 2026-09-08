@@ -20,17 +20,17 @@ export class ContactComponent {
     {
       iconName: 'email',
       label: 'Email',
-      value: 'hello@strydclub.com'
+      value: 'strydclub@gmail.com'
     },
     {
       iconName: 'phone',
       label: 'Phone',
-      value: '+91 98765 43210'
+      value: '+91 8608159698'
     },
     {
       iconName: 'headquarters',
       label: 'Headquarters',
-      value: 'Bangalore, Karnataka, India'
+      value: 'Chennai, Tamil Nadu, India'
     },
     {
       iconName: 'social',
