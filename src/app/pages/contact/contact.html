@@ -15,6 +15,20 @@
       <div class="contact-form-column" id="contact-form-side">
         <h2 class="column-title">Send us a Message</h2>
 
+        <!-- Success Alert -->
+        @if (successMsg()) {
+        <div class="contact-alert alert-success" style="padding: 14px 18px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); color: #10b981; font-size: 0.95rem; font-weight: 600; margin-bottom: 20px;">
+          ✓ {{ successMsg() }}
+        </div>
+        }
+
+        <!-- Error Alert -->
+        @if (errorMsg()) {
+        <div class="contact-alert alert-error" style="padding: 14px 18px; border-radius: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #ef4444; font-size: 0.95rem; font-weight: 600; margin-bottom: 20px;">
+          ⚠ {{ errorMsg() }}
+        </div>
+        }
+
         <form (ngSubmit)="onSubmit()" #contactForm="ngForm" class="contact-form">
           <!-- Name Field -->
           <div class="form-group">
@@ -45,8 +59,8 @@
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" class="btn-submit-message" [disabled]="!contactForm.form.valid">
-            <span>Send Message</span>
+          <button type="submit" class="btn-submit-message" [disabled]="!contactForm.form.valid || submitting()">
+            <span>{{ submitting() ? 'Sending Message...' : 'Send Message' }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
               stroke="currentColor" class="send-icon">
               <path stroke-linecap="round" stroke-linejoin="round"

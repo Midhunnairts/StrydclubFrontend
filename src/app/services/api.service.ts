@@ -359,4 +359,11 @@ export class ApiService {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     return this.http.get<{ success: boolean; analytics: any }>(`${this.apiUrl}/admin/analytics`, { headers });
   }
+
+  /**
+   * Submit contact form message.
+   */
+  sendContactMessage(data: { name: string; email: string; subject: string; message: string }): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${this.apiUrl}/contact/submit`, data);
+  }
 }
