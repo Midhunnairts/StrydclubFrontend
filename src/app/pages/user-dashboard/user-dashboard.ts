@@ -103,9 +103,14 @@ export class UserDashboardComponent implements OnInit {
           }
         }
       },
-      error: () => {
-        this.registeredEvents.set([]);
-        this.pastParticipation.set([]);
+      error: (err) => {
+        if (err?.status === 401 || err?.status === 403) {
+          this.apiService.logout();
+          this.router.navigate(['/login']);
+        } else {
+          this.registeredEvents.set([]);
+          this.pastParticipation.set([]);
+        }
       }
     });
   }

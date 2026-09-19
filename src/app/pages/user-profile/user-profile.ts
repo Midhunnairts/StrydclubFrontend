@@ -98,13 +98,19 @@ export class UserProfileComponent implements OnInit {
           if (res.success && res.user) {
             this.populateProfile(res.user);
           } else {
-            this.userProfile.set(null);
+            this.apiService.logout();
+            this.router.navigate(['/login']);
           }
           this.loading.set(false);
         },
-        error: () => {
-          this.userProfile.set(null);
-          this.loading.set(false);
+        error: (err) => {
+          if (err?.status === 401 || err?.status === 403) {
+            this.apiService.logout();
+            this.router.navigate(['/login']);
+          } else {
+            this.userProfile.set(null);
+            this.loading.set(false);
+          }
         }
       });
 

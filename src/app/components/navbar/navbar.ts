@@ -42,17 +42,17 @@ export class NavbarComponent {
 
   get userDisplayName(): string {
     const user = this.apiService.currentUser();
-    return user?.name || 'Arjun Sharma';
+    return user?.name || 'Athlete';
   }
 
   get userDisplayEmail(): string {
     const user = this.apiService.currentUser();
-    return user?.email || user?.phone || 'arjun@email.com';
+    return user?.email || user?.phone || '';
   }
 
   get userRoleBadge(): string {
     const user = this.apiService.currentUser();
-    return (user?.role || 'admin').toUpperCase();
+    return (user?.role || 'user').toUpperCase();
   }
 
   setActiveTab(tabName: string) {

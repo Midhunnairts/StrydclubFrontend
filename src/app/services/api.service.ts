@@ -30,14 +30,14 @@ export class ApiService {
     const obs = this.getUserProfile(token);
     obs.subscribe({
       next: (res) => {
-        if (res.success) {
+        if (res.success && res.user) {
           this.currentUser.set(res.user);
         } else {
-          this.currentUser.set(null);
+          this.logout();
         }
       },
       error: () => {
-        this.currentUser.set(null);
+        this.logout();
       }
     });
     return obs;
