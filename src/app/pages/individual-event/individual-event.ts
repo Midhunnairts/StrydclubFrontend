@@ -32,6 +32,7 @@ interface EventDetails {
   price: number;
   slotsFilled: number;
   slotsTotal: number;
+  rulesNotes?: string;
   rules: RuleItem[];
   schedule: ScheduleItem[];
   participants: ParticipantItem[];
@@ -91,6 +92,7 @@ export class IndividualEventComponent implements OnInit {
                 price: res.event.price,
                 slotsFilled: res.event.slotsFilled,
                 slotsTotal: res.event.slotsTotal,
+                rulesNotes: res.event.rulesNotes || '',
                 rules: res.event.rules || [],
                 schedule: res.event.schedule || [],
                 participants: res.event.participants || [],

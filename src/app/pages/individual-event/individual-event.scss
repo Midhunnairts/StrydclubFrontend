@@ -221,6 +221,24 @@
   letter-spacing: -0.02em;
 }
 
+.rules-notes-box {
+  padding: 18px 24px;
+  border-radius: 16px;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.04) 100%), #0e0f12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 4px solid var(--text-white);
+  margin-bottom: 4px;
+}
+
+.rules-notes-text {
+  font-family: var(--font-family-body);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  white-space: pre-line;
+}
+
 .rules-stack {
   display: flex;
   flex-direction: column;

@@ -109,9 +109,17 @@
         </div>
 
         <!-- Rules & Guidelines Block -->
+        @if (details.rules.length > 0 || details.rulesNotes) {
         <div class="rules-section" id="dashboard-rules">
           <h2 class="section-title">Rules & Guidelines</h2>
 
+          @if (details.rulesNotes) {
+          <div class="rules-notes-box">
+            <p class="rules-notes-text">{{ details.rulesNotes }}</p>
+          </div>
+          }
+
+          @if (details.rules.length > 0) {
           <div class="rules-stack">
             @for (rule of details.rules; track rule.text) {
             <div class="rule-row">
@@ -120,7 +128,9 @@
             </div>
             }
           </div>
+          }
         </div>
+        }
 
         <!-- Event Schedule Block -->
         <!-- <div class="schedule-section" id="dashboard-schedule">
