@@ -96,13 +96,7 @@ export class AdminConsoleComponent implements OnInit {
       { name: 'Padel', count: 9, widthPct: 18 }
     ],
     topCities: [
-      { rank: 1, name: 'Bangalore', count: 28 },
-      { rank: 2, name: 'Mumbai', count: 21 },
-      { rank: 3, name: 'Delhi', count: 18 },
-      { rank: 4, name: 'Pune', count: 12 },
-      { rank: 5, name: 'Chennai', count: 9 },
-      { rank: 6, name: 'Hyderabad', count: 8 },
-      { rank: 7, name: 'Goa', count: 5 }
+      { rank: 1, name: 'Chennai', count: 0 },
     ]
   });
 
@@ -133,7 +127,7 @@ export class AdminConsoleComponent implements OnInit {
           this.analyticsData.set(res.analytics);
         }
       },
-      error: () => {}
+      error: () => { }
     });
   }
 
@@ -180,7 +174,7 @@ export class AdminConsoleComponent implements OnInit {
           this.allUsers.set(res.users || []);
         }
       },
-      error: () => {}
+      error: () => { }
     });
   }
 
