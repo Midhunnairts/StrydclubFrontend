@@ -13,9 +13,9 @@ import { ApiService } from '../../services/api.service';
 export class HeroComponent implements OnInit {
   private apiService = inject(ApiService);
 
-  athletesCount = signal<string>('12,500+');
-  eventsCount = signal<string>('850+');
-  citiesCount = signal<string>('24');
+  athletesCount = signal<string>('');
+  eventsCount = signal<string>('');
+  citiesCount = signal<string>('');
 
   ngOnInit() {
     this.loadStats();

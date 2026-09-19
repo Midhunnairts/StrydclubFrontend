@@ -26,23 +26,7 @@ interface TestimonialItem {
 export class CommunityHomeComponent implements OnInit {
   private apiService = inject(ApiService);
 
-  stats = signal<StatItem[]>([
-    {
-      value: '12,500+',
-      label: 'Active Members',
-      iconName: 'members'
-    },
-    {
-      value: '24',
-      label: 'Cities',
-      iconName: 'cities'
-    },
-    {
-      value: '850+',
-      label: 'Events Hosted',
-      iconName: 'events'
-    }
-  ]);
+  stats = signal<StatItem[]>([]);
 
   testimonials = signal<TestimonialItem[]>([
     {

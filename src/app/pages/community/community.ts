@@ -42,9 +42,9 @@ export class CommunityComponent implements OnInit {
   private router = inject(Router);
 
   stats = signal<StatItem[]>([
-    { iconName: 'members', value: '12,500+', label: 'Active Members' },
-    { iconName: 'cities', value: '24', label: 'Cities Covered' },
-    { iconName: 'events', value: '850+', label: 'Total Events' }
+    { iconName: 'members', value: '', label: 'Active Members' },
+    { iconName: 'cities', value: '', label: 'Cities Covered' },
+    { iconName: 'events', value: '', label: 'Total Events' }
   ]);
 
   // Initialized with offline static fallbacks, updated dynamically via API
@@ -118,9 +118,9 @@ export class CommunityComponent implements OnInit {
       next: (res) => {
         if (res && res.success && res.stats) {
           this.stats.set([
-            { iconName: 'members', value: res.stats.athletesText || '12,500+', label: 'Active Members' },
-            { iconName: 'cities', value: res.stats.citiesText || '24', label: 'Cities Covered' },
-            { iconName: 'events', value: res.stats.eventsText || '850+', label: 'Total Events' }
+            { iconName: 'members', value: res.stats.athletesText, label: 'Active Members' },
+            { iconName: 'cities', value: res.stats.citiesText, label: 'Cities Covered' },
+            { iconName: 'events', value: res.stats.eventsText, label: 'Total Events' }
           ]);
 
           if (res.stats.cityList && res.stats.cityList.length > 0) {
