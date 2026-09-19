@@ -42,7 +42,7 @@ export class EventsComponent implements OnInit {
     { name: 'Football', icon: '⚽' },
     { name: 'Volleyball', icon: '🏐' },
     { name: 'Pickleball', icon: '🏓' },
-    { name: 'Kho Kho', icon: '🏃‍♂️' },
+    { name: 'Lifestyle', icon: '🧘‍♀️' },
     { name: 'Cricket', icon: '🏏' },
     { name: 'Other', icon: '🎯' }
   ];
@@ -77,7 +77,7 @@ export class EventsComponent implements OnInit {
             'Football': '⚽',
             'Volleyball': '🏐',
             'Pickleball': '🏓',
-            'Kho Kho': '🏃‍♂️',
+            'Lifestyle': '🧘‍♀️',
             'Cricket': '🏏',
             'Other': '🎯'
           };
@@ -87,8 +87,8 @@ export class EventsComponent implements OnInit {
             'Football': '/assets/Football.jpg',
             'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
             'Pickleball': '/assets/Pickleball.webp',
+            'Lifestyle': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
             'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
-            'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80',
             'Other': '/assets/Other.jpg'
           };
           const mapped = res.events.map(e => {
@@ -145,7 +145,7 @@ export class EventsComponent implements OnInit {
     const category = this.selectedCategory();
     if (category !== 'All') {
       if (category.toLowerCase() === 'other') {
-        const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'kho kho', 'cricket'];
+        const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'lifestyle', 'cricket'];
         list = list.filter(e => !standardCategories.includes(e.category.toLowerCase()) || e.category.toLowerCase() === 'other');
       } else {
         list = list.filter(e => e.category.toLowerCase() === category.toLowerCase());
@@ -209,7 +209,7 @@ export class EventsComponent implements OnInit {
       'Football': '⚽',
       'Volleyball': '🏐',
       'Pickleball': '🏓',
-      'Kho Kho': '🏃‍♂️'
+      'Lifestyle': '🧘‍♀️'
     };
     return icons[event.category] || '✨';
   }
@@ -222,8 +222,8 @@ export class EventsComponent implements OnInit {
       'Football': '/assets/Football.jpg',
       'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
       'Pickleball': '/assets/Pickleball.webp',
+      'Lifestyle': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
       'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
-      'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80',
       'Other': '/assets/Other.jpg'
     };
     return defaultImages[event.category] || '/assets/Other.jpg';
@@ -237,7 +237,7 @@ export class EventsComponent implements OnInit {
       'Football': 599,
       'Volleyball': 399,
       'Pickleball': 649,
-      'Kho Kho': 299
+      'Lifestyle': 199
     };
     return defaultPrices[event.category] || 499;
   }
@@ -251,6 +251,6 @@ export class EventsComponent implements OnInit {
   }
 
   hasCategoryPill(event: EventListItem): boolean {
-    return event.category === 'Volleyball' || event.category === 'Pickleball' || event.category === 'Kho Kho' || !!event.icon;
+    return event.category === 'Volleyball' || event.category === 'Pickleball' || event.category === 'Lifestyle' || !!event.icon;
   }
 }

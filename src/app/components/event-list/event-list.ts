@@ -41,8 +41,8 @@ export class EventListComponent implements OnInit {
             'Football': '/assets/Football.jpg',
             'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
             'Pickleball': '/assets/Pickleball.webp',
+            'Lifestyle': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
             'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
-            'Kho Kho': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80',
             'Other': '/assets/Other.jpg'
           };
           const featured = res.events.slice(0, 3).map(e => ({
