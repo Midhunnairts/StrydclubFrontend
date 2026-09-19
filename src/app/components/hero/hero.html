@@ -7,11 +7,13 @@
 
     <!-- Left Column: Main Hero Content -->
     <div class="hero-left-content">
-      
+
       <!-- Pill Badge -->
       <div class="badge-capsule" id="hero-badge">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="badge-icon">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+          class="badge-icon">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
         </svg>
         <span>A COMMUNITY BUILT AROUND MOVEMENT</span>
       </div>
@@ -24,7 +26,8 @@
 
       <!-- Subtitle Description -->
       <p class="hero-description" id="hero-description-text">
-        STRYD Club brings together running, sports, wellness, and curated experiences to build a community where movement creates meaningful connections.
+        STRYD Club brings together running, sports, wellness, and curated experiences to build a community where
+        movement creates meaningful connections.
       </p>
 
       <!-- CTA Action Buttons -->
@@ -32,20 +35,21 @@
         <!-- Primary CTA: Explore Events -->
         <a routerLink="/events" class="btn-primary" id="btn-explore-events">
           <span>Explore Events</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="icon-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+            stroke="currentColor" class="icon-arrow">
             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
           </svg>
         </a>
 
         <!-- Secondary CTA: Join the Club -->
         @if (!isLoggedIn) {
-          <a routerLink="/login" class="btn-secondary" id="btn-join-club">
-            <span>Join the Club</span>
-          </a>
+        <a routerLink="/login" class="btn-secondary" id="btn-join-club">
+          <span>Join the Club</span>
+        </a>
         } @else {
-          <a routerLink="/dashboard" class="btn-secondary" id="btn-join-club">
-            <span>Go to Dashboard</span>
-          </a>
+        <a routerLink="/dashboard" class="btn-secondary" id="btn-join-club">
+          <span>Go to Dashboard</span>
+        </a>
         }
       </div>
 
@@ -55,7 +59,7 @@
     <div class="hero-right-stats" id="hero-floating-stats">
       <div class="stat-pill-card">
         <span class="stat-num">{{ athletesCount() }}</span>
-        <span class="stat-lbl">Athletes</span>
+        <span class="stat-lbl">Members</span>
       </div>
 
       <div class="stat-pill-card">
