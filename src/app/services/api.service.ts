@@ -94,7 +94,22 @@ export class ApiService {
    * Fetch details for a specific event by ID or slug.
    */
   getEventDetails(id: string): Observable<{ success: boolean; event: any }> {
-    return this.http.get<{ success: boolean; event: any }>(`${this.apiUrl}/events/${id}`);
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
+    return this.http.get<{ success: boolean; event: any }>(`${this.apiUrl}/events/${id}`, { headers });
+  }
+
+  /**
+   * Admin method to manually sync a Cashfree order and register user if paid.
+   */
+  syncCashfreeOrder(orderId: string): Observable<{ success: boolean; message: string; registration?: any }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<{ success: boolean; message: string; registration?: any }>(
+      `${this.apiUrl}/admin/sync-cashfree-order`,
+      { order_id: orderId },
+      { headers }
+    );
   }
 
   /**

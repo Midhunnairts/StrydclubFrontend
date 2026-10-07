@@ -40,6 +40,7 @@ interface EventDetails {
   contact: string;
   venueUrl?: string;
   bannerUrl?: string;
+  isRegistered?: boolean;
 }
 
 @Component({
@@ -99,7 +100,8 @@ export class IndividualEventComponent implements OnInit {
                 organizedBy: res.event.organizedBy,
                 contact: res.event.contact,
                 venueUrl: res.event.venueUrl || '',
-                bannerUrl: res.event.bannerUrl || res.event.image || defaultCategoryImages[res.event.category] || '/assets/Other.jpg'
+                bannerUrl: res.event.bannerUrl || res.event.image || defaultCategoryImages[res.event.category] || '/assets/Other.jpg',
+                isRegistered: Boolean(res.event.isRegistered)
               };
               this.eventDetails.set(mapped);
             }
@@ -115,9 +117,19 @@ export class IndividualEventComponent implements OnInit {
     const details = this.eventDetails();
     if (!details) return false;
 
+    if (details.isRegistered) return true;
+
     const user = this.apiService.currentUser();
-    if (user && user.name && details.participants) {
-      return details.participants.some(p => p.name === user.name);
+    if (!user) return false;
+
+    if (details.participants && Array.isArray(details.participants)) {
+      return details.participants.some((p: any) => {
+        if (p.userId && (p.userId === user.id || p.userId === user._id)) return true;
+        if (user.name && user.name.trim() !== '' && p.name === user.name) return true;
+        if (user.phone && user.phone.trim() !== '' && p.name === user.phone) return true;
+        if (user.email && user.email.trim() !== '' && p.name === user.email) return true;
+        return false;
+      });
     }
     return false;
   });
