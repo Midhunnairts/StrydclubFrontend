@@ -62,6 +62,39 @@ export class IndividualEventComponent implements OnInit {
 
   ngOnInit() {
     this.loadEventDetails();
+    this.checkRedirectPaymentVerification();
+  }
+
+  checkRedirectPaymentVerification() {
+    const id = this.route.snapshot.paramMap.get('id');
+    const orderId = this.route.snapshot.queryParamMap.get('order_id');
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+    if (id && orderId && token) {
+      this.isProcessing.set(true);
+      this.processingText.set('Verifying payment & securing spot...');
+
+      this.apiService.verifyCashfreePayment(id, { order_id: orderId }, token).subscribe({
+        next: (verifyRes) => {
+          this.isProcessing.set(false);
+          this.router.navigate([], { relativeTo: this.route, replaceUrl: true });
+          if (verifyRes.success) {
+            this.modalState.set({
+              show: true,
+              title: 'Registration Successful!',
+              message: verifyRes.message || 'Payment verified successfully. You have secured your spot for this event!',
+              type: 'success'
+            });
+            this.loadEventDetails();
+          }
+        },
+        error: (verifyErr) => {
+          this.isProcessing.set(false);
+          this.router.navigate([], { relativeTo: this.route, replaceUrl: true });
+          console.warn('Redirect Cashfree payment verification note:', verifyErr.error?.message);
+        }
+      });
+    }
   }
 
   loadEventDetails() {
