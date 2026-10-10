@@ -127,12 +127,7 @@ export class LoginComponent {
   }
 
   loginWithGoogle() {
-    console.log('Logging in with Google...');
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('token', 'mock-google-token');
-    }
-    this.apiService.loadUserProfile();
-    this.router.navigate(['/dashboard']);
+    alert('Please sign in using your Phone Number or Email with a 6-digit verification code.');
   }
 }
 

@@ -17,11 +17,23 @@ export class ApiService {
   }
 
   /**
+   * Safe token retrieval that strips invalid, null, or mock tokens
+   */
+  getToken(): string | null {
+    if (typeof window === 'undefined' || !window.localStorage) return null;
+    const token = localStorage.getItem('token');
+    if (!token || token === 'undefined' || token === 'null' || token === 'mock-google-token' || token.trim() === '') {
+      localStorage.removeItem('token');
+      return null;
+    }
+    return token;
+  }
+
+  /**
    * Load the current logged in user details from local storage token.
    */
   loadUserProfile(): Observable<{ success: boolean; user: any }> | null {
-    if (typeof window === 'undefined' || !window.localStorage) return null;
-    const token = localStorage.getItem('token');
+    const token = this.getToken();
     if (!token) {
       this.currentUser.set(null);
       return null;
@@ -94,7 +106,7 @@ export class ApiService {
    * Fetch details for a specific event by ID or slug.
    */
   getEventDetails(id: string): Observable<{ success: boolean; event: any }> {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token = this.getToken();
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
     return this.http.get<{ success: boolean; event: any }>(`${this.apiUrl}/events/${id}`, { headers });
   }
@@ -157,10 +169,9 @@ export class ApiService {
   /**
    * Verify Cashfree payment for the event registration.
    */
-  verifyCashfreePayment(slug: string, payload: { order_id: string }, token: string): Observable<{ success: boolean; message: string }> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
+  verifyCashfreePayment(slug: string, payload: { order_id: string }, token?: string | null): Observable<{ success: boolean; message: string }> {
+    const validToken = token || this.getToken();
+    const headers = validToken ? new HttpHeaders({ Authorization: `Bearer ${validToken}` }) : new HttpHeaders();
     return this.http.post<{ success: boolean; message: string }>(
       `${this.apiUrl}/events/${slug}/verify-cashfree`,
       payload,

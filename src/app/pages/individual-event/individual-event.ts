@@ -68,9 +68,9 @@ export class IndividualEventComponent implements OnInit {
   checkRedirectPaymentVerification() {
     const id = this.route.snapshot.paramMap.get('id');
     const orderId = this.route.snapshot.queryParamMap.get('order_id');
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token = this.apiService.getToken();
 
-    if (id && orderId && token) {
+    if (id && orderId) {
       this.isProcessing.set(true);
       this.processingText.set('Verifying payment & securing spot...');
 
