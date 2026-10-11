@@ -45,7 +45,12 @@ export class EventListComponent implements OnInit {
             'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
             'Other': '/assets/Other.jpg'
           };
-          const featured = res.events.slice(0, 3).map(e => ({
+          const upcomingEvents = res.events.filter(e => {
+            const isCompleted = e.status === 'Completed' || e.status === 'completed' || e.status === 'COMPLETED' || this.isEventPast(e.date, e.time, e.endTime);
+            return !isCompleted;
+          });
+
+          const featured = upcomingEvents.slice(0, 3).map(e => ({
             id: e._id || e.slug,
             title: e.title,
             category: e.category.toUpperCase(),
@@ -63,6 +68,53 @@ export class EventListComponent implements OnInit {
         this.events.set([]);
       }
     });
+  }
+
+  isEventPast(dateStr: string, timeStr?: string, endTimeStr?: string): boolean {
+    if (!dateStr) return false;
+    const cleanDate = dateStr.trim();
+    let targetTime = endTimeStr && endTimeStr.trim() ? endTimeStr.trim() : '';
+
+    if (!targetTime && timeStr) {
+      const rangeMatch = timeStr.match(/(?:-|to|–)\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?)/i);
+      if (rangeMatch) {
+        targetTime = rangeMatch[1].trim();
+      } else {
+        targetTime = timeStr.trim();
+      }
+    }
+
+    const parseTimeParts = (tStr: string) => {
+      const m = tStr.match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?/i);
+      if (!m) return null;
+      let hours = parseInt(m[1], 10);
+      const minutes = m[2] ? parseInt(m[2], 10) : 0;
+      const ampm = m[3] ? m[3].toUpperCase() : null;
+      if (ampm === 'PM' && hours < 12) hours += 12;
+      if (ampm === 'AM' && hours === 12) hours = 0;
+      return { hours, minutes };
+    };
+
+    let d: Date;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(cleanDate)) {
+      const parts = cleanDate.split('-').map(Number);
+      d = new Date(parts[0], parts[1] - 1, parts[2]);
+    } else {
+      d = new Date(cleanDate);
+    }
+    if (isNaN(d.getTime())) return false;
+
+    const timeParts = targetTime ? parseTimeParts(targetTime) : null;
+    if (timeParts) {
+      d.setHours(timeParts.hours, timeParts.minutes, 0, 0);
+      if (!endTimeStr || !endTimeStr.trim()) {
+        d.setHours(d.getHours() + 1);
+      }
+    } else {
+      d.setHours(23, 59, 59, 999);
+    }
+
+    return d < new Date();
   }
 
   getSlotsPercentage(event: EventItem): number {

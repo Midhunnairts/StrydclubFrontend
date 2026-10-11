@@ -182,11 +182,10 @@
             </svg>
             <span>You're Registered</span>
           </div>
-          <button type="button" class="btn-cancel-registration" (click)="onCancelRegistration()" id="btn-cancel-reg">
+          <!-- <button type="button" class="btn-cancel-registration" (click)="onCancelRegistration()" id="btn-cancel-reg">
             Cancel Registration
-          </button>
-          } @else if (details.status === 'Completed' || details.status === 'completed' || details.status === 'Event
-          Completed') {
+          </button> -->
+          } @else if (isEventCompleted()) {
           <div class="completed-event-badge" id="badge-event-completed"
             style="width: 100%; padding: 18px 44px; border-radius: 50px; background-color: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.25); color: #94a3b8; font-weight: 700; text-align: center; margin-bottom: 16px;">
             Event Completed
