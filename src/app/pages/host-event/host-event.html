@@ -7,10 +7,17 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="badge-icon">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
         </svg>
-        <span>Create Event</span>
+        <span>{{ isEditMode() ? 'Edit Event' : 'Create Event' }}</span>
       </div>
-      <h1 class="main-title">Build<br><span class="highlight-text">Your Event</span></h1>
+      <h1 class="main-title">{{ isEditMode() ? 'Edit' : 'Build' }}<br><span class="highlight-text">{{ isEditMode() ? 'Event Details' : 'Your Event' }}</span></h1>
     </div>
+
+    @if (loadingEventDetails()) {
+      <div class="loading-state-banner">
+        <div class="spinner-sm"></div>
+        <span>Loading event data for editing...</span>
+      </div>
+    }
 
     <!-- Stepper Navigation Graphics -->
     <div class="stepper-container">
@@ -361,8 +368,8 @@
       <!-- STEP 5 PANEL: Preview -->
       @if (currentStep() === 5) {
         <div class="step-panel animate-fade-in">
-          <h2 class="panel-title">Review & Publish</h2>
-          <p class="panel-subtitle">Everything look right? Submit for admin review.</p>
+          <h2 class="panel-title">{{ isEditMode() ? 'Review & Update' : 'Review & Publish' }}</h2>
+          <p class="panel-subtitle">{{ isEditMode() ? 'Review your updated event details before saving.' : 'Everything look right? Submit for admin review.' }}</p>
 
           @if (bannerUrl()) {
             <div class="banner-preview-card">
@@ -466,7 +473,11 @@
           <!-- Bottom Notice Card -->
           <div class="review-notice-card animate-slide-up">
             <p class="notice-text">
-              Your event will be submitted for admin review. Once approved, it will appear publicly and athletes can start registering. You'll receive a notification when it goes live.
+              @if (isEditMode()) {
+                Your changes will be saved and updated immediately. Registered participants will view the latest event updates on their dashboard.
+              } @else {
+                Your event will be submitted for admin review. Once approved, it will appear publicly and athletes can start registering. You'll receive a notification when it goes live.
+              }
             </p>
           </div>
         </div>
@@ -508,7 +519,7 @@
           <button type="button" class="btn-footer-submit" 
                   [disabled]="loading()"
                   (click)="onSubmit()">
-            {{ loading() ? 'Publishing...' : 'Publish Event ⚡' }}
+            {{ loading() ? (isEditMode() ? 'Updating...' : 'Publishing...') : (isEditMode() ? 'Update & Save Changes ⚡' : 'Publish Event ⚡') }}
           </button>
         }
       </div>
@@ -528,13 +539,15 @@
         </svg>
       </div>
 
-      <h2 class="modal-title">Event Hosted Successfully!</h2>
+      <h2 class="modal-title">{{ isEditMode() ? 'Event Updated Successfully!' : 'Event Hosted Successfully!' }}</h2>
       <p class="modal-message">
-        Your new sports event has been created and published. Athletes can now discover it and register immediately!
+        {{ isEditMode() ? 'Your event changes have been saved and updated successfully!' : 'Your new sports event has been created and published. Athletes can now discover it and register immediately!' }}
       </p>
 
       <div class="modal-actions">
-        <button class="btn-modal-primary" (click)="closeModal()" style="flex: 1;">Explore Events</button>
+        <button class="btn-modal-primary" (click)="closeModal()" style="flex: 1;">
+          {{ isEditMode() ? 'Back to Admin Console' : 'Explore Events' }}
+        </button>
       </div>
 
     </div>

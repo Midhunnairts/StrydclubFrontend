@@ -59,6 +59,36 @@
   }
 }
 
+.loading-state-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: rgba(255, 59, 48, 0.08);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  border-radius: 12px;
+  color: #ff3b30;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: -10px;
+
+  .spinner-sm {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 59, 48, 0.2);
+    border-radius: 50%;
+    border-top-color: #ff3b30;
+    animation: hostSpin 0.8s linear infinite;
+  }
+}
+
+@keyframes hostSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Stepper Node Graphics */
 .stepper-container {
   position: relative;

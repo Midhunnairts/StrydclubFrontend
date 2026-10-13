@@ -24,6 +24,7 @@ export const routes: Routes = [
   { path: 'profile/:id', component: UserProfileComponent },
   { path: 'complete-profile', component: CompleteProfileComponent, canActivate: [authGuard] },
   { path: 'host-event', component: HostEventComponent, canActivate: [adminGuard] },
+  { path: 'host-event/:id', component: HostEventComponent, canActivate: [adminGuard] },
   { path: 'events/:id', component: IndividualEventComponent },
   { path: 'events', component: EventsComponent },
   { path: 'sports', component: SportsComponent },

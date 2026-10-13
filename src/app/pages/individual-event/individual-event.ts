@@ -446,6 +446,12 @@ export class IndividualEventComponent implements OnInit {
     });
   }
 
+  onEditEvent() {
+    const details = this.eventDetails();
+    if (!details) return;
+    this.router.navigate(['/host-event'], { queryParams: { editId: details.id } });
+  }
+
   onShare() {
     const details = this.eventDetails();
     if (!details) return;

@@ -84,7 +84,7 @@ export class LoginComponent {
           if (!isProfileComplete || res.isNewUser) {
             this.router.navigate(['/complete-profile']);
           } else {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/events']);
           }
         }
       },

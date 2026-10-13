@@ -237,13 +237,10 @@ export class AdminConsoleComponent implements OnInit {
   }
 
   openEditModal(ev: any) {
-    this.editingEvent.set(ev);
-    this.editTitle = ev.title || '';
-    this.editCategory = ev.category || 'Running';
-    this.editLocation = ev.location || '';
-    this.editDate = ev.date || '';
-    this.editSlotsTotal = ev.slotsTotal || 50;
-    this.editPrice = ev.price || 0;
+    const editId = ev._id || ev.id || ev.slug;
+    if (editId) {
+      this.router.navigate(['/host-event'], { queryParams: { editId } });
+    }
   }
 
   closeEditModal() {

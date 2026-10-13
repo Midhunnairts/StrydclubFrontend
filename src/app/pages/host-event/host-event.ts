@@ -1,7 +1,7 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 interface ScheduleItem {
@@ -20,12 +20,16 @@ interface RuleItem {
   templateUrl: './host-event.html',
   styleUrl: './host-event.scss'
 })
-export class HostEventComponent {
+export class HostEventComponent implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
 
   currentStep = signal<number>(1);
   loading = signal<boolean>(false);
+  isEditMode = signal<boolean>(false);
+  editEventId = signal<string>('');
+  loadingEventDetails = signal<boolean>(false);
 
   // Sports Options Grid
   sportsOptions = [
@@ -76,6 +80,86 @@ export class HostEventComponent {
 
   // Modal State
   showSuccessModal = signal<boolean>(false);
+
+  ngOnInit() {
+    const editId = this.route.snapshot.queryParamMap.get('editId') || this.route.snapshot.paramMap.get('id');
+    if (editId) {
+      this.isEditMode.set(true);
+      this.editEventId.set(editId);
+      this.loadEventForEditing(editId);
+    }
+  }
+
+  loadEventForEditing(id: string) {
+    this.loadingEventDetails.set(true);
+    this.apiService.getEventDetails(id).subscribe({
+      next: (res) => {
+        this.loadingEventDetails.set(false);
+        if (res.success && res.event) {
+          this.populateEventData(res.event);
+        }
+      },
+      error: (err) => {
+        this.loadingEventDetails.set(false);
+        alert('Failed to load event details: ' + (err.error?.message || 'Event not found'));
+        this.router.navigate(['/admin']);
+      }
+    });
+  }
+
+  populateEventData(event: any) {
+    // Sport / Category
+    const category = event.category || '';
+    const matchedSport = this.sportsOptions.find(s => s.name.toLowerCase() === category.toLowerCase());
+    if (matchedSport && matchedSport.name !== 'Other') {
+      this.selectedSport.set(matchedSport.name);
+    } else if (category) {
+      this.selectedSport.set('Other');
+      this.customSportName.set(category);
+    }
+
+    this.title.set(event.title || '');
+    this.description.set(event.description || '');
+    this.format.set(event.format || 'Single Match');
+    this.skillLevel.set(event.skillLevel || 'Open');
+
+    // Location
+    const loc = event.location || '';
+    const parts = loc.split(',');
+    this.venueName.set(parts[0]?.trim() || '');
+    this.city.set(parts.slice(1).join(',').trim() || '');
+
+    this.venueUrl.set(event.venueUrl || '');
+    this.rulesNotes.set(event.rulesNotes || '');
+    this.price.set(event.price || 0);
+
+    // Schedule & Dates
+    this.date.set(this.parseToHtmlDate(event.date));
+    this.time.set(this.parseToHtmlTime(event.time));
+    this.endTime.set(this.parseToHtmlTime(event.endTime));
+    this.registrationCloses.set(this.parseToHtmlDate(event.registrationCloses));
+
+    if (event.schedule && Array.isArray(event.schedule) && event.schedule.length > 0) {
+      this.scheduleItems.set(
+        event.schedule.map((s: any) => ({
+          time: s.time || '',
+          activity: s.activity || ''
+        }))
+      );
+    }
+
+    // Rules & Media
+    this.slotsTotal.set(event.slotsTotal || 30);
+    this.playersPerTeam.set(event.playersPerTeam || null);
+    this.prizePool.set(event.prizePool || null);
+    this.bannerUrl.set(event.bannerUrl || event.image || '');
+
+    if (event.rules && Array.isArray(event.rules) && event.rules.length > 0) {
+      this.rules.set(
+        event.rules.map((r: any) => typeof r === 'string' ? { text: r } : { text: r.text || '' })
+      );
+    }
+  }
 
   // Step Validation Computeds
   isStep1Valid = computed(() => {
@@ -242,7 +326,11 @@ export class HostEventComponent {
   }
 
   cancel() {
-    this.router.navigate(['/events']);
+    if (this.isEditMode()) {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/events']);
+    }
   }
 
   onSubmit() {
@@ -277,24 +365,44 @@ export class HostEventComponent {
       schedule: this.scheduleItems().filter(s => !!s.time.trim() && !!s.activity.trim())
     };
 
-    this.apiService.createEvent(payload, token).subscribe({
-      next: (res) => {
-        this.loading.set(false);
-        if (res.success) {
-          this.showSuccessModal.set(true);
+    if (this.isEditMode()) {
+      this.apiService.updateAdminEvent(this.editEventId(), payload).subscribe({
+        next: (res) => {
+          this.loading.set(false);
+          if (res.success) {
+            this.showSuccessModal.set(true);
+          }
+        },
+        error: (err) => {
+          this.loading.set(false);
+          const errorMsg = err.error?.message || 'Failed to update event details';
+          alert(errorMsg);
         }
-      },
-      error: (err) => {
-        this.loading.set(false);
-        const errorMsg = err.error?.message || 'Server connection error during hosting';
-        alert(errorMsg);
-      }
-    });
+      });
+    } else {
+      this.apiService.createEvent(payload, token).subscribe({
+        next: (res) => {
+          this.loading.set(false);
+          if (res.success) {
+            this.showSuccessModal.set(true);
+          }
+        },
+        error: (err) => {
+          this.loading.set(false);
+          const errorMsg = err.error?.message || 'Server connection error during hosting';
+          alert(errorMsg);
+        }
+      });
+    }
   }
 
   closeModal() {
     this.showSuccessModal.set(false);
-    this.router.navigate(['/events']);
+    if (this.isEditMode()) {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/events']);
+    }
   }
 
   // Format HTML Date (YYYY-MM-DD) to Display Date (e.g. June 28, 2026)
@@ -321,5 +429,41 @@ export class HostEventComponent {
     } catch (e) {
       return timeStr;
     }
+  }
+
+  // Helper to parse stored date string to HTML <input type="date"> YYYY-MM-DD format
+  private parseToHtmlDate(dateStr: string): string {
+    if (!dateStr) return '';
+    const trimmed = dateStr.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+    try {
+      const d = new Date(trimmed);
+      if (!isNaN(d.getTime())) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+    } catch (e) {}
+    return '';
+  }
+
+  // Helper to parse stored time string to HTML <input type="time"> HH:MM format
+  private parseToHtmlTime(timeStr: string): string {
+    if (!timeStr) return '';
+    const trimmed = timeStr.trim().toUpperCase();
+    if (/^\d{2}:\d{2}$/.test(trimmed)) return trimmed;
+    try {
+      const match = trimmed.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+      if (match) {
+        let hours = parseInt(match[1], 10);
+        const minutes = match[2];
+        const ampm = match[3];
+        if (ampm === 'PM' && hours < 12) hours += 12;
+        if (ampm === 'AM' && hours === 12) hours = 0;
+        return `${String(hours).padStart(2, '0')}:${minutes}`;
+      }
+    } catch (e) {}
+    return '';
   }
 }
