@@ -133,19 +133,42 @@
         }
 
         <!-- Event Schedule Block -->
-        <!-- <div class="schedule-section" id="dashboard-schedule">
-            <h2 class="section-title">Event Schedule</h2>
-            
-            <div class="schedule-list">
-              @for (item of details.schedule; track item.time) {
-                <div class="schedule-card-row">
-                  <span class="schedule-time">{{ item.time }}</span>
-                  <div class="schedule-connector-line"></div>
-                  <span class="schedule-activity">{{ item.activity }}</span>
-                </div>
-              }
+        @if (details.schedule && details.schedule.length > 0) {
+        <div class="schedule-section" id="dashboard-schedule">
+          <h2 class="section-title">Event Schedule</h2>
+
+          <div class="schedule-list">
+            @for (item of details.schedule; track item.time) {
+            <div class="schedule-card-row">
+              <span class="schedule-time">{{ item.time }}</span>
+              <div class="schedule-connector-line"></div>
+              <span class="schedule-activity">{{ item.activity }}</span>
             </div>
-          </div> -->
+            }
+          </div>
+        </div>
+        }
+
+        <!-- Surfing Slots Block -->
+        @if (isSurfingEvent()) {
+        <div class="surfing-slots-section" id="dashboard-surfing-slots">
+          <h2 class="section-title">Surfing Slots</h2>
+
+          <div class="surfing-slots-grid">
+            @for (slot of getEventSurfingSlots(); track slot.slotNumber) {
+            <div class="surfing-slot-card clickable" (click)="onSelectSlotFromPage(slot)" [class.active-selected]="selectedSurfingSlot()?.slotNumber === slot.slotNumber">
+              <div class="slot-card-header">
+                <span class="slot-title">Slot {{ slot.slotNumber }}</span>
+                <span class="slot-spots">{{ getSlotSpotsLeft(slot) }}</span>
+              </div>
+              <div class="slot-timing">
+                {{ getSlotDisplayTiming(slot) }}
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        }
 
       </div>
 
@@ -346,6 +369,92 @@
 
   </div>
 </div>
+
+<!-- Surfing Slot Selection Modal (Pick Your Surfing Slot) -->
+@if (showSurfingSlotModal() && eventDetails()) {
+<div class="surfing-modal-backdrop animate-fade-in" (click)="closeSurfingSlotModal()">
+  <div class="surfing-modal-card animate-scale-up" (click)="$event.stopPropagation()">
+
+    <!-- Top Step Bar -->
+    <div class="slot-modal-top-bar">
+      <div class="modal-step-info">
+        <span class="step-counter">STEP 1 OF 5</span>
+        <span class="step-title">Pick Slot</span>
+      </div>
+
+      <div class="modal-stepper-dots">
+        <span class="stepper-bar"></span>
+        <span class="stepper-dot"></span>
+        <span class="stepper-dot"></span>
+        <span class="stepper-dot"></span>
+        <span class="stepper-dot"></span>
+      </div>
+
+      <button type="button" class="btn-modal-close" (click)="closeSurfingSlotModal()" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 14px; height: 14px;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Event Info Substrip -->
+    <div class="modal-event-strip">
+      <div class="strip-left">
+        <h4 class="strip-title">{{ eventDetails()!.title }}</h4>
+        <p class="strip-meta">{{ eventDetails()!.date }} · {{ eventDetails()!.location }}</p>
+      </div>
+      <div class="strip-right">
+        <span class="strip-price">₹{{ eventDetails()!.price || 0 }}</span>
+        <span class="strip-fee-note">incl. fees</span>
+      </div>
+    </div>
+
+    <!-- Slot Picker Body -->
+    <div class="modal-slot-body">
+      <div class="slot-header-text">
+        <h2 class="slot-main-title">Pick Your Surfing Slot</h2>
+        <p class="slot-subtitle">Choose the time you want to enter the water.</p>
+      </div>
+
+      <div class="modal-slots-list">
+        @for (slot of getEventSurfingSlots(); track slot.slotNumber) {
+        <div class="modal-slot-card"
+             [class.selected]="selectedSurfingSlot()?.slotNumber === slot.slotNumber"
+             [class.disabled-full]="isSlotFull(slot)"
+             (click)="selectSurfingSlot(slot)">
+          <div class="card-slot-name">Slot {{ slot.slotNumber }}</div>
+
+          <div class="card-slot-time">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="slot-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <span>{{ getSlotDisplayTiming(slot) }}</span>
+          </div>
+
+          <div class="card-slot-footer">
+            <div class="slot-capacity">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="slot-icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+              </svg>
+              <span>{{ getSlotSpotsLeftText(slot) }}</span>
+            </div>
+
+            <span class="slot-status-pill" [class.almost-full]="isSlotAlmostFull(slot)" [class.available]="!isSlotAlmostFull(slot) && !isSlotFull(slot)" [class.full]="isSlotFull(slot)">
+              {{ getSlotStatusText(slot) }}
+            </span>
+          </div>
+        </div>
+        }
+      </div>
+
+      <button type="button" class="btn-confirm-slot" [disabled]="!selectedSurfingSlot() || isSlotFull(selectedSurfingSlot()!)" (click)="confirmSlotAndProceed()">
+        Confirm Slot &gt;
+      </button>
+    </div>
+
+  </div>
+</div>
+}
 
 <!-- Fullscreen Glassmorphism Processing Loading Overlay -->
 @if (isProcessing()) {

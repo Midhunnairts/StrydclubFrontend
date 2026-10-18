@@ -20,6 +20,14 @@ interface ParticipantItem {
   role: string;
 }
 
+interface SurfingSlotItem {
+  slotNumber: number;
+  time: string;
+  endTime?: string;
+  maxAttendees?: number;
+  slotsFilled?: number;
+}
+
 interface EventDetails {
   id: string;
   title: string;
@@ -42,6 +50,7 @@ interface EventDetails {
   venueUrl?: string;
   bannerUrl?: string;
   isRegistered?: boolean;
+  surfingSlots?: SurfingSlotItem[];
 }
 
 @Component({
@@ -136,7 +145,8 @@ export class IndividualEventComponent implements OnInit {
                 contact: res.event.contact,
                 venueUrl: res.event.venueUrl || '',
                 bannerUrl: res.event.bannerUrl || res.event.image || defaultCategoryImages[res.event.category] || '/assets/Other.jpg',
-                isRegistered: Boolean(res.event.isRegistered)
+                isRegistered: Boolean(res.event.isRegistered),
+                surfingSlots: res.event.surfingSlots || []
               };
               this.eventDetails.set(mapped);
             }
@@ -268,6 +278,30 @@ export class IndividualEventComponent implements OnInit {
     return d < new Date();
   }
 
+  showSurfingSlotModal = signal<boolean>(false);
+  selectedSurfingSlot = signal<SurfingSlotItem | null>(null);
+
+  closeSurfingSlotModal() {
+    this.showSurfingSlotModal.set(false);
+  }
+
+  selectSurfingSlot(slot: SurfingSlotItem) {
+    if (this.isSlotFull(slot)) return;
+    this.selectedSurfingSlot.set(slot);
+  }
+
+  onSelectSlotFromPage(slot: SurfingSlotItem) {
+    if (this.isAlreadyRegistered() || this.isEventCompleted()) return;
+    this.selectSurfingSlot(slot);
+    this.onRegister();
+  }
+
+  confirmSlotAndProceed() {
+    if (!this.selectedSurfingSlot()) return;
+    this.showSurfingSlotModal.set(false);
+    this.proceedWithRegistration();
+  }
+
   onRegister() {
     const details = this.eventDetails();
     if (!details) return;
@@ -288,11 +322,36 @@ export class IndividualEventComponent implements OnInit {
       return;
     }
 
+    if (this.isSurfingEvent()) {
+      const slots = this.getEventSurfingSlots();
+      if (!this.selectedSurfingSlot() && slots.length > 0) {
+        const available = slots.find(s => !this.isSlotFull(s)) || slots[0];
+        this.selectedSurfingSlot.set(available);
+      }
+      this.showSurfingSlotModal.set(true);
+      return;
+    }
+
+    this.proceedWithRegistration();
+  }
+
+  proceedWithRegistration() {
+    const details = this.eventDetails();
+    if (!details) return;
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const selectedSlot = this.selectedSurfingSlot();
+    const slotPayload = selectedSlot ? {
+      surfingSlot: selectedSlot.slotNumber,
+      surfingSlotTime: this.getSlotDisplayTiming(selectedSlot)
+    } : {};
+
     if (details.price && details.price > 0) {
       this.isProcessing.set(true);
       this.processingText.set('Preparing Cashfree checkout...');
 
-      this.apiService.createCashfreeOrder(details.id, token).subscribe({
+      this.apiService.createCashfreeOrder(details.id, token, slotPayload).subscribe({
         next: (orderRes) => {
           this.isProcessing.set(false);
           if (orderRes.success && orderRes.payment_session_id) {
@@ -314,14 +373,15 @@ export class IndividualEventComponent implements OnInit {
                 this.isProcessing.set(true);
                 this.processingText.set('Verifying Cashfree payment & securing spot...');
 
-                this.apiService.verifyCashfreePayment(details.id, { order_id: orderRes.order_id }, token).subscribe({
+                this.apiService.verifyCashfreePayment(details.id, { order_id: orderRes.order_id, ...slotPayload }, token).subscribe({
                   next: (verifyRes) => {
                     this.isProcessing.set(false);
                     if (verifyRes.success) {
+                      const slotNotice = selectedSlot ? ` for Slot ${selectedSlot.slotNumber} (${this.getSlotDisplayTiming(selectedSlot)})` : '';
                       this.modalState.set({
                         show: true,
                         title: 'Registration Successful!',
-                        message: 'Cashfree payment verified successfully. You have secured your spot for this event!',
+                        message: `Cashfree payment verified successfully. You have secured your spot${slotNotice}!`,
                         type: 'success'
                       });
                       this.loadEventDetails();
@@ -339,14 +399,15 @@ export class IndividualEventComponent implements OnInit {
               // Direct payment verification fallback
               this.isProcessing.set(true);
               this.processingText.set('Verifying Cashfree payment...');
-              this.apiService.verifyCashfreePayment(details.id, { order_id: orderRes.order_id }, token).subscribe({
+              this.apiService.verifyCashfreePayment(details.id, { order_id: orderRes.order_id, ...slotPayload }, token).subscribe({
                 next: (verifyRes) => {
                   this.isProcessing.set(false);
                   if (verifyRes.success) {
+                    const slotNotice = selectedSlot ? ` for Slot ${selectedSlot.slotNumber} (${this.getSlotDisplayTiming(selectedSlot)})` : '';
                     this.modalState.set({
                       show: true,
                       title: 'Registration Successful!',
-                      message: 'Cashfree payment verified successfully!',
+                      message: `Cashfree payment verified successfully${slotNotice}!`,
                       type: 'success'
                     });
                     this.loadEventDetails();
@@ -370,14 +431,15 @@ export class IndividualEventComponent implements OnInit {
       this.isProcessing.set(true);
       this.processingText.set('Securing your event spot...');
 
-      this.apiService.registerForEvent(details.id, token).subscribe({
+      this.apiService.registerForEvent(details.id, token, slotPayload).subscribe({
         next: (res) => {
           this.isProcessing.set(false);
           if (res.success) {
+            const slotNotice = selectedSlot ? ` for Slot ${selectedSlot.slotNumber} (${this.getSlotDisplayTiming(selectedSlot)})` : '';
             this.modalState.set({
               show: true,
               title: 'Registration Successful!',
-              message: 'You have successfully secured your spot for this event. View and track your schedule on your dashboard.',
+              message: `You have successfully secured your spot${slotNotice}. View and track your schedule on your dashboard.`,
               type: 'success'
             });
             this.loadEventDetails();
@@ -493,5 +555,97 @@ export class IndividualEventComponent implements OnInit {
     } else {
       alert('Clipboard access not supported in your browser.');
     }
+  }
+
+  isSurfingEvent(): boolean {
+    const details = this.eventDetails();
+    if (!details) return false;
+    return details.category.toLowerCase() === 'surfing' || (!!details.surfingSlots && details.surfingSlots.length > 0);
+  }
+
+  getEventSurfingSlots(): SurfingSlotItem[] {
+    const details = this.eventDetails();
+    if (!details) return [];
+    if (details.surfingSlots && details.surfingSlots.length > 0) {
+      return details.surfingSlots;
+    }
+    if (details.category.toLowerCase() === 'surfing') {
+      return [
+        { slotNumber: 1, time: '6:30 AM', endTime: '8:00 AM', maxAttendees: 10, slotsFilled: 7 },
+        { slotNumber: 2, time: '8:30 AM', endTime: '10:00 AM', maxAttendees: 10, slotsFilled: 2 }
+      ];
+    }
+    return [];
+  }
+
+  getSlotSpotsLeft(slot: SurfingSlotItem): string {
+    const max = slot.maxAttendees || 10;
+    const filled = slot.slotsFilled !== undefined ? slot.slotsFilled : 0;
+    const left = Math.max(0, max - filled);
+    if (left === 0) return 'Fully booked';
+    return `${left} spots left`;
+  }
+
+  getSlotSpotsLeftText(slot: SurfingSlotItem): string {
+    const max = slot.maxAttendees || 10;
+    const filled = slot.slotsFilled !== undefined ? slot.slotsFilled : 0;
+    const left = Math.max(0, max - filled);
+    return `${left} of ${max} spots left`;
+  }
+
+  isSlotAlmostFull(slot: SurfingSlotItem): boolean {
+    const max = slot.maxAttendees || 10;
+    const filled = slot.slotsFilled !== undefined ? slot.slotsFilled : 0;
+    const left = Math.max(0, max - filled);
+    return left > 0 && left <= 3;
+  }
+
+  isSlotFull(slot: SurfingSlotItem): boolean {
+    const max = slot.maxAttendees || 10;
+    const filled = slot.slotsFilled !== undefined ? slot.slotsFilled : 0;
+    return max - filled <= 0;
+  }
+
+  getSlotStatusText(slot: SurfingSlotItem): string {
+    if (this.isSlotFull(slot)) return 'Fully booked';
+    if (this.isSlotAlmostFull(slot)) return 'Almost full';
+    return 'Available';
+  }
+
+  getSlotDisplayTiming(slot: SurfingSlotItem): string {
+    if (!slot || !slot.time) return '';
+    if (slot.endTime) {
+      return `${slot.time} – ${slot.endTime}`;
+    }
+    if (slot.time.includes('–') || slot.time.includes('-')) {
+      return slot.time;
+    }
+    try {
+      const timeClean = slot.time.trim();
+      const match = timeClean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+      if (match) {
+        let hours = parseInt(match[1], 10);
+        let mins = parseInt(match[2], 10);
+        const ampm = match[3]?.toUpperCase();
+        let startHours24 = hours;
+        if (ampm === 'PM' && hours < 12) startHours24 += 12;
+        if (ampm === 'AM' && hours === 12) startHours24 = 0;
+
+        let endMinsTotal = startHours24 * 60 + mins + 90;
+        let endHours24 = Math.floor(endMinsTotal / 60) % 24;
+        let endMins = endMinsTotal % 60;
+
+        const endAmpm = endHours24 >= 12 ? 'PM' : 'AM';
+        const endHours12 = endHours24 % 12 || 12;
+        const endFormatted = `${endHours12}:${String(endMins).padStart(2, '0')} ${endAmpm}`;
+
+        const startAmpm = startHours24 >= 12 ? 'PM' : 'AM';
+        const startHours12 = startHours24 % 12 || 12;
+        const startFormatted = `${startHours12}:${String(mins).padStart(2, '0')} ${startAmpm}`;
+
+        return `${startFormatted} – ${endFormatted}`;
+      }
+    } catch (e) {}
+    return slot.time;
   }
 }

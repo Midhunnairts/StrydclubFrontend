@@ -220,7 +220,10 @@
           <div class="input-form-grid">
             <!-- Event Date -->
             <div class="input-group">
-              <label class="input-label">EVENT DATE *</label>
+              <label class="input-label">
+                <span class="label-icon-prefix">📅</span>
+                EVENT DATE *
+              </label>
               <div class="date-picker-input-wrapper">
                 <input type="date" [(ngModel)]="date" class="theme-text-input date-time-picker-input" (click)="openPicker($event)">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="picker-icon">
@@ -231,7 +234,10 @@
 
             <!-- Start Time -->
             <div class="input-group">
-              <label class="input-label">START TIME *</label>
+              <label class="input-label">
+                <span class="label-icon-prefix">🕒</span>
+                START TIME *
+              </label>
               <div class="date-picker-input-wrapper">
                 <input type="time" [(ngModel)]="time" class="theme-text-input date-time-picker-input" (click)="openPicker($event)">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="picker-icon">
@@ -262,11 +268,44 @@
               </div>
             </div>
 
+            <!-- Surfing Slots Configuration Box -->
+            @if (selectedSport() === 'Surfing') {
+              <div class="surfing-slots-card full-row animate-fade-in">
+                <div class="surfing-slots-header">
+                  <label class="input-label">HOW MANY SURFING SLOTS DO YOU WANT TO CONFIGURE?</label>
+                  <input type="number" min="1" max="20" [(ngModel)]="surfingSlotsCount" (ngModelChange)="onSurfingSlotsCountChange($event)" placeholder="e.g. 2" class="theme-text-input">
+                </div>
+
+                @if (surfingSlots().length > 0) {
+                  <div class="surfing-slots-grid animate-fade-in">
+                    @for (slot of surfingSlots(); track slot.slotNumber) {
+                      <div class="surfing-slot-item">
+                        <div class="slot-field-group">
+                          <label class="input-label">SLOT {{ slot.slotNumber }}: SELECT SLOT TIMING</label>
+                          <div class="date-picker-input-wrapper">
+                            <input type="time" [(ngModel)]="slot.time" class="theme-text-input date-time-picker-input" (click)="openPicker($event)">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="picker-icon">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        <div class="slot-field-group">
+                          <label class="input-label">MAXIMUM ATTENDEES</label>
+                          <input type="number" min="1" [(ngModel)]="slot.maxAttendees" (ngModelChange)="updateTotalSlotsFromSurfing()" placeholder="e.g. 10" class="theme-text-input">
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+
             <!-- Notification Warning Help Box -->
             <div class="info-help-box full-row animate-slide-up">
               <div class="info-icon-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="info-icon" style="width: 16px; height: 16px;">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="info-icon" style="width: 16px; height: 16px;">
+                  <path d="M12 2l2.4 7.2L21.6 12l-7.2 2.4L12 21.6l-2.4-7.2L2.4 12l7.2-2.4L12 2z"/>
                 </svg>
               </div>
               <p class="info-text">
@@ -468,6 +507,20 @@
               <span class="preview-card-label">PRIZE POOL</span>
               <span class="preview-card-value">{{ prizePool() ? '₹' + prizePool() : '—' }}</span>
             </div>
+
+            <!-- Surfing Slots Preview -->
+            @if (selectedSport() === 'Surfing' && surfingSlots().length > 0) {
+              <div class="preview-card full-row">
+                <span class="preview-card-label">SURFING SLOTS ({{ surfingSlots().length }})</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;">
+                  @for (slot of surfingSlots(); track slot.slotNumber) {
+                    <span style="background: rgba(255, 255, 255, 0.05); padding: 5px 12px; border-radius: 6px; font-size: 0.85rem; border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-white);">
+                      Slot {{ slot.slotNumber }}: {{ slot.time ? formatTime(slot.time) : 'Time pending' }} ({{ slot.maxAttendees || 0 }} max)
+                    </span>
+                  }
+                </div>
+              </div>
+            }
           </div>
 
           <!-- Bottom Notice Card -->

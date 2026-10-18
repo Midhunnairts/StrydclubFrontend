@@ -13,6 +13,12 @@ interface RuleItem {
   text: string;
 }
 
+interface SurfingSlot {
+  slotNumber: number;
+  time: string;
+  maxAttendees: number | null;
+}
+
 @Component({
   selector: 'app-host-event',
   standalone: true,
@@ -65,6 +71,10 @@ export class HostEventComponent implements OnInit {
     { time: '5:50 AM', activity: 'Warm-up Session' },
     { time: '6:00 AM', activity: 'Event Commences' }
   ]);
+
+  // Surfing Slots Configuration
+  surfingSlotsCount = signal<number | null>(null);
+  surfingSlots = signal<SurfingSlot[]>([]);
 
   slotsTotal = signal<number>(30);
   playersPerTeam = signal<number | null>(null);
@@ -159,6 +169,18 @@ export class HostEventComponent implements OnInit {
         event.rules.map((r: any) => typeof r === 'string' ? { text: r } : { text: r.text || '' })
       );
     }
+
+    // Surfing Slots if present
+    if (event.surfingSlots && Array.isArray(event.surfingSlots) && event.surfingSlots.length > 0) {
+      this.surfingSlotsCount.set(event.surfingSlots.length);
+      this.surfingSlots.set(
+        event.surfingSlots.map((s: any, idx: number) => ({
+          slotNumber: s.slotNumber || (idx + 1),
+          time: this.parseToHtmlTime(s.time),
+          maxAttendees: s.maxAttendees || null
+        }))
+      );
+    }
   }
 
   // Step Validation Computeds
@@ -171,7 +193,14 @@ export class HostEventComponent implements OnInit {
     return true;
   });
   isStep2Valid = computed(() => !!this.title().trim() && !!this.venueName().trim() && !!this.city().trim());
-  isStep3Valid = computed(() => !!this.date() && !!this.time());
+  isStep3Valid = computed(() => {
+    const hasBasic = !!this.date() && !!this.time();
+    if (!hasBasic) return false;
+    if (this.selectedSport() === 'Surfing' && this.surfingSlots().length > 0) {
+      return this.surfingSlots().every(s => !!s.time);
+    }
+    return true;
+  });
   isStep4Valid = computed(() => !!this.slotsTotal() && this.slotsTotal() > 0);
 
   isCurrentStepValid = computed(() => {
@@ -189,6 +218,39 @@ export class HostEventComponent implements OnInit {
     this.selectedSport.set(sport);
     if (sport !== 'Other') {
       this.customSportName.set('');
+    }
+  }
+
+  onSurfingSlotsCountChange(val: any) {
+    if (val === null || val === undefined || val === '') {
+      this.surfingSlots.set([]);
+      return;
+    }
+    const count = parseInt(val, 10);
+    if (isNaN(count) || count <= 0) {
+      this.surfingSlots.set([]);
+      return;
+    }
+    const safeCount = Math.min(count, 20);
+    const current = this.surfingSlots();
+    const updated: SurfingSlot[] = [];
+    for (let i = 0; i < safeCount; i++) {
+      if (current[i]) {
+        updated.push({ ...current[i], slotNumber: i + 1 });
+      } else {
+        updated.push({ slotNumber: i + 1, time: '', maxAttendees: null });
+      }
+    }
+    this.surfingSlots.set(updated);
+    this.updateTotalSlotsFromSurfing();
+  }
+
+  updateTotalSlotsFromSurfing() {
+    if (this.selectedSport() === 'Surfing' && this.surfingSlots().length > 0) {
+      const sum = this.surfingSlots().reduce((acc, s) => acc + (Number(s.maxAttendees) || 0), 0);
+      if (sum > 0) {
+        this.slotsTotal.set(sum);
+      }
     }
   }
 
@@ -362,7 +424,14 @@ export class HostEventComponent implements OnInit {
       prizePool: this.prizePool() || 0,
       bannerUrl: this.bannerUrl(),
       rules: this.rules().filter(r => !!r.text.trim()),
-      schedule: this.scheduleItems().filter(s => !!s.time.trim() && !!s.activity.trim())
+      schedule: this.scheduleItems().filter(s => !!s.time.trim() && !!s.activity.trim()),
+      surfingSlots: this.selectedSport() === 'Surfing'
+        ? this.surfingSlots().map(s => ({
+            slotNumber: s.slotNumber,
+            time: s.time ? this.formatTime(s.time) : '',
+            maxAttendees: Number(s.maxAttendees) || 0
+          }))
+        : []
     };
 
     if (this.isEditMode()) {
@@ -418,7 +487,7 @@ export class HostEventComponent implements OnInit {
   }
 
   // Format HTML Time (HH:MM) to Display Time (e.g. 6:00 AM)
-  private formatTime(timeStr: string): string {
+  formatTime(timeStr: string): string {
     if (!timeStr) return '';
     try {
       const [hoursStr, minutesStr] = timeStr.split(':');

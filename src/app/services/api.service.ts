@@ -127,13 +127,13 @@ export class ApiService {
   /**
    * Register the authenticated athlete for a specific event.
    */
-  registerForEvent(id: string, token: string): Observable<{ success: boolean; message: string }> {
+  registerForEvent(id: string, token: string, body: any = {}): Observable<{ success: boolean; message: string }> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
     return this.http.post<{ success: boolean; message: string }>(
       `${this.apiUrl}/events/${id}/register`,
-      {},
+      body,
       { headers }
     );
   }
@@ -155,13 +155,13 @@ export class ApiService {
   /**
    * Create a Cashfree payment order for the event.
    */
-  createCashfreeOrder(slug: string, token: string): Observable<{ success: boolean; order_id: string; payment_session_id: string; cf_environment: string }> {
+  createCashfreeOrder(slug: string, token: string, body: any = {}): Observable<{ success: boolean; order_id: string; payment_session_id: string; cf_environment: string }> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
     return this.http.post<{ success: boolean; order_id: string; payment_session_id: string; cf_environment: string }>(
       `${this.apiUrl}/events/${slug}/cashfree-order`,
-      {},
+      body,
       { headers }
     );
   }
