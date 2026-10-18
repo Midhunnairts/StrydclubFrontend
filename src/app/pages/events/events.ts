@@ -44,7 +44,7 @@ export class EventsComponent implements OnInit {
     { name: 'Volleyball', icon: '🏐' },
     { name: 'Pickleball', icon: '🏓' },
     { name: 'Lifestyle', icon: '🧘‍♀️' },
-    { name: 'Cricket', icon: '🏏' },
+    { name: 'Surfing', icon: '🏄' },
     { name: 'Other', icon: '🎯' }
   ];
 
@@ -79,7 +79,7 @@ export class EventsComponent implements OnInit {
             'Volleyball': '🏐',
             'Pickleball': '🏓',
             'Lifestyle': '🧘‍♀️',
-            'Cricket': '🏏',
+            'Surfing': '🏄',
             'Other': '🎯'
           };
           const categoryImages: Record<string, string> = {
@@ -89,7 +89,7 @@ export class EventsComponent implements OnInit {
             'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
             'Pickleball': '/assets/Pickleball.webp',
             'Lifestyle': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
-            'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
+            'Surfing': 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=800&q=80',
             'Other': '/assets/Other.jpg'
           };
           const mapped = res.events.map(e => {
@@ -147,7 +147,7 @@ export class EventsComponent implements OnInit {
     const category = this.selectedCategory();
     if (category !== 'All') {
       if (category.toLowerCase() === 'other') {
-        const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'lifestyle', 'cricket'];
+        const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'lifestyle', 'surfing'];
         list = list.filter(e => !standardCategories.includes(e.category.toLowerCase()) || e.category.toLowerCase() === 'other');
       } else {
         list = list.filter(e => e.category.toLowerCase() === category.toLowerCase());
@@ -250,7 +250,8 @@ export class EventsComponent implements OnInit {
       'Football': '⚽',
       'Volleyball': '🏐',
       'Pickleball': '🏓',
-      'Lifestyle': '🧘‍♀️'
+      'Lifestyle': '🧘‍♀️',
+      'Surfing': '🏄'
     };
     return icons[event.category] || '✨';
   }
@@ -264,7 +265,7 @@ export class EventsComponent implements OnInit {
       'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
       'Pickleball': '/assets/Pickleball.webp',
       'Lifestyle': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
-      'Cricket': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80',
+      'Surfing': 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=800&q=80',
       'Other': '/assets/Other.jpg'
     };
     return defaultImages[event.category] || '/assets/Other.jpg';
@@ -278,7 +279,8 @@ export class EventsComponent implements OnInit {
       'Football': 599,
       'Volleyball': 399,
       'Pickleball': 649,
-      'Lifestyle': 199
+      'Lifestyle': 199,
+      'Surfing': 499
     };
     return defaultPrices[event.category] || 499;
   }

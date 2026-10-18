@@ -39,7 +39,7 @@ export class HostEventComponent implements OnInit {
     { name: 'Volleyball', icon: '🏐' },
     { name: 'Pickleball', icon: '🏓' },
     { name: 'Lifestyle', icon: '🧘‍♀️' },
-    { name: 'Cricket', icon: '🏏' },
+    { name: 'Surfing', icon: '🏄' },
     { name: 'Other', icon: '✨' },
   ];
 
