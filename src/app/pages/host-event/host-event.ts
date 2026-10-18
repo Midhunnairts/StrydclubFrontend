@@ -194,12 +194,12 @@ export class HostEventComponent implements OnInit {
   });
   isStep2Valid = computed(() => !!this.title().trim() && !!this.venueName().trim() && !!this.city().trim());
   isStep3Valid = computed(() => {
-    const hasBasic = !!this.date() && !!this.time();
-    if (!hasBasic) return false;
+    if (!this.date()) return false;
     if (this.selectedSport() === 'Surfing' && this.surfingSlots().length > 0) {
-      return this.surfingSlots().every(s => !!s.time);
+      const slots = this.surfingSlots();
+      return slots.every(s => typeof s.time === 'string' && s.time.trim().length > 0);
     }
-    return true;
+    return !!this.time();
   });
   isStep4Valid = computed(() => !!this.slotsTotal() && this.slotsTotal() > 0);
 
@@ -243,6 +243,21 @@ export class HostEventComponent implements OnInit {
     }
     this.surfingSlots.set(updated);
     this.updateTotalSlotsFromSurfing();
+  }
+
+  onSlotTimeChange(slot: SurfingSlot, val: string) {
+    slot.time = val || '';
+    if (!this.time() && this.surfingSlots().length > 0 && this.surfingSlots()[0]?.time) {
+      this.time.set(this.surfingSlots()[0].time);
+    }
+    // Update signal with fresh array reference to ensure computed signals re-evaluate
+    this.surfingSlots.set([...this.surfingSlots()]);
+  }
+
+  onSlotAttendeesChange(slot: SurfingSlot, val: any) {
+    slot.maxAttendees = (val === '' || val === null || val === undefined) ? null : Number(val);
+    this.updateTotalSlotsFromSurfing();
+    this.surfingSlots.set([...this.surfingSlots()]);
   }
 
   updateTotalSlotsFromSurfing() {
@@ -376,6 +391,9 @@ export class HostEventComponent implements OnInit {
   }
 
   nextStep() {
+    if (this.selectedSport() === 'Surfing' && !this.time() && this.surfingSlots().length > 0 && this.surfingSlots()[0]?.time) {
+      this.time.set(this.surfingSlots()[0].time);
+    }
     if (this.isCurrentStepValid() && this.currentStep() < 5) {
       this.currentStep.update(s => s + 1);
     }

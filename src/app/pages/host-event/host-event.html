@@ -283,7 +283,13 @@
                         <div class="slot-field-group">
                           <label class="input-label">SLOT {{ slot.slotNumber }}: SELECT SLOT TIMING</label>
                           <div class="date-picker-input-wrapper">
-                            <input type="time" [(ngModel)]="slot.time" class="theme-text-input date-time-picker-input" (click)="openPicker($event)">
+                            <input type="time"
+                                   [ngModel]="slot.time"
+                                   (ngModelChange)="onSlotTimeChange(slot, $event)"
+                                   (input)="onSlotTimeChange(slot, $any($event.target).value)"
+                                   (change)="onSlotTimeChange(slot, $any($event.target).value)"
+                                   class="theme-text-input date-time-picker-input"
+                                   (click)="openPicker($event)">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="picker-icon">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
@@ -292,7 +298,12 @@
 
                         <div class="slot-field-group">
                           <label class="input-label">MAXIMUM ATTENDEES</label>
-                          <input type="number" min="1" [(ngModel)]="slot.maxAttendees" (ngModelChange)="updateTotalSlotsFromSurfing()" placeholder="e.g. 10" class="theme-text-input">
+                          <input type="number" min="1"
+                                 [ngModel]="slot.maxAttendees"
+                                 (ngModelChange)="onSlotAttendeesChange(slot, $event)"
+                                 (input)="onSlotAttendeesChange(slot, $any($event.target).value)"
+                                 placeholder="e.g. 10"
+                                 class="theme-text-input">
                         </div>
                       </div>
                     }
