@@ -571,8 +571,8 @@ export class IndividualEventComponent implements OnInit {
     }
     if (details.category.toLowerCase() === 'surfing') {
       return [
-        { slotNumber: 1, time: '6:30 AM', endTime: '8:00 AM', maxAttendees: 10, slotsFilled: 7 },
-        { slotNumber: 2, time: '8:30 AM', endTime: '10:00 AM', maxAttendees: 10, slotsFilled: 2 }
+        { slotNumber: 1, time: '6:30 AM', endTime: '8:15 AM', maxAttendees: 10, slotsFilled: 7 },
+        { slotNumber: 2, time: '8:30 AM', endTime: '10:15 AM', maxAttendees: 10, slotsFilled: 2 }
       ];
     }
     return [];
@@ -631,7 +631,7 @@ export class IndividualEventComponent implements OnInit {
         if (ampm === 'PM' && hours < 12) startHours24 += 12;
         if (ampm === 'AM' && hours === 12) startHours24 = 0;
 
-        let endMinsTotal = startHours24 * 60 + mins + 90;
+        let endMinsTotal = startHours24 * 60 + mins + 105;
         let endHours24 = Math.floor(endMinsTotal / 60) % 24;
         let endMins = endMinsTotal % 60;
 
