@@ -165,6 +165,23 @@
               <div class="slot-timing">
                 {{ getSlotDisplayTiming(slot) }}
               </div>
+
+              <!-- Registered Users in this slot -->
+              @if (getSlotParticipants(slot.slotNumber).length > 0) {
+              <div class="slot-attendees-wrap">
+                <div class="slot-attendees-header">
+                  <span>Registered ({{ getSlotParticipants(slot.slotNumber).length }})</span>
+                </div>
+                <div class="slot-attendees-chips">
+                  @for (p of getSlotParticipants(slot.slotNumber); track p.name) {
+                  <div class="slot-attendee-chip" [title]="p.name">
+                    <span class="chip-avatar-circle">{{ getInitials(p.name) }}</span>
+                    <span class="chip-text">{{ p.name }}</span>
+                  </div>
+                  }
+                </div>
+              </div>
+              }
             </div>
             }
           </div>
@@ -277,7 +294,45 @@
               <h4 class="sublist-title">Registered Participants</h4>
             </div>
 
-            <!-- Participants Stack -->
+            @if (isSurfingEvent()) {
+            <!-- Surfing Slot-wise Participants Breakdown -->
+            <div class="surfing-slots-participants-group">
+              @for (slot of getEventSurfingSlots(); track slot.slotNumber) {
+              <div class="slot-group-card">
+                <div class="slot-group-header">
+                  <div class="slot-group-title-wrap">
+                    <span class="slot-group-pill">Slot {{ slot.slotNumber }}</span>
+                    <span class="slot-group-timing">{{ getSlotDisplayTiming(slot) }}</span>
+                  </div>
+                  <span class="slot-group-count">
+                    {{ getSlotParticipants(slot.slotNumber).length }}/{{ slot.maxAttendees || 10 }}
+                  </span>
+                </div>
+
+                <div class="participants-stack">
+                  @for (item of getSlotParticipants(slot.slotNumber); track item.name) {
+                  <div class="participant-row">
+                    <div class="participant-avatar">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                        stroke="currentColor" class="avatar-svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                      </svg>
+                    </div>
+                    <span class="participant-name">{{ item.name }}</span>
+                  </div>
+                  }
+                  @if (getSlotParticipants(slot.slotNumber).length === 0) {
+                  <div class="slot-empty-notice">
+                    <span>No participants registered for Slot {{ slot.slotNumber }} yet</span>
+                  </div>
+                  }
+                </div>
+              </div>
+              }
+            </div>
+            } @else {
+            <!-- Standard Participants Stack for non-surfing events -->
             <div class="participants-stack">
               @for (item of details.participants; track item.name) {
               <div class="participant-row">
@@ -296,6 +351,7 @@
                 more</span>
               }
             </div>
+            }
           </div>
           }
 

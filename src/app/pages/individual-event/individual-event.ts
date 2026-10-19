@@ -16,8 +16,11 @@ interface ScheduleItem {
 }
 
 interface ParticipantItem {
+  userId?: string;
   name: string;
   role: string;
+  surfingSlot?: number;
+  surfingSlotTime?: string;
 }
 
 interface SurfingSlotItem {
@@ -217,7 +220,7 @@ export class IndividualEventComponent implements OnInit {
   });
 
   showParticipants = computed(() => {
-    return this.isAlreadyRegistered() || this.isAdmin();
+    return this.isAlreadyRegistered() || this.isAdmin() || this.isSurfingEvent();
   });
 
   modalState = signal<{
@@ -699,5 +702,23 @@ export class IndividualEventComponent implements OnInit {
       }
     } catch (e) {}
     return slot.time;
+  }
+
+  getSlotParticipants(slotNumber: number): ParticipantItem[] {
+    const details = this.eventDetails();
+    if (!details?.participants || !Array.isArray(details.participants)) return [];
+    return details.participants.filter(p => {
+      if (p.surfingSlot !== undefined && p.surfingSlot !== null) {
+        return Number(p.surfingSlot) === Number(slotNumber);
+      }
+      return Number(slotNumber) === 1;
+    });
+  }
+
+  getInitials(name?: string): string {
+    if (!name || name.trim() === '') return 'A';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 }
