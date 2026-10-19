@@ -305,7 +305,7 @@
                     <span class="slot-group-timing">{{ getSlotDisplayTiming(slot) }}</span>
                   </div>
                   <span class="slot-group-count">
-                    {{ getSlotParticipants(slot.slotNumber).length }}/{{ slot.maxAttendees || 10 }}
+                    {{ getSlotFilledCount(slot) }}/{{ slot.maxAttendees || 10 }}
                   </span>
                 </div>
 

@@ -626,16 +626,24 @@ export class IndividualEventComponent implements OnInit {
     }
     if (details.category.toLowerCase() === 'surfing') {
       return [
-        { slotNumber: 1, time: '6:30 AM', endTime: '8:15 AM', maxAttendees: 10, slotsFilled: 7 },
-        { slotNumber: 2, time: '8:30 AM', endTime: '10:15 AM', maxAttendees: 10, slotsFilled: 2 }
+        { slotNumber: 1, time: '6:30 AM', endTime: '8:15 AM', maxAttendees: 10, slotsFilled: 0 },
+        { slotNumber: 2, time: '8:30 AM', endTime: '10:15 AM', maxAttendees: 10, slotsFilled: 0 }
       ];
     }
     return [];
   }
 
+  getSlotFilledCount(slot: SurfingSlotItem): number {
+    const participantsInSlot = this.getSlotParticipants(slot.slotNumber);
+    if (participantsInSlot.length > 0) {
+      return Math.max(participantsInSlot.length, slot.slotsFilled || 0);
+    }
+    return slot.slotsFilled !== undefined ? slot.slotsFilled : 0;
+  }
+
   getSlotSpotsLeft(slot: SurfingSlotItem): string {
     const max = slot.maxAttendees || 10;
-    const filled = slot.slotsFilled !== undefined ? slot.slotsFilled : 0;
+    const filled = this.getSlotFilledCount(slot);
     const left = Math.max(0, max - filled);
     if (left === 0) return 'Fully booked';
     return `${left} spots left`;
@@ -643,21 +651,21 @@ export class IndividualEventComponent implements OnInit {
 
   getSlotSpotsLeftText(slot: SurfingSlotItem): string {
     const max = slot.maxAttendees || 10;
-    const filled = slot.slotsFilled !== undefined ? slot.slotsFilled : 0;
+    const filled = this.getSlotFilledCount(slot);
     const left = Math.max(0, max - filled);
     return `${left} of ${max} spots left`;
   }
 
   isSlotAlmostFull(slot: SurfingSlotItem): boolean {
     const max = slot.maxAttendees || 10;
-    const filled = slot.slotsFilled !== undefined ? slot.slotsFilled : 0;
+    const filled = this.getSlotFilledCount(slot);
     const left = Math.max(0, max - filled);
     return left > 0 && left <= 3;
   }
 
   isSlotFull(slot: SurfingSlotItem): boolean {
     const max = slot.maxAttendees || 10;
-    const filled = slot.slotsFilled !== undefined ? slot.slotsFilled : 0;
+    const filled = this.getSlotFilledCount(slot);
     return max - filled <= 0;
   }
 
