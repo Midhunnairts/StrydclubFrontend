@@ -30,6 +30,7 @@ interface SurfingSlotItem {
 
 interface EventDetails {
   id: string;
+  slug?: string;
   title: string;
   category: string;
   description: string;
@@ -76,18 +77,34 @@ export class IndividualEventComponent implements OnInit {
   }
 
   checkRedirectPaymentVerification() {
-    const id = this.route.snapshot.paramMap.get('id');
-    const orderId = this.route.snapshot.queryParamMap.get('order_id');
+    const routeId = this.route.snapshot.paramMap.get('id');
+    const urlOrderId = this.route.snapshot.queryParamMap.get('order_id');
     const token = this.apiService.getToken();
 
-    if (id && orderId) {
+    let pendingOrder: any = null;
+    try {
+      const stored = localStorage.getItem('stryd_pending_order');
+      if (stored) {
+        pendingOrder = JSON.parse(stored);
+      }
+    } catch (e) {}
+
+    const orderIdToVerify = urlOrderId || pendingOrder?.orderId;
+    const targetEventId = routeId || pendingOrder?.eventId;
+    const slotPayload = pendingOrder?.slotPayload || {};
+
+    if (orderIdToVerify && targetEventId) {
+      if (urlOrderId) {
+        this.router.navigate([], { relativeTo: this.route, replaceUrl: true });
+      }
+
       this.isProcessing.set(true);
       this.processingText.set('Verifying payment & securing spot...');
 
-      this.apiService.verifyCashfreePayment(id, { order_id: orderId }, token).subscribe({
+      this.apiService.verifyCashfreePayment(targetEventId, { order_id: orderIdToVerify, ...slotPayload }, token).subscribe({
         next: (verifyRes) => {
           this.isProcessing.set(false);
-          this.router.navigate([], { relativeTo: this.route, replaceUrl: true });
+          try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
           if (verifyRes.success) {
             this.modalState.set({
               show: true,
@@ -100,8 +117,14 @@ export class IndividualEventComponent implements OnInit {
         },
         error: (verifyErr) => {
           this.isProcessing.set(false);
-          this.router.navigate([], { relativeTo: this.route, replaceUrl: true });
-          console.warn('Redirect Cashfree payment verification note:', verifyErr.error?.message);
+          if (verifyErr?.error?.alreadyRegistered) {
+            try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
+            this.loadEventDetails();
+          } else if (pendingOrder && Date.now() - pendingOrder.timestamp > 30 * 60 * 1000) {
+            // Expire after 30 minutes
+            try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
+          }
+          console.warn('Cashfree payment verification note:', verifyErr.error?.message);
         }
       });
     }
@@ -355,6 +378,17 @@ export class IndividualEventComponent implements OnInit {
         next: (orderRes) => {
           this.isProcessing.set(false);
           if (orderRes.success && orderRes.payment_session_id) {
+            const pendingOrder = {
+              orderId: orderRes.order_id,
+              eventId: details.id,
+              slug: details.slug,
+              slotPayload: slotPayload,
+              timestamp: Date.now()
+            };
+            try {
+              localStorage.setItem('stryd_pending_order', JSON.stringify(pendingOrder));
+            } catch (e) {}
+
             try {
               const cashfreeMode = orderRes.cf_environment || environment.cashfreeEnv || 'sandbox';
               const cashfree = Cashfree({ mode: cashfreeMode });
@@ -376,6 +410,7 @@ export class IndividualEventComponent implements OnInit {
                 this.apiService.verifyCashfreePayment(details.id, { order_id: orderRes.order_id, ...slotPayload }, token).subscribe({
                   next: (verifyRes) => {
                     this.isProcessing.set(false);
+                    try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
                     if (verifyRes.success) {
                       const slotNotice = selectedSlot ? ` for Slot ${selectedSlot.slotNumber} (${this.getSlotDisplayTiming(selectedSlot)})` : '';
                       this.modalState.set({
@@ -389,8 +424,19 @@ export class IndividualEventComponent implements OnInit {
                   },
                   error: (verifyErr) => {
                     this.isProcessing.set(false);
-                    const errorMsg = verifyErr.error?.message || 'Cashfree payment verification failed.';
-                    alert(errorMsg);
+                    if (verifyErr?.error?.alreadyRegistered) {
+                      try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
+                      this.modalState.set({
+                        show: true,
+                        title: 'Registration Confirmed!',
+                        message: 'You are confirmed for this event.',
+                        type: 'success'
+                      });
+                      this.loadEventDetails();
+                    } else {
+                      const errorMsg = verifyErr.error?.message || 'Cashfree payment verification failed. If money was debited, your spot will be synced automatically on refresh.';
+                      alert(errorMsg);
+                    }
                   }
                 });
               });
@@ -402,6 +448,7 @@ export class IndividualEventComponent implements OnInit {
               this.apiService.verifyCashfreePayment(details.id, { order_id: orderRes.order_id, ...slotPayload }, token).subscribe({
                 next: (verifyRes) => {
                   this.isProcessing.set(false);
+                  try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
                   if (verifyRes.success) {
                     const slotNotice = selectedSlot ? ` for Slot ${selectedSlot.slotNumber} (${this.getSlotDisplayTiming(selectedSlot)})` : '';
                     this.modalState.set({
@@ -415,7 +462,12 @@ export class IndividualEventComponent implements OnInit {
                 },
                 error: (verifyErr) => {
                   this.isProcessing.set(false);
-                  alert(verifyErr.error?.message || 'Cashfree payment verification failed.');
+                  if (verifyErr?.error?.alreadyRegistered) {
+                    try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
+                    this.loadEventDetails();
+                  } else {
+                    alert(verifyErr.error?.message || 'Cashfree payment verification failed.');
+                  }
                 }
               });
             }

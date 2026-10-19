@@ -73,7 +73,33 @@ export class UserDashboardComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.checkAndSyncPendingOrder();
     this.loadDashboardData();
+  }
+
+  checkAndSyncPendingOrder() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const stored = localStorage.getItem('stryd_pending_order');
+      if (stored) {
+        const pending = JSON.parse(stored);
+        if (pending?.orderId && pending?.eventId) {
+          this.apiService.verifyCashfreePayment(pending.eventId, { order_id: pending.orderId, ...(pending.slotPayload || {}) }, token).subscribe({
+            next: () => {
+              try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
+              this.loadDashboardData();
+            },
+            error: (err) => {
+              if (err?.error?.alreadyRegistered || (Date.now() - pending.timestamp > 30 * 60 * 1000)) {
+                try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
+              }
+            }
+          });
+        }
+      }
+    } catch (e) {}
   }
 
   loadDashboardData() {
