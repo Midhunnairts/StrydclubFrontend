@@ -368,19 +368,34 @@ export class IndividualEventComponent implements OnInit {
     if (!token) return;
 
     const selectedSlot = this.selectedSurfingSlot();
+    const slotDisplayTime = selectedSlot ? this.getSlotDisplayTiming(selectedSlot) : '';
+    // Format sanitized time for gateway tags (alphanumeric, underscores, hyphens only - no spaces/colons/symbols)
+    const sanitizedSlotTime = slotDisplayTime
+      ? slotDisplayTime.replace(/\s*–\s*|\s*-\s*/g, '_to_').replace(/[:\s]/g, '_').replace(/[^a-zA-Z0-9_-]/g, '')
+      : '';
+
+    // Order payload sent to createCashfreeOrder (safe for Cashfree order_tags)
+    const orderPayload = selectedSlot ? {
+      surfingSlot: selectedSlot.slotNumber,
+      surfingSlotTime: sanitizedSlotTime
+    } : {};
+
+    // Human-readable slot payload used for verification and DB participant entry
     const slotPayload = selectedSlot ? {
       surfingSlot: selectedSlot.slotNumber,
-      surfingSlotTime: this.getSlotDisplayTiming(selectedSlot)
+      surfingSlotTime: slotDisplayTime
     } : {};
 
     if (details.price && details.price > 0) {
       this.isProcessing.set(true);
       this.processingText.set('Preparing Cashfree checkout...');
 
-      this.apiService.createCashfreeOrder(details.id, token, slotPayload).subscribe({
+      this.apiService.createCashfreeOrder(details.id, token, orderPayload).subscribe({
         next: (orderRes) => {
           this.isProcessing.set(false);
-          if (orderRes.success && orderRes.payment_session_id) {
+          const isRealSession = orderRes.success && orderRes.payment_session_id && !orderRes.payment_session_id.startsWith('session_17') && orderRes.payment_session_id.length > 30;
+
+          if (isRealSession) {
             const pendingOrder = {
               orderId: orderRes.order_id,
               eventId: details.id,
@@ -393,7 +408,7 @@ export class IndividualEventComponent implements OnInit {
             } catch (e) {}
 
             try {
-              const cashfreeMode = orderRes.cf_environment || environment.cashfreeEnv || 'sandbox';
+              const cashfreeMode = orderRes.cf_environment || environment.cashfreeEnv || 'production';
               const cashfree = Cashfree({ mode: cashfreeMode });
 
               const checkoutOptions = {
@@ -415,7 +430,7 @@ export class IndividualEventComponent implements OnInit {
                     this.isProcessing.set(false);
                     try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
                     if (verifyRes.success) {
-                      const slotNotice = selectedSlot ? ` for Slot ${selectedSlot.slotNumber} (${this.getSlotDisplayTiming(selectedSlot)})` : '';
+                      const slotNotice = selectedSlot ? ` for Slot ${selectedSlot.slotNumber} (${slotDisplayTime})` : '';
                       this.modalState.set({
                         show: true,
                         title: 'Registration Successful!',
@@ -453,7 +468,7 @@ export class IndividualEventComponent implements OnInit {
                   this.isProcessing.set(false);
                   try { localStorage.removeItem('stryd_pending_order'); } catch (e) {}
                   if (verifyRes.success) {
-                    const slotNotice = selectedSlot ? ` for Slot ${selectedSlot.slotNumber} (${this.getSlotDisplayTiming(selectedSlot)})` : '';
+                    const slotNotice = selectedSlot ? ` for Slot ${selectedSlot.slotNumber} (${slotDisplayTime})` : '';
                     this.modalState.set({
                       show: true,
                       title: 'Registration Successful!',
@@ -474,6 +489,10 @@ export class IndividualEventComponent implements OnInit {
                 }
               });
             }
+          } else {
+            this.isProcessing.set(false);
+            const msg = (orderRes as any)?.message || 'Failed to initialize payment gateway session. Please try again.';
+            alert(msg);
           }
         },
         error: (orderErr) => {
