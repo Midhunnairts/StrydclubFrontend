@@ -17,47 +17,39 @@ export class ApiService {
   }
 
   /**
+   * Safe token retrieval that strips invalid, null, or mock tokens
+   */
+  getToken(): string | null {
+    if (typeof window === 'undefined' || !window.localStorage) return null;
+    const token = localStorage.getItem('token');
+    if (!token || token === 'undefined' || token === 'null' || token === 'mock-google-token' || token.trim() === '') {
+      localStorage.removeItem('token');
+      return null;
+    }
+    return token;
+  }
+
+  /**
    * Load the current logged in user details from local storage token.
    */
   loadUserProfile(): Observable<{ success: boolean; user: any }> | null {
-    if (typeof window === 'undefined' || !window.localStorage) return null;
-    const token = localStorage.getItem('token');
+    const token = this.getToken();
     if (!token) {
       this.currentUser.set(null);
       return null;
     }
 
-    if (token === 'mock-google-token') {
-      const mockUser = {
-        id: 'mock-google-id',
-        name: 'Google Athlete',
-        email: 'athlete.google@strydclub.com',
-        phone: '+91 9999999999',
-        role: 'user',
-        favoriteSports: ['Running'],
-        memberSince: 'January 2026',
-        totalEvents: 1,
-        eventsWon: 0,
-        sportsPlayed: 1
-      };
-      this.currentUser.set(mockUser);
-      return new Observable(subscriber => {
-        subscriber.next({ success: true, user: mockUser });
-        subscriber.complete();
-      });
-    }
-
     const obs = this.getUserProfile(token);
     obs.subscribe({
       next: (res) => {
-        if (res.success) {
+        if (res.success && res.user) {
           this.currentUser.set(res.user);
         } else {
-          this.currentUser.set(null);
+          this.logout();
         }
       },
       error: () => {
-        this.currentUser.set(null);
+        this.logout();
       }
     });
     return obs;
@@ -81,6 +73,29 @@ export class ApiService {
   }
 
   /**
+   * Fetch public platform stats (Total Events, Total Athletes, Total Cities).
+   */
+  getPublicStats(): Observable<{
+    success: boolean;
+    stats: {
+      totalEvents: number;
+      totalAthletes: number;
+      totalCities: number;
+      eventsText: string;
+      athletesText: string;
+      citiesText: string;
+      championsText?: string;
+      cityList?: Array<{
+        name: string;
+        membersCount: number;
+        eventsCount: number;
+      }>;
+    };
+  }> {
+    return this.http.get<any>(`${this.apiUrl}/events/stats`);
+  }
+
+  /**
    * Fetch public user profile details.
    */
   getPublicUserProfile(id: string): Observable<{ success: boolean; user: any }> {
@@ -91,19 +106,34 @@ export class ApiService {
    * Fetch details for a specific event by ID or slug.
    */
   getEventDetails(id: string): Observable<{ success: boolean; event: any }> {
-    return this.http.get<{ success: boolean; event: any }>(`${this.apiUrl}/events/${id}`);
+    const token = this.getToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
+    return this.http.get<{ success: boolean; event: any }>(`${this.apiUrl}/events/${id}`, { headers });
+  }
+
+  /**
+   * Admin method to manually sync a Cashfree order and register user if paid.
+   */
+  syncCashfreeOrder(orderId: string): Observable<{ success: boolean; message: string; registration?: any }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<{ success: boolean; message: string; registration?: any }>(
+      `${this.apiUrl}/admin/sync-cashfree-order`,
+      { order_id: orderId },
+      { headers }
+    );
   }
 
   /**
    * Register the authenticated athlete for a specific event.
    */
-  registerForEvent(id: string, token: string): Observable<{ success: boolean; message: string }> {
+  registerForEvent(id: string, token: string, body: any = {}): Observable<{ success: boolean; message: string }> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
     return this.http.post<{ success: boolean; message: string }>(
       `${this.apiUrl}/events/${id}/register`,
-      {},
+      body,
       { headers }
     );
   }
@@ -123,31 +153,39 @@ export class ApiService {
   }
 
   /**
-   * Create a Razorpay payment order for the event.
+   * Create a Cashfree payment order for the event.
    */
-  createRazorpayOrder(slug: string, token: string): Observable<{ success: boolean; order_id: string; amount: number; currency: string }> {
+  createCashfreeOrder(slug: string, token: string, body: any = {}): Observable<{ success: boolean; order_id: string; payment_session_id: string; cf_environment: string }> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-    return this.http.post<{ success: boolean; order_id: string; amount: number; currency: string }>(
-      `${this.apiUrl}/events/${slug}/create-order`,
-      {},
+    return this.http.post<{ success: boolean; order_id: string; payment_session_id: string; cf_environment: string }>(
+      `${this.apiUrl}/events/${slug}/cashfree-order`,
+      body,
       { headers }
     );
   }
 
   /**
-   * Register the authenticated athlete for a specific event.
+   * Verify Cashfree payment for the event registration.
    */
-  verifyRazorpayPayment(slug: string, payload: any, token: string): Observable<{ success: boolean; message: string }> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
+  verifyCashfreePayment(slug: string, payload: { order_id: string }, token?: string | null): Observable<{ success: boolean; message: string }> {
+    const validToken = token || this.getToken();
+    const headers = validToken ? new HttpHeaders({ Authorization: `Bearer ${validToken}` }) : new HttpHeaders();
     return this.http.post<{ success: boolean; message: string }>(
-      `${this.apiUrl}/events/${slug}/verify-payment`,
+      `${this.apiUrl}/events/${slug}/verify-cashfree`,
       payload,
       { headers }
     );
+  }
+
+  // Backward compatibility alias methods
+  createRazorpayOrder(slug: string, token: string) {
+    return this.createCashfreeOrder(slug, token);
+  }
+
+  verifyRazorpayPayment(slug: string, payload: any, token: string) {
+    return this.verifyCashfreePayment(slug, payload, token);
   }
 
   /**
@@ -229,5 +267,129 @@ export class ApiService {
       Authorization: `Bearer ${token}`
     });
     return this.http.get<{ success: boolean; user: any }>(`${this.apiUrl}/users/profile`, { headers });
+  }
+
+  /**
+   * Complete or update logged-in user profile details (Name, Location, Email/Phone, Favorite Sports).
+   */
+  updateUserProfile(profileData: { name: string; location: string; email?: string; phone?: string; favoriteSports?: string[] }, token: string): Observable<{ success: boolean; message: string; user: any }> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.put<{ success: boolean; message: string; user: any }>(
+      `${this.apiUrl}/users/profile`,
+      profileData,
+      { headers }
+    );
+  }
+
+  /**
+   * Fetch admin overview data including metrics, approval queue, highlights, and activity logs.
+   */
+  getAdminOverview(): Observable<{ success: boolean; stats: any; approvalQueue: any[]; highlights: any; recentActivity: any[] }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get<{ success: boolean; stats: any; approvalQueue: any[]; highlights: any; recentActivity: any[] }>(
+      `${this.apiUrl}/admin/overview`,
+      { headers }
+    );
+  }
+
+  /**
+   * Approve a pending event by ID.
+   */
+  approveEvent(id: string): Observable<{ success: boolean; message: string }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.apiUrl}/admin/events/${id}/approve`,
+      {},
+      { headers }
+    );
+  }
+
+  /**
+   * Reject a pending event by ID.
+   */
+  rejectEvent(id: string): Observable<{ success: boolean; message: string }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.apiUrl}/admin/events/${id}/reject`,
+      {},
+      { headers }
+    );
+  }
+
+  /**
+   * Fetch all events for admin panel.
+   */
+  getAdminEvents(): Observable<{ success: boolean; events: any[] }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get<{ success: boolean; events: any[] }>(`${this.apiUrl}/admin/events`, { headers });
+  }
+
+  /**
+   * Fetch all users for admin panel.
+   */
+  getAdminUsers(): Observable<{ success: boolean; users: any[] }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get<{ success: boolean; users: any[] }>(`${this.apiUrl}/admin/users`, { headers });
+  }
+
+  /**
+   * Delete an event by ID as admin.
+   */
+  deleteAdminEvent(id: string): Observable<{ success: boolean; message: string }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.delete<{ success: boolean; message: string }>(
+      `${this.apiUrl}/admin/events/${id}`,
+      { headers }
+    );
+  }
+
+  /**
+   * Update event details as admin.
+   */
+  updateAdminEvent(id: string, data: any): Observable<{ success: boolean; event: any }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.put<{ success: boolean; event: any }>(
+      `${this.apiUrl}/admin/events/${id}`,
+      data,
+      { headers }
+    );
+  }
+
+  /**
+   * Toggle role for a user (admin <-> user).
+   */
+  toggleUserRole(id: string, role?: string): Observable<{ success: boolean; user: any }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post<{ success: boolean; user: any }>(
+      `${this.apiUrl}/admin/users/${id}/role`,
+      { role },
+      { headers }
+    );
+  }
+
+  /**
+   * Fetch platform analytics metrics.
+   */
+  getAdminAnalytics(): Observable<{ success: boolean; analytics: any }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get<{ success: boolean; analytics: any }>(`${this.apiUrl}/admin/analytics`, { headers });
+  }
+
+  /**
+   * Submit contact form message.
+   */
+  sendContactMessage(data: { name: string; email: string; subject: string; message: string }): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${this.apiUrl}/contact/submit`, data);
   }
 }

@@ -5,7 +5,8 @@ import { ApiService } from '../../services/api.service';
 
 interface SportItem {
   name: string;
-  icon: string;
+  badge: string;
+  image: string;
   eventsCount: number;
 }
 
@@ -20,14 +21,7 @@ export class SportListComponent implements OnInit {
   private apiService = inject(ApiService);
 
   sports = signal<SportItem[]>([
-    { name: 'Running', icon: '🏃', eventsCount: 12 },
-    { name: 'Badminton', icon: '🏸', eventsCount: 8 },
-    { name: 'Kho Kho', icon: '🎯', eventsCount: 5 },
-    { name: 'Football', icon: '⚽', eventsCount: 15 },
-    { name: 'Volleyball', icon: '🏐', eventsCount: 10 },
-    { name: 'Pickleball', icon: '🎾', eventsCount: 6 },
-    { name: 'Cricket', icon: '🏏', eventsCount: 4 },
-    { name: 'Other', icon: '✨', eventsCount: 2 }
+
   ]);
 
   ngOnInit() {
@@ -37,18 +31,40 @@ export class SportListComponent implements OnInit {
   loadSports() {
     this.apiService.getSports().subscribe({
       next: (res) => {
-        if (res.success) {
-          // Map sports fields
+        console.log(res);
+
+        if (res.success && res.sports) {
+          const defaultBadges: Record<string, string> = {
+            'Running': 'MOST POPULAR',
+            'Badminton': 'INDOOR',
+            'Football': 'TEAM SPORT',
+            'Volleyball': 'BEACH & INDOOR',
+            'Pickleball': 'FAST GROWING',
+            'Lifestyle': 'WELLNESS & FUN',
+            'Surfing': 'WATER SPORT',
+            'Other': 'EXPLORE MORE'
+          };
+          const defaultImages: Record<string, string> = {
+            'Running': '/assets/Run.jpg',
+            'Badminton': '/assets/Badminton.jpg',
+            'Football': '/assets/Football.jpg',
+            'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
+            'Pickleball': '/assets/Pickleball.webp',
+            'Lifestyle': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
+            'Surfing': 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=800&q=80',
+            'Other': '/assets/Other.jpg'
+          };
           const mapped = res.sports.map(s => ({
             name: s.name,
-            icon: s.icon,
+            badge: s.badge || defaultBadges[s.name] || 'FEATURED',
+            image: s.image || defaultImages[s.name] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80',
             eventsCount: s.eventsCount
           }));
           this.sports.set(mapped);
         }
       },
-      error: (err) => {
-        console.warn('Backend server offline. Keeping sports listing fallback...');
+      error: () => {
+        this.sports.set([]);
       }
     });
   }

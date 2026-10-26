@@ -1,155 +1,209 @@
 .sports-section {
   position: relative;
   width: 100%;
-  padding: 80px 24px 120px;
-  background-color: var(--bg-dark-pure);
+  padding: 80px 48px 120px;
+  background-color: #050608;
   z-index: 10;
 }
 
 .sports-container {
   width: 100%;
-  max-width: 1560px;
+  max-width: 1480px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  gap: 48px;
 }
 
-/* Header Text Section */
-.sports-header {
-  text-align: center;
-  margin-bottom: 56px;
+/* Header Text Section Row */
+.sports-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.sports-title-block {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+}
+
+.sports-eyebrow {
+  font-family: var(--font-family-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
 }
 
 .sports-title {
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-family-title);
-  font-size: 3.25rem;
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  color: var(--text-white);
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  color: #ffffff;
   margin: 0;
 }
 
-.sports-subtitle {
+.link-all-sports {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-family-body);
-  font-size: 1.15rem;
-  font-weight: 400;
-  color: var(--text-muted);
-  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  transition: var(--transition-smooth);
+
+  .icon-right-arrow {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    color: #ffffff;
+
+    .icon-right-arrow {
+      transform: translateX(4px);
+    }
+  }
 }
 
-/* CSS Grid Layout matching the 4-column design */
+/* 4-Column CSS Grid Layout matching Images 2 & 3 */
 .sports-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
 
-/* Individual Sport Card styling */
+/* Individual Full-Bleed Sport Card styling */
 .sport-card {
+  position: relative;
+  height: 380px;
+  border-radius: 20px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  padding: 36px;
-  background-color: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 24px; // Rounded modern borders
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  transition: var(--transition-smooth);
+  justify-content: space-between;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+
+  .card-gradient-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0.9) 100%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+  }
+
+  .card-top-badge {
+    position: relative;
+    z-index: 2;
+
+    span {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 50px;
+      background-color: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      font-family: var(--font-family-body);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+  }
+
+  .card-bottom-info {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sport-name {
+    font-family: var(--font-family-title);
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .sport-events-count {
+    font-family: var(--font-family-body);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 0;
+  }
 
   &:hover {
     transform: translateY(-6px);
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.16);
-    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+
+    .card-gradient-overlay {
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.2) 40%, rgba(0, 0, 0, 0.95) 100%);
+    }
   }
-}
-
-/* Icon / Emoji Graphic container */
-.sport-icon-container {
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .sport-emoji {
-    font-size: 2.85rem;
-    line-height: 1;
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
-    user-select: none;
-    transition: var(--transition-smooth);
-  }
-}
-
-.sport-card:hover .sport-emoji {
-  transform: scale(1.1) rotate(4deg);
-}
-
-/* Info Section styling */
-.sport-info {
-  width: 100%;
-}
-
-.sport-name {
-  font-family: var(--font-family-title);
-  font-size: 1.55rem;
-  font-weight: 700;
-  color: var(--text-white);
-  margin-bottom: 8px;
-  letter-spacing: -0.015em;
-}
-
-.sport-events-count {
-  font-family: var(--font-family-body);
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin: 0;
 }
 
 /* Responsive breakdowns */
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 1200px) {
   .sports-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 
   .sports-title {
-    font-size: 2.8rem;
+    font-size: 3.2rem;
   }
 }
 
 @media screen and (max-width: 850px) {
+  .sports-section {
+    padding: 60px 24px 80px;
+  }
+
   .sports-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .sports-title {
-    font-size: 2.4rem;
+    font-size: 2.6rem;
   }
 
   .sport-card {
-    padding: 30px;
+    height: 320px;
   }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 550px) {
   .sports-grid {
     grid-template-columns: 1fr;
   }
 
-  .sports-section {
-    padding: 60px 16px 80px;
+  .sports-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
 
   .sports-title {
-    font-size: 2rem;
-  }
-
-  .sports-subtitle {
-    font-size: 1rem;
+    font-size: 2.2rem;
   }
 }

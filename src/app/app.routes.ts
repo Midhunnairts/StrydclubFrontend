@@ -10,13 +10,21 @@ import { IndividualEventComponent } from './pages/individual-event/individual-ev
 import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard';
 import { HostEventComponent } from './pages/host-event/host-event';
 import { UserProfileComponent } from './pages/user-profile/user-profile';
+import { CompleteProfileComponent } from './pages/complete-profile/complete-profile';
+import { AdminConsoleComponent } from './pages/admin-console/admin-console';
 import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'admin', component: AdminConsoleComponent, canActivate: [adminGuard] },
   { path: 'dashboard', component: UserDashboardComponent, canActivate: [authGuard] },
-  { path: 'host-event', component: HostEventComponent, canActivate: [authGuard] },
+  { path: 'user-profile', component: UserProfileComponent, canActivate: [authGuard] },
+  { path: 'profile', component: UserProfileComponent, canActivate: [authGuard] },
   { path: 'profile/:id', component: UserProfileComponent },
+  { path: 'complete-profile', component: CompleteProfileComponent, canActivate: [authGuard] },
+  { path: 'host-event', component: HostEventComponent, canActivate: [adminGuard] },
+  { path: 'host-event/:id', component: HostEventComponent, canActivate: [adminGuard] },
   { path: 'events/:id', component: IndividualEventComponent },
   { path: 'events', component: EventsComponent },
   { path: 'sports', component: SportsComponent },

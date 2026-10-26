@@ -221,6 +221,24 @@
   letter-spacing: -0.02em;
 }
 
+.rules-notes-box {
+  padding: 18px 24px;
+  border-radius: 16px;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.04) 100%), #0e0f12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 4px solid var(--text-white);
+  margin-bottom: 4px;
+}
+
+.rules-notes-text {
+  font-family: var(--font-family-body);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  white-space: pre-line;
+}
+
 .rules-stack {
   display: flex;
   flex-direction: column;
@@ -305,6 +323,143 @@
     background-color: rgba(255, 255, 255, 0.04);
     border-color: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
+  }
+}
+
+/* Surfing Slots Block */
+.surfing-slots-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 36px;
+
+  .section-title {
+    font-family: var(--font-family-title);
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-white);
+    margin: 0;
+  }
+}
+
+.surfing-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.surfing-slot-card {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 22px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  .slot-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .slot-title {
+      font-family: var(--font-family-title);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .slot-spots {
+      font-family: var(--font-family-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.45);
+    }
+  }
+
+  .slot-timing {
+    font-family: var(--font-family-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.035);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .slot-attendees-wrap {
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .slot-attendees-header {
+      font-family: var(--font-family-body);
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .slot-attendees-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .slot-attendee-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 20px;
+      padding: 3px 10px 3px 4px;
+      transition: all 0.2s ease;
+
+      .chip-avatar-circle {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #fff;
+        font-family: var(--font-family-title);
+      }
+
+      .chip-text {
+        font-family: var(--font-family-body);
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        white-space: nowrap;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.16);
+      }
+    }
   }
 }
 
@@ -546,6 +701,76 @@
   font-weight: 500;
   color: var(--text-muted);
   margin-top: 4px;
+}
+
+/* Surfing Slot-wise Participants Breakdown */
+.surfing-slots-participants-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.slot-group-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .slot-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+    .slot-group-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .slot-group-pill {
+      font-family: var(--font-family-title);
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 3px 9px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .slot-group-timing {
+      font-family: var(--font-family-body);
+      font-size: 0.84rem;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+    }
+
+    .slot-group-count {
+      font-family: var(--font-family-body);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+  }
+
+  .slot-empty-notice {
+    font-family: var(--font-family-body);
+    font-size: 0.84rem;
+    color: rgba(255, 255, 255, 0.35);
+    font-style: italic;
+    padding: 4px 0;
+  }
 }
 
 /* Organized By Card */
@@ -934,4 +1159,314 @@
   font-family: var(--font-family-body);
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.5);
+}
+
+/* Surfing Slot Picker Modal */
+.surfing-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 16px;
+}
+
+.surfing-modal-card {
+  width: 100%;
+  max-width: 440px;
+  background-color: #0d0f13;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.slot-modal-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 14px;
+
+  .modal-step-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    .step-counter {
+      font-family: var(--font-family-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.45);
+      text-transform: uppercase;
+    }
+
+    .step-title {
+      font-family: var(--font-family-title);
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+  }
+
+  .modal-stepper-dots {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .stepper-bar {
+      width: 22px;
+      height: 4px;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .stepper-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+    }
+  }
+
+  .btn-modal-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-white);
+    transition: background 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.16);
+      transform: scale(1.05);
+    }
+  }
+}
+
+.modal-event-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.015);
+
+  .strip-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    .strip-title {
+      font-family: var(--font-family-title);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin: 0;
+    }
+
+    .strip-meta {
+      font-family: var(--font-family-body);
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.45);
+      margin: 0;
+    }
+  }
+
+  .strip-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+
+    .strip-price {
+      font-family: var(--font-family-title);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-white);
+    }
+
+    .strip-fee-note {
+      font-family: var(--font-family-body);
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.45);
+    }
+  }
+}
+
+.modal-slot-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .slot-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .slot-main-title {
+      font-family: var(--font-family-title);
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-white);
+      margin: 0;
+    }
+
+    .slot-subtitle {
+      font-family: var(--font-family-body);
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.52);
+      margin: 0;
+    }
+  }
+
+  .modal-slots-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .modal-slot-card {
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.015);
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    &:hover:not(.disabled-full) {
+      background: rgba(255, 255, 255, 0.035);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    &.selected {
+      border-color: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.045);
+      box-shadow: 0 0 16px rgba(255, 255, 255, 0.05);
+    }
+
+    &.disabled-full {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .card-slot-name {
+      font-family: var(--font-family-title);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .card-slot-time {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-family-body);
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.82);
+
+      .slot-icon {
+        width: 15px;
+        height: 15px;
+        color: rgba(255, 255, 255, 0.55);
+        flex-shrink: 0;
+      }
+    }
+
+    .card-slot-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .slot-capacity {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font-family-body);
+        font-size: 0.84rem;
+        color: rgba(255, 255, 255, 0.5);
+
+        .slot-icon {
+          width: 15px;
+          height: 15px;
+          color: rgba(255, 255, 255, 0.45);
+          flex-shrink: 0;
+        }
+      }
+
+      .slot-status-pill {
+        font-family: var(--font-family-body);
+        font-size: 0.85rem;
+        font-weight: 600;
+
+        &.almost-full {
+          color: #f59e0b;
+        }
+
+        &.available {
+          color: #10b981;
+        }
+
+        &.full {
+          color: #ef4444;
+        }
+      }
+    }
+  }
+
+  .btn-confirm-slot {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    background: #2b303a;
+    border: none;
+    font-family: var(--font-family-body);
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #e5e7eb;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    margin-top: 4px;
+
+    &:hover:not(:disabled) {
+      background: #373d4a;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.surfing-slot-card.clickable {
+  cursor: pointer;
+
+  &.active-selected {
+    border-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.045);
+  }
 }

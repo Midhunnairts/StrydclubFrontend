@@ -1,78 +1,388 @@
-<section class="profile-page-section" id="profile-main-view">
+<section class="profile-page-section">
   <div class="profile-page-container">
 
     @if (loading()) {
-      <!-- Loading State -->
-      <div class="loading-box" id="profile-loading-indicator">
-        <p>Loading athlete profile...</p>
+      <div class="profile-loading-state">
+        <div class="spinner-large"></div>
+        <p>Loading Profile Details...</p>
       </div>
-    } @else if (errorMsg()) {
-      <!-- Error State -->
-      <div class="error-box" id="profile-error-indicator">
-        <p>{{ errorMsg() }}</p>
-        <a routerLink="/community" class="btn-back" id="profile-error-back-btn">Back to Community</a>
-      </div>
-    } @else if (userProfile(); as profile) {
-      <!-- Profile Card Container -->
-      <div class="profile-card" id="profile-card-details">
-        
-        <!-- Profile Avatar Wrapper -->
-        <div class="profile-avatar-wrapper" id="profile-avatar-circle">
-          @if (profile.avatarUrl) {
-            <img [src]="profile.avatarUrl" alt="Avatar" class="avatar-image" id="profile-avatar-img" />
-          } @else {
-            <span class="avatar-initials" id="profile-avatar-text">{{ profile.initials }}</span>
-          }
-        </div>
+    } @else if (userProfile()) {
 
-        <!-- Name and Role -->
-        <h1 class="profile-name" id="profile-athlete-name">{{ profile.name }}</h1>
-        
-        <div class="profile-meta-row" id="profile-meta-info">
-          <span>Strydclub Athlete</span>
-          <span class="meta-divider"></span>
-          <span>Joined {{ profile.memberSince }}</span>
-        </div>
+      <!-- Top Profile Hero Card Matching Screenshot -->
+      <div class="profile-hero-card">
+        <div class="hero-card-pattern-overlay"></div>
 
-        <!-- Stats Grid Row -->
-        <div class="profile-stats-grid" id="profile-stats-container">
-          <!-- Total Events -->
-          <div class="profile-stat-box" id="profile-stat-events">
-            <span class="stat-val">{{ profile.totalEvents }}</span>
-            <span class="stat-lbl">Events Attended</span>
+        <div class="hero-card-top-content">
+          <!-- Left Circular Avatar with Lightning Badge -->
+          <div class="profile-avatar-container">
+            @if (userProfile()?.avatarUrl) {
+              <img [src]="userProfile()?.avatarUrl" [alt]="userProfile()?.name" class="profile-avatar-img" />
+            } @else {
+              <div class="profile-avatar-initials">
+                {{ userProfile()?.initials }}
+              </div>
+            }
+            <div class="avatar-lightning-badge" title="Verified Athlete">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="lightning-icon">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+            </div>
           </div>
 
-          <!-- Sports Played -->
-          <div class="profile-stat-box" id="profile-stat-sports">
-            <span class="stat-val">{{ profile.sportsPlayed }}</span>
-            <span class="stat-lbl">Sports Played</span>
+          <!-- Middle Profile Details -->
+          <div class="profile-main-meta">
+            <h1 class="user-name-title">{{ userProfile()?.name }}</h1>
+            <span class="user-handle-line">{{ userProfile()?.username }}</span>
+
+            <p class="user-bio-text">{{ userProfile()?.bio }}</p>
+
+            <div class="user-info-pills-row">
+              <div class="meta-info-item">
+                <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <span>{{ userProfile()?.location }}</span>
+              </div>
+
+              <div class="meta-info-item">
+                <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Joined {{ userProfile()?.memberSince }}</span>
+              </div>
+
+              <div class="role-capsule-tag">
+                <span>{{ userProfile()?.role }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Edit Profile Button -->
+          <div class="profile-hero-actions">
+            <button type="button" class="btn-edit-capsule" (click)="setTab('edit-profile')">
+              <svg class="edit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              <span>Edit</span>
+            </button>
           </div>
         </div>
 
-        <!-- Favorite Sports Badges -->
-        @if (profile.favoriteSports && profile.favoriteSports.length > 0) {
-          <div class="favorite-sports-block" id="profile-sports-block">
-            <span class="block-title">Favorite Sports</span>
-            <div class="badges-list" id="profile-sports-badges">
-              @for (sport of profile.favoriteSports; track sport) {
-                <span class="sport-badge">{{ sport }}</span>
+        <div class="hero-card-divider"></div>
+
+        <!-- Bottom Metric Counters inside Top Hero Card -->
+        <div class="hero-card-metrics-row">
+          <div class="metric-counter-item">
+            <span class="metric-value">{{ userProfile()?.totalEvents }}</span>
+            <span class="metric-label">EVENTS</span>
+          </div>
+          <div class="metric-counter-item">
+            <span class="metric-value">{{ userProfile()?.eventsWon }}</span>
+            <span class="metric-label">WINS</span>
+          </div>
+          <div class="metric-counter-item">
+            <span class="metric-value">{{ userProfile()?.points }}</span>
+            <span class="metric-label">POINTS</span>
+          </div>
+          <div class="metric-counter-item">
+            <span class="metric-value">{{ userProfile()?.rank }}</span>
+            <span class="metric-label">RANK</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub Navigation Tabs Bar matching Screenshot -->
+      <div class="profile-tabs-navbar">
+        <button
+          type="button"
+          class="tab-link-item"
+          [class.active]="activeTab() === 'overview'"
+          (click)="setTab('overview')">
+          Overview
+        </button>
+
+        <button
+          type="button"
+          class="tab-link-item"
+          [class.active]="activeTab() === 'my-events'"
+          (click)="setTab('my-events')">
+          My Events
+        </button>
+
+        <button
+          type="button"
+          class="tab-link-item"
+          [class.active]="activeTab() === 'edit-profile'"
+          (click)="setTab('edit-profile')">
+          Edit Profile
+        </button>
+
+        <button
+          type="button"
+          class="tab-link-item"
+          [class.active]="activeTab() === 'settings'"
+          (click)="setTab('settings')">
+          Settings
+        </button>
+      </div>
+
+      <!-- TAB 1: OVERVIEW TAB CONTENT -->
+      @if (activeTab() === 'overview') {
+        <div class="tab-pane-container overview-tab-pane">
+
+          <!-- 4 Metric Cards Grid matching Screenshot -->
+          <div class="overview-metrics-grid">
+            <!-- Card 1: EVENTS -->
+            <div class="stat-box-card">
+              <div class="stat-icon-wrapper">
+                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
+              <span class="stat-number">{{ userProfile()?.totalEvents }}</span>
+              <span class="stat-title">EVENTS</span>
+            </div>
+
+            <!-- Card 2: WINS -->
+            <div class="stat-box-card">
+              <div class="stat-icon-wrapper">
+                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                  <path d="M4 22h16"></path>
+                  <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                  <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+                </svg>
+              </div>
+              <span class="stat-number">{{ userProfile()?.eventsWon }}</span>
+              <span class="stat-title">WINS</span>
+            </div>
+
+            <!-- Card 3: POINTS -->
+            <div class="stat-box-card">
+              <div class="stat-icon-wrapper">
+                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+              <span class="stat-number">{{ userProfile()?.points }}</span>
+              <span class="stat-title">POINTS</span>
+            </div>
+
+            <!-- Card 4: RANK -->
+            <div class="stat-box-card">
+              <div class="stat-icon-wrapper">
+                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+              </div>
+              <span class="stat-number">{{ userProfile()?.rank }}</span>
+              <span class="stat-title">RANK</span>
+            </div>
+          </div>
+
+          <!-- SPORTS PLAYED Card Section matching Screenshot -->
+          <div class="overview-section-card sports-played-card">
+            <h3 class="section-card-title">SPORTS PLAYED</h3>
+            <div class="sports-pills-row">
+              @for (sport of userProfile()?.favoriteSports; track sport) {
+                <div class="sport-badge-pill">
+                  <span>{{ sport }}</span>
+                </div>
               }
             </div>
           </div>
-        }
 
-        <!-- Footer Back Action -->
-        <div class="profile-footer-block" id="profile-footer-actions">
-          <a routerLink="/community" class="btn-back-home" id="profile-back-community-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-            </svg>
-            <span>Back to Community</span>
-          </a>
+          <!-- WIN RATE Card Section matching Screenshot -->
+          <div class="overview-section-card win-rate-card">
+            <div class="win-rate-header">
+              <h3 class="section-card-title">WIN RATE</h3>
+              <span class="win-rate-percentage">{{ winRatePercentage() }}%</span>
+            </div>
+
+            <div class="win-rate-progress-track">
+              <div class="win-rate-progress-fill" [style.width.%]="winRatePercentage()"></div>
+            </div>
+
+            <p class="win-rate-footer-label">
+              {{ userProfile()?.eventsWon }} wins out of {{ userProfile()?.totalEvents }} events
+            </p>
+          </div>
+
         </div>
+      }
 
-      </div>
+      <!-- TAB 2: MY EVENTS TAB CONTENT -->
+      @if (activeTab() === 'my-events') {
+        <div class="tab-pane-container my-events-tab-pane">
+          <div class="sub-events-toggle-row">
+            <button
+              type="button"
+              class="sub-toggle-btn"
+              [class.active]="myEventsTab() === 'registered'"
+              (click)="setMyEventsTab('registered')">
+              Registered Events ({{ registeredEvents().length }})
+            </button>
+            <button
+              type="button"
+              class="sub-toggle-btn"
+              [class.active]="myEventsTab() === 'past'"
+              (click)="setMyEventsTab('past')">
+              Past Participation ({{ pastEvents().length }})
+            </button>
+          </div>
+
+          @if (myEventsTab() === 'registered') {
+            @if (registeredEvents().length === 0) {
+              <div class="empty-events-box">
+                <p>No registered events yet.</p>
+                <a routerLink="/events" class="btn-browse-events">Explore Events</a>
+              </div>
+            } @else {
+              <div class="my-events-cards-grid">
+                @for (ev of registeredEvents(); track ev.id) {
+                  <div class="my-event-card">
+                    <div class="my-event-header">
+                      <span class="event-cat-tag">{{ ev.category }}</span>
+                      <span class="event-status-tag">{{ ev.status || 'Confirmed' }}</span>
+                    </div>
+                    <h4 class="event-card-title">{{ ev.title }}</h4>
+                    <p class="event-card-date">📅 {{ ev.date }} · {{ ev.time || '10:00 AM' }}</p>
+                    <p class="event-card-loc">📍 {{ ev.location || 'Bangalore' }}</p>
+                    <a [routerLink]="['/events', ev.slug || ev.id]" class="btn-view-event">View Details</a>
+                  </div>
+                }
+              </div>
+            }
+          } @else {
+            @if (pastEvents().length === 0) {
+              <div class="empty-events-box">
+                <p>No past participation recorded yet.</p>
+              </div>
+            } @else {
+              <div class="my-events-cards-grid">
+                @for (ev of pastEvents(); track ev.id) {
+                  <div class="my-event-card past-card">
+                    <div class="my-event-header">
+                      <span class="event-cat-tag">{{ ev.category }}</span>
+                      <span class="event-result-tag" [class.winner]="ev.won">{{ ev.result || 'Completed' }}</span>
+                    </div>
+                    <h4 class="event-card-title">{{ ev.title }}</h4>
+                    <p class="event-card-date">📅 {{ ev.date }}</p>
+                  </div>
+                }
+              </div>
+            }
+          }
+        </div>
+      }
+
+      <!-- TAB 3: EDIT PROFILE TAB CONTENT -->
+      @if (activeTab() === 'edit-profile') {
+        <div class="tab-pane-container edit-profile-tab-pane">
+          <div class="edit-profile-card">
+            <h2 class="edit-pane-title">Edit Athlete Profile</h2>
+
+            @if (saveMessage()) {
+              <div class="save-feedback-banner">
+                <span>{{ saveMessage() }}</span>
+              </div>
+            }
+
+            <form (ngSubmit)="onSaveProfile()" class="edit-profile-form">
+              <div class="edit-form-group">
+                <label class="edit-label">Full Name</label>
+                <input type="text" [(ngModel)]="editName" name="editName" class="edit-input-field" placeholder="Full Name" required />
+              </div>
+
+              <div class="edit-form-group">
+                <label class="edit-label">Bio / Tagline</label>
+                <textarea [(ngModel)]="editBio" name="editBio" class="edit-textarea-field" rows="3" placeholder="Tell athletes about your sports background..."></textarea>
+              </div>
+
+              <div class="edit-form-group">
+                <label class="edit-label">City / Location</label>
+                <input type="text" [(ngModel)]="editLocation" name="editLocation" class="edit-input-field" placeholder="City or Location" required />
+              </div>
+
+              <div class="edit-form-row">
+                <div class="edit-form-group">
+                  <label class="edit-label">Email Address</label>
+                  <input type="email" [(ngModel)]="editEmail" name="editEmail" class="edit-input-field" placeholder="Email" />
+                </div>
+                <div class="edit-form-group">
+                  <label class="edit-label">Phone Number</label>
+                  <input type="text" [(ngModel)]="editPhone" name="editPhone" class="edit-input-field" placeholder="Phone" />
+                </div>
+              </div>
+
+              <div class="edit-form-group">
+                <label class="edit-label">Favorite Sports</label>
+                <div class="sports-toggle-chips">
+                  @for (sport of availableSports; track sport.name) {
+                    <button
+                      type="button"
+                      class="sport-edit-pill"
+                      [class.active]="isSportEditSelected(sport.name)"
+                      (click)="toggleSportEdit(sport.name)">
+                      <span>{{ sport.icon }} {{ sport.name }}</span>
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <button type="submit" class="btn-save-profile" [disabled]="saveLoading()">
+                @if (saveLoading()) {
+                  <span>Saving Changes...</span>
+                } @else {
+                  <span>Save Profile Changes</span>
+                }
+              </button>
+            </form>
+          </div>
+        </div>
+      }
+
+      <!-- TAB 4: SETTINGS TAB CONTENT -->
+      @if (activeTab() === 'settings') {
+        <div class="tab-pane-container settings-tab-pane">
+          <div class="settings-card">
+            <h2 class="edit-pane-title">Account Settings</h2>
+            
+            <div class="settings-option-item">
+              <div>
+                <h4 class="option-title">Email Notifications</h4>
+                <p class="option-desc">Receive updates about registered matches & upcoming events</p>
+              </div>
+              <input type="checkbox" checked class="settings-checkbox" />
+            </div>
+
+            <div class="settings-option-item">
+              <div>
+                <h4 class="option-title">Public Athlete Profile</h4>
+                <p class="option-desc">Allow community members to view your match stats & rank</p>
+              </div>
+              <input type="checkbox" checked class="settings-checkbox" />
+            </div>
+
+            <div class="settings-divider"></div>
+
+            <button type="button" class="btn-signout-settings" (click)="apiService.logout()">
+              Sign Out of STRYDCLUB
+            </button>
+          </div>
+        </div>
+      }
+
     }
-
   </div>
 </section>

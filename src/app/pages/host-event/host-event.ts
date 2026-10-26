@@ -1,7 +1,7 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 interface ScheduleItem {
@@ -13,6 +13,12 @@ interface RuleItem {
   text: string;
 }
 
+interface SurfingSlot {
+  slotNumber: number;
+  time: string;
+  maxAttendees: number | null;
+}
+
 @Component({
   selector: 'app-host-event',
   standalone: true,
@@ -20,12 +26,16 @@ interface RuleItem {
   templateUrl: './host-event.html',
   styleUrl: './host-event.scss'
 })
-export class HostEventComponent {
+export class HostEventComponent implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
 
   currentStep = signal<number>(1);
   loading = signal<boolean>(false);
+  isEditMode = signal<boolean>(false);
+  editEventId = signal<string>('');
+  loadingEventDetails = signal<boolean>(false);
 
   // Sports Options Grid
   sportsOptions = [
@@ -34,8 +44,8 @@ export class HostEventComponent {
     { name: 'Football', icon: '⚽' },
     { name: 'Volleyball', icon: '🏐' },
     { name: 'Pickleball', icon: '🏓' },
-    { name: 'Kho Kho', icon: '🤸' },
-    { name: 'Cricket', icon: '🏏' },
+    { name: 'Lifestyle', icon: '🧘‍♀️' },
+    { name: 'Surfing', icon: '🏄' },
     { name: 'Other', icon: '✨' },
   ];
 
@@ -62,10 +72,17 @@ export class HostEventComponent {
     { time: '6:00 AM', activity: 'Event Commences' }
   ]);
 
+  // Surfing Slots Configuration
+  surfingSlotsCount = signal<number | null>(null);
+  surfingSlots = signal<SurfingSlot[]>([]);
+
   slotsTotal = signal<number>(30);
   playersPerTeam = signal<number | null>(null);
   prizePool = signal<number | null>(null);
   bannerUrl = signal<string>('');
+  imageFileName = signal<string>('');
+  imageFileSize = signal<string>('');
+  isDragging = signal<boolean>(false);
   rules = signal<RuleItem[]>([
     { text: 'Participants must arrive 15 minutes prior to scheduling.' },
     { text: 'Proper athletic footwear and equipment are mandatory.' }
@@ -73,6 +90,98 @@ export class HostEventComponent {
 
   // Modal State
   showSuccessModal = signal<boolean>(false);
+
+  ngOnInit() {
+    const editId = this.route.snapshot.queryParamMap.get('editId') || this.route.snapshot.paramMap.get('id');
+    if (editId) {
+      this.isEditMode.set(true);
+      this.editEventId.set(editId);
+      this.loadEventForEditing(editId);
+    }
+  }
+
+  loadEventForEditing(id: string) {
+    this.loadingEventDetails.set(true);
+    this.apiService.getEventDetails(id).subscribe({
+      next: (res) => {
+        this.loadingEventDetails.set(false);
+        if (res.success && res.event) {
+          this.populateEventData(res.event);
+        }
+      },
+      error: (err) => {
+        this.loadingEventDetails.set(false);
+        alert('Failed to load event details: ' + (err.error?.message || 'Event not found'));
+        this.router.navigate(['/admin']);
+      }
+    });
+  }
+
+  populateEventData(event: any) {
+    // Sport / Category
+    const category = event.category || '';
+    const matchedSport = this.sportsOptions.find(s => s.name.toLowerCase() === category.toLowerCase());
+    if (matchedSport && matchedSport.name !== 'Other') {
+      this.selectedSport.set(matchedSport.name);
+    } else if (category) {
+      this.selectedSport.set('Other');
+      this.customSportName.set(category);
+    }
+
+    this.title.set(event.title || '');
+    this.description.set(event.description || '');
+    this.format.set(event.format || 'Single Match');
+    this.skillLevel.set(event.skillLevel || 'Open');
+
+    // Location
+    const loc = event.location || '';
+    const parts = loc.split(',');
+    this.venueName.set(parts[0]?.trim() || '');
+    this.city.set(parts.slice(1).join(',').trim() || '');
+
+    this.venueUrl.set(event.venueUrl || '');
+    this.rulesNotes.set(event.rulesNotes || '');
+    this.price.set(event.price || 0);
+
+    // Schedule & Dates
+    this.date.set(this.parseToHtmlDate(event.date));
+    this.time.set(this.parseToHtmlTime(event.time));
+    this.endTime.set(this.parseToHtmlTime(event.endTime));
+    this.registrationCloses.set(this.parseToHtmlDate(event.registrationCloses));
+
+    if (event.schedule && Array.isArray(event.schedule) && event.schedule.length > 0) {
+      this.scheduleItems.set(
+        event.schedule.map((s: any) => ({
+          time: s.time || '',
+          activity: s.activity || ''
+        }))
+      );
+    }
+
+    // Rules & Media
+    this.slotsTotal.set(event.slotsTotal || 30);
+    this.playersPerTeam.set(event.playersPerTeam || null);
+    this.prizePool.set(event.prizePool || null);
+    this.bannerUrl.set(event.bannerUrl || event.image || '');
+
+    if (event.rules && Array.isArray(event.rules) && event.rules.length > 0) {
+      this.rules.set(
+        event.rules.map((r: any) => typeof r === 'string' ? { text: r } : { text: r.text || '' })
+      );
+    }
+
+    // Surfing Slots if present
+    if (event.surfingSlots && Array.isArray(event.surfingSlots) && event.surfingSlots.length > 0) {
+      this.surfingSlotsCount.set(event.surfingSlots.length);
+      this.surfingSlots.set(
+        event.surfingSlots.map((s: any, idx: number) => ({
+          slotNumber: s.slotNumber || (idx + 1),
+          time: this.parseToHtmlTime(s.time),
+          maxAttendees: s.maxAttendees || null
+        }))
+      );
+    }
+  }
 
   // Step Validation Computeds
   isStep1Valid = computed(() => {
@@ -84,7 +193,14 @@ export class HostEventComponent {
     return true;
   });
   isStep2Valid = computed(() => !!this.title().trim() && !!this.venueName().trim() && !!this.city().trim());
-  isStep3Valid = computed(() => !!this.date() && !!this.time());
+  isStep3Valid = computed(() => {
+    if (!this.date()) return false;
+    if (this.selectedSport() === 'Surfing' && this.surfingSlots().length > 0) {
+      const slots = this.surfingSlots();
+      return slots.every(s => typeof s.time === 'string' && s.time.trim().length > 0);
+    }
+    return !!this.time();
+  });
   isStep4Valid = computed(() => !!this.slotsTotal() && this.slotsTotal() > 0);
 
   isCurrentStepValid = computed(() => {
@@ -102,6 +218,65 @@ export class HostEventComponent {
     this.selectedSport.set(sport);
     if (sport !== 'Other') {
       this.customSportName.set('');
+    }
+  }
+
+  onSurfingSlotsCountChange(val: any) {
+    if (val === null || val === undefined || val === '') {
+      this.surfingSlots.set([]);
+      return;
+    }
+    const count = parseInt(val, 10);
+    if (isNaN(count) || count <= 0) {
+      this.surfingSlots.set([]);
+      return;
+    }
+    const safeCount = Math.min(count, 20);
+    const current = this.surfingSlots();
+    const updated: SurfingSlot[] = [];
+    for (let i = 0; i < safeCount; i++) {
+      if (current[i]) {
+        updated.push({ ...current[i], slotNumber: i + 1 });
+      } else {
+        updated.push({ slotNumber: i + 1, time: '', maxAttendees: null });
+      }
+    }
+    this.surfingSlots.set(updated);
+    this.updateTotalSlotsFromSurfing();
+  }
+
+  onSlotTimeChange(slot: SurfingSlot, val: string) {
+    slot.time = val || '';
+    if (!this.time() && this.surfingSlots().length > 0 && this.surfingSlots()[0]?.time) {
+      this.time.set(this.surfingSlots()[0].time);
+    }
+    // Update signal with fresh array reference to ensure computed signals re-evaluate
+    this.surfingSlots.set([...this.surfingSlots()]);
+  }
+
+  onSlotAttendeesChange(slot: SurfingSlot, val: any) {
+    slot.maxAttendees = (val === '' || val === null || val === undefined) ? null : Number(val);
+    this.updateTotalSlotsFromSurfing();
+    this.surfingSlots.set([...this.surfingSlots()]);
+  }
+
+  updateTotalSlotsFromSurfing() {
+    if (this.selectedSport() === 'Surfing' && this.surfingSlots().length > 0) {
+      const sum = this.surfingSlots().reduce((acc, s) => acc + (Number(s.maxAttendees) || 0), 0);
+      if (sum > 0) {
+        this.slotsTotal.set(sum);
+      }
+    }
+  }
+
+  openPicker(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input && typeof (input as any).showPicker === 'function') {
+      try {
+        (input as any).showPicker();
+      } catch (e) {
+        // Fallback for browsers
+      }
     }
   }
 
@@ -126,7 +301,99 @@ export class HostEventComponent {
     this.rules.update(items => items.filter((_, i) => i !== index));
   }
 
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.processImageFile(input.files[0]);
+    }
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(true);
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(false);
+  }
+
+  onFileDropped(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(false);
+    if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+      const file = event.dataTransfer.files[0];
+      if (file.type.startsWith('image/')) {
+        this.processImageFile(file);
+      } else {
+        alert('Please upload a valid image file (PNG, JPG, WebP).');
+      }
+    }
+  }
+
+  processImageFile(file: File) {
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image file size should be less than 10MB.');
+      return;
+    }
+
+    this.imageFileName.set(file.name);
+    const sizeKB = (file.size / 1024).toFixed(1);
+    this.imageFileSize.set(file.size > 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${sizeKB} KB`);
+
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (e.target?.result) {
+        const rawDataUrl = e.target.result as string;
+        // Compress & resize image via HTML Canvas to avoid huge payloads
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 1200;
+          let width = img.width;
+          let height = img.height;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+            this.bannerUrl.set(compressedDataUrl);
+          } else {
+            this.bannerUrl.set(rawDataUrl);
+          }
+        };
+        img.onerror = () => {
+          this.bannerUrl.set(rawDataUrl);
+        };
+        img.src = rawDataUrl;
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeImage() {
+    this.bannerUrl.set('');
+    this.imageFileName.set('');
+    this.imageFileSize.set('');
+  }
+
   nextStep() {
+    if (this.selectedSport() === 'Surfing' && !this.time() && this.surfingSlots().length > 0 && this.surfingSlots()[0]?.time) {
+      this.time.set(this.surfingSlots()[0].time);
+    }
     if (this.isCurrentStepValid() && this.currentStep() < 5) {
       this.currentStep.update(s => s + 1);
     }
@@ -139,7 +406,11 @@ export class HostEventComponent {
   }
 
   cancel() {
-    this.router.navigate(['/events']);
+    if (this.isEditMode()) {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/events']);
+    }
   }
 
   onSubmit() {
@@ -171,27 +442,54 @@ export class HostEventComponent {
       prizePool: this.prizePool() || 0,
       bannerUrl: this.bannerUrl(),
       rules: this.rules().filter(r => !!r.text.trim()),
-      schedule: this.scheduleItems().filter(s => !!s.time.trim() && !!s.activity.trim())
+      schedule: this.scheduleItems().filter(s => !!s.time.trim() && !!s.activity.trim()),
+      surfingSlots: this.selectedSport() === 'Surfing'
+        ? this.surfingSlots().map(s => ({
+            slotNumber: s.slotNumber,
+            time: s.time ? this.formatTime(s.time) : '',
+            maxAttendees: Number(s.maxAttendees) || 0
+          }))
+        : []
     };
 
-    this.apiService.createEvent(payload, token).subscribe({
-      next: (res) => {
-        this.loading.set(false);
-        if (res.success) {
-          this.showSuccessModal.set(true);
+    if (this.isEditMode()) {
+      this.apiService.updateAdminEvent(this.editEventId(), payload).subscribe({
+        next: (res) => {
+          this.loading.set(false);
+          if (res.success) {
+            this.showSuccessModal.set(true);
+          }
+        },
+        error: (err) => {
+          this.loading.set(false);
+          const errorMsg = err.error?.message || 'Failed to update event details';
+          alert(errorMsg);
         }
-      },
-      error: (err) => {
-        this.loading.set(false);
-        const errorMsg = err.error?.message || 'Server connection error during hosting';
-        alert(errorMsg);
-      }
-    });
+      });
+    } else {
+      this.apiService.createEvent(payload, token).subscribe({
+        next: (res) => {
+          this.loading.set(false);
+          if (res.success) {
+            this.showSuccessModal.set(true);
+          }
+        },
+        error: (err) => {
+          this.loading.set(false);
+          const errorMsg = err.error?.message || 'Server connection error during hosting';
+          alert(errorMsg);
+        }
+      });
+    }
   }
 
   closeModal() {
     this.showSuccessModal.set(false);
-    this.router.navigate(['/events']);
+    if (this.isEditMode()) {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/events']);
+    }
   }
 
   // Format HTML Date (YYYY-MM-DD) to Display Date (e.g. June 28, 2026)
@@ -207,7 +505,7 @@ export class HostEventComponent {
   }
 
   // Format HTML Time (HH:MM) to Display Time (e.g. 6:00 AM)
-  private formatTime(timeStr: string): string {
+  formatTime(timeStr: string): string {
     if (!timeStr) return '';
     try {
       const [hoursStr, minutesStr] = timeStr.split(':');
@@ -218,5 +516,41 @@ export class HostEventComponent {
     } catch (e) {
       return timeStr;
     }
+  }
+
+  // Helper to parse stored date string to HTML <input type="date"> YYYY-MM-DD format
+  private parseToHtmlDate(dateStr: string): string {
+    if (!dateStr) return '';
+    const trimmed = dateStr.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+    try {
+      const d = new Date(trimmed);
+      if (!isNaN(d.getTime())) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+    } catch (e) {}
+    return '';
+  }
+
+  // Helper to parse stored time string to HTML <input type="time"> HH:MM format
+  private parseToHtmlTime(timeStr: string): string {
+    if (!timeStr) return '';
+    const trimmed = timeStr.trim().toUpperCase();
+    if (/^\d{2}:\d{2}$/.test(trimmed)) return trimmed;
+    try {
+      const match = trimmed.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+      if (match) {
+        let hours = parseInt(match[1], 10);
+        const minutes = match[2];
+        const ampm = match[3];
+        if (ampm === 'PM' && hours < 12) hours += 12;
+        if (ampm === 'AM' && hours === 12) hours = 0;
+        return `${String(hours).padStart(2, '0')}:${minutes}`;
+      }
+    } catch (e) {}
+    return '';
   }
 }

@@ -7,10 +7,17 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="badge-icon">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
         </svg>
-        <span>Create Event</span>
+        <span>{{ isEditMode() ? 'Edit Event' : 'Create Event' }}</span>
       </div>
-      <h1 class="main-title">Build<br><span class="highlight-text">Your Event</span></h1>
+      <h1 class="main-title">{{ isEditMode() ? 'Edit' : 'Build' }}<br><span class="highlight-text">{{ isEditMode() ? 'Event Details' : 'Your Event' }}</span></h1>
     </div>
+
+    @if (loadingEventDetails()) {
+      <div class="loading-state-banner">
+        <div class="spinner-sm"></div>
+        <span>Loading event data for editing...</span>
+      </div>
+    }
 
     <!-- Stepper Navigation Graphics -->
     <div class="stepper-container">
@@ -213,33 +220,103 @@
           <div class="input-form-grid">
             <!-- Event Date -->
             <div class="input-group">
-              <label class="input-label">EVENT DATE *</label>
-              <input type="date" [(ngModel)]="date" class="theme-text-input">
+              <label class="input-label">
+                <span class="label-icon-prefix">📅</span>
+                EVENT DATE *
+              </label>
+              <div class="date-picker-input-wrapper">
+                <input type="date" [(ngModel)]="date" class="theme-text-input date-time-picker-input" (click)="openPicker($event)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="picker-icon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>
+              </div>
             </div>
 
             <!-- Start Time -->
             <div class="input-group">
-              <label class="input-label">START TIME *</label>
-              <input type="time" [(ngModel)]="time" class="theme-text-input">
+              <label class="input-label">
+                <span class="label-icon-prefix">🕒</span>
+                START TIME *
+              </label>
+              <div class="date-picker-input-wrapper">
+                <input type="time" [(ngModel)]="time" class="theme-text-input date-time-picker-input" (click)="openPicker($event)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="picker-icon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </div>
             </div>
 
             <!-- End Time -->
             <div class="input-group">
               <label class="input-label">END TIME</label>
-              <input type="time" [(ngModel)]="endTime" class="theme-text-input">
+              <div class="date-picker-input-wrapper">
+                <input type="time" [(ngModel)]="endTime" class="theme-text-input date-time-picker-input" (click)="openPicker($event)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="picker-icon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </div>
             </div>
 
             <!-- Registration Closes -->
             <div class="input-group">
               <label class="input-label">REGISTRATION CLOSES</label>
-              <input type="date" [(ngModel)]="registrationCloses" class="theme-text-input">
+              <div class="date-picker-input-wrapper">
+                <input type="date" [(ngModel)]="registrationCloses" class="theme-text-input date-time-picker-input" (click)="openPicker($event)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="picker-icon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>
+              </div>
             </div>
+
+            <!-- Surfing Slots Configuration Box -->
+            @if (selectedSport() === 'Surfing') {
+              <div class="surfing-slots-card full-row animate-fade-in">
+                <div class="surfing-slots-header">
+                  <label class="input-label">HOW MANY SURFING SLOTS DO YOU WANT TO CONFIGURE?</label>
+                  <input type="number" min="1" max="20" [(ngModel)]="surfingSlotsCount" (ngModelChange)="onSurfingSlotsCountChange($event)" placeholder="e.g. 2" class="theme-text-input">
+                </div>
+
+                @if (surfingSlots().length > 0) {
+                  <div class="surfing-slots-grid animate-fade-in">
+                    @for (slot of surfingSlots(); track slot.slotNumber) {
+                      <div class="surfing-slot-item">
+                        <div class="slot-field-group">
+                          <label class="input-label">SLOT {{ slot.slotNumber }}: SELECT SLOT TIMING</label>
+                          <div class="date-picker-input-wrapper">
+                            <input type="time"
+                                   [ngModel]="slot.time"
+                                   (ngModelChange)="onSlotTimeChange(slot, $event)"
+                                   (input)="onSlotTimeChange(slot, $any($event.target).value)"
+                                   (change)="onSlotTimeChange(slot, $any($event.target).value)"
+                                   class="theme-text-input date-time-picker-input"
+                                   (click)="openPicker($event)">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="picker-icon">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        <div class="slot-field-group">
+                          <label class="input-label">MAXIMUM ATTENDEES</label>
+                          <input type="number" min="1"
+                                 [ngModel]="slot.maxAttendees"
+                                 (ngModelChange)="onSlotAttendeesChange(slot, $event)"
+                                 (input)="onSlotAttendeesChange(slot, $any($event.target).value)"
+                                 placeholder="e.g. 10"
+                                 class="theme-text-input">
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
 
             <!-- Notification Warning Help Box -->
             <div class="info-help-box full-row animate-slide-up">
               <div class="info-icon-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="info-icon" style="width: 16px; height: 16px;">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="info-icon" style="width: 16px; height: 16px;">
+                  <path d="M12 2l2.4 7.2L21.6 12l-7.2 2.4L12 21.6l-2.4-7.2L2.4 12l7.2-2.4L12 2z"/>
                 </svg>
               </div>
               <p class="info-text">
@@ -281,10 +358,58 @@
               <input type="number" [(ngModel)]="prizePool" placeholder="Optional" class="theme-text-input">
             </div>
 
-            <!-- Banner Image Url -->
+            <!-- Banner Image Upload Section -->
             <div class="input-group full-row">
-              <label class="input-label">BANNER IMAGE URL</label>
-              <input type="text" [(ngModel)]="bannerUrl" placeholder="https://images.unsplash.com/..." class="theme-text-input">
+              <label class="input-label">EVENT BANNER IMAGE</label>
+
+              @if (bannerUrl()) {
+                <!-- Active Image Preview Container -->
+                <div class="image-preview-container">
+                  <img [src]="bannerUrl()" alt="Event Banner Preview" class="preview-banner-img">
+                  <div class="preview-img-overlay">
+                    <div class="image-info-tag">
+                      <span class="file-name-text">{{ imageFileName() || 'Uploaded Banner Image' }}</span>
+                      @if (imageFileSize()) {
+                        <span class="file-size-badge">{{ imageFileSize() }}</span>
+                      }
+                    </div>
+                    <button type="button" class="btn-remove-image" (click)="removeImage()" title="Remove Image">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="icon-sm">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span>Remove</span>
+                    </button>
+                  </div>
+                </div>
+              } @else {
+                <!-- Drag and Drop File Upload Box -->
+                <div class="image-upload-dropzone" 
+                     [class.drag-over]="isDragging()"
+                     (dragover)="onDragOver($event)"
+                     (dragleave)="onDragLeave($event)"
+                     (drop)="onFileDropped($event)">
+                  <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="file-input-hidden">
+                  
+                  <div class="dropzone-content" (click)="fileInput.click()">
+                    <div class="upload-icon-circle">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="upload-svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                      </svg>
+                    </div>
+                    <div class="dropzone-text-group">
+                      <span class="upload-main-text"><span class="highlight-upload">Click to upload</span> or drag and drop</span>
+                      <span class="upload-sub-text">PNG, JPG, WebP up to 5MB</span>
+                    </div>
+                    <button type="button" class="btn-browse-file">Browse File</button>
+                  </div>
+                </div>
+              }
+
+              <!-- Image URL Fallback Option -->
+              <div class="url-fallback-group">
+                <span class="url-fallback-label">Or enter Image URL:</span>
+                <input type="text" [(ngModel)]="bannerUrl" placeholder="https://images.unsplash.com/..." class="theme-text-input input-sm">
+              </div>
             </div>
           </div>
         </div>
@@ -293,8 +418,17 @@
       <!-- STEP 5 PANEL: Preview -->
       @if (currentStep() === 5) {
         <div class="step-panel animate-fade-in">
-          <h2 class="panel-title">Review & Publish</h2>
-          <p class="panel-subtitle">Everything look right? Submit for admin review.</p>
+          <h2 class="panel-title">{{ isEditMode() ? 'Review & Update' : 'Review & Publish' }}</h2>
+          <p class="panel-subtitle">{{ isEditMode() ? 'Review your updated event details before saving.' : 'Everything look right? Submit for admin review.' }}</p>
+
+          @if (bannerUrl()) {
+            <div class="banner-preview-card">
+              <span class="preview-card-label" style="display: block; margin-bottom: 8px;">EVENT BANNER</span>
+              <div class="banner-image-preview-box">
+                <img [src]="bannerUrl()" alt="Event Banner" class="banner-preview-img">
+              </div>
+            </div>
+          }
 
           <div class="preview-grid-layout">
             <!-- Sport -->
@@ -384,12 +518,30 @@
               <span class="preview-card-label">PRIZE POOL</span>
               <span class="preview-card-value">{{ prizePool() ? '₹' + prizePool() : '—' }}</span>
             </div>
+
+            <!-- Surfing Slots Preview -->
+            @if (selectedSport() === 'Surfing' && surfingSlots().length > 0) {
+              <div class="preview-card full-row">
+                <span class="preview-card-label">SURFING SLOTS ({{ surfingSlots().length }})</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;">
+                  @for (slot of surfingSlots(); track slot.slotNumber) {
+                    <span style="background: rgba(255, 255, 255, 0.05); padding: 5px 12px; border-radius: 6px; font-size: 0.85rem; border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-white);">
+                      Slot {{ slot.slotNumber }}: {{ slot.time ? formatTime(slot.time) : 'Time pending' }} ({{ slot.maxAttendees || 0 }} max)
+                    </span>
+                  }
+                </div>
+              </div>
+            }
           </div>
 
           <!-- Bottom Notice Card -->
           <div class="review-notice-card animate-slide-up">
             <p class="notice-text">
-              Your event will be submitted for admin review. Once approved, it will appear publicly and athletes can start registering. You'll receive a notification when it goes live.
+              @if (isEditMode()) {
+                Your changes will be saved and updated immediately. Registered participants will view the latest event updates on their dashboard.
+              } @else {
+                Your event will be submitted for admin review. Once approved, it will appear publicly and athletes can start registering. You'll receive a notification when it goes live.
+              }
             </p>
           </div>
         </div>
@@ -431,7 +583,7 @@
           <button type="button" class="btn-footer-submit" 
                   [disabled]="loading()"
                   (click)="onSubmit()">
-            {{ loading() ? 'Publishing...' : 'Publish Event ⚡' }}
+            {{ loading() ? (isEditMode() ? 'Updating...' : 'Publishing...') : (isEditMode() ? 'Update & Save Changes ⚡' : 'Publish Event ⚡') }}
           </button>
         }
       </div>
@@ -451,13 +603,15 @@
         </svg>
       </div>
 
-      <h2 class="modal-title">Event Hosted Successfully!</h2>
+      <h2 class="modal-title">{{ isEditMode() ? 'Event Updated Successfully!' : 'Event Hosted Successfully!' }}</h2>
       <p class="modal-message">
-        Your new sports event has been created and published. Athletes can now discover it and register immediately!
+        {{ isEditMode() ? 'Your event changes have been saved and updated successfully!' : 'Your new sports event has been created and published. Athletes can now discover it and register immediately!' }}
       </p>
 
       <div class="modal-actions">
-        <button class="btn-modal-primary" (click)="closeModal()" style="flex: 1;">Explore Events</button>
+        <button class="btn-modal-primary" (click)="closeModal()" style="flex: 1;">
+          {{ isEditMode() ? 'Back to Admin Console' : 'Explore Events' }}
+        </button>
       </div>
 
     </div>

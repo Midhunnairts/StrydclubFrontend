@@ -4,12 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
-interface EventListItem {
+export interface EventListItem {
   id: string;
   title: string;
   category: string;
+  icon?: string;
+  image?: string;
+  price?: number;
   date: string;
   time: string;
+  endTime?: string;
   location: string;
   status: string;
   slotsFilled: number;
@@ -30,20 +34,21 @@ export class EventsComponent implements OnInit {
 
   searchQuery = signal<string>('');
   selectedCategory = signal<string>('All');
+  activeTab = signal<'upcoming' | 'past'>('upcoming');
 
   categories = [
-    'All',
-    'Running',
-    'Badminton',
-    'Football',
-    'Volleyball',
-    'Pickleball',
-    'Kho Kho',
-    'Cricket',
-    'Other'
+    { name: 'All', icon: '' },
+    { name: 'Running', icon: '🏃' },
+    { name: 'Badminton', icon: '🏸' },
+    { name: 'Football', icon: '⚽' },
+    { name: 'Volleyball', icon: '🏐' },
+    { name: 'Pickleball', icon: '🏓' },
+    { name: 'Lifestyle', icon: '🧘‍♀️' },
+    { name: 'Surfing', icon: '🏄' },
+    { name: 'Other', icon: '🎯' }
   ];
 
-  // Initialize events list signal
+  // Initialize events list signal from API
   events = signal<EventListItem[]>([]);
 
   ngOnInit() {
@@ -51,10 +56,10 @@ export class EventsComponent implements OnInit {
       const categoryParam = params.get('category');
       if (categoryParam) {
         const matchedCategory = this.categories.find(
-          c => c.toLowerCase() === categoryParam.toLowerCase()
+          c => c.name.toLowerCase() === categoryParam.toLowerCase()
         );
         if (matchedCategory) {
-          this.selectedCategory.set(matchedCategory);
+          this.selectedCategory.set(matchedCategory.name);
         }
       } else {
         this.selectedCategory.set('All');
@@ -64,33 +69,69 @@ export class EventsComponent implements OnInit {
   }
 
   loadEvents() {
-    this.apiService.getEvents()
-      .subscribe({
-        next: (res) => {
-          if (res.success) {
-            // Map Mongoose dynamic event structure
-            const mapped = res.events.map(e => ({
+    this.apiService.getEvents().subscribe({
+      next: (res) => {
+        if (res.success && res.events) {
+          const categoryIcons: Record<string, string> = {
+            'Running': '🏃',
+            'Badminton': '🏸',
+            'Football': '⚽',
+            'Volleyball': '🏐',
+            'Pickleball': '🏓',
+            'Lifestyle': '🧘‍♀️',
+            'Surfing': '🏄',
+            'Other': '🎯'
+          };
+          const categoryImages: Record<string, string> = {
+            'Running': '/assets/Run.jpg',
+            'Badminton': '/assets/Badminton.jpg',
+            'Football': '/assets/Football.jpg',
+            'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
+            'Pickleball': '/assets/Pickleball.webp',
+            'Lifestyle': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
+            'Surfing': 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=800&q=80',
+            'Other': '/assets/Other.jpg'
+          };
+          const mapped = res.events.map(e => {
+            const slotsTotal = e.slotsTotal || 50;
+            const slotsFilled = e.slotsFilled || 0;
+            const fillPercentage = (slotsFilled / slotsTotal) * 100;
+            let computedStatus = e.status || 'OPEN';
+
+            const isPast = computedStatus.toUpperCase() === 'COMPLETED' || this.isEventPast(e.date, e.time, e.endTime);
+            if (isPast) {
+              computedStatus = 'COMPLETED';
+            } else if (fillPercentage > 50) {
+              computedStatus = 'FILLING FAST';
+            } else {
+              computedStatus = 'OPEN';
+            }
+
+            return {
               id: (e as any)._id || e.id || (e as any).slug || '',
               title: e.title,
               category: e.category,
+              icon: categoryIcons[e.category] || '🎯',
+              image: e.bannerUrl || e.image || categoryImages[e.category] || 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80',
+              price: e.price || "Free",
               date: e.date,
               time: e.time,
+              endTime: e.endTime,
               location: e.location,
-              status: e.status,
-              slotsFilled: e.slotsFilled,
-              slotsTotal: e.slotsTotal
-            }));
-            this.events.set(mapped);
-          }
-        },
-        error: (err) => {
-          console.warn('Backend server offline. Bootstrapping premium events listing fallback...');
-          this.events.set([]);
+              status: computedStatus.toUpperCase(),
+              slotsFilled,
+              slotsTotal
+            };
+          });
+          this.events.set(mapped);
         }
-      });
+      },
+      error: (err) => {
+        console.error('Error fetching events:', err);
+        this.events.set([]);
+      }
+    });
   }
-
-  activeTab = signal<'upcoming' | 'past'>('upcoming');
 
   filteredEvents = computed(() => {
     let list = this.events();
@@ -98,16 +139,16 @@ export class EventsComponent implements OnInit {
     // Filter by Active Tab (Upcoming vs Past)
     const tab = this.activeTab();
     list = list.filter(e => {
-      const isPast = e.status === 'Completed' || e.status === 'completed' || e.status === 'Event Completed' || this.isEventPast(e.date);
+      const isPast = e.status === 'COMPLETED' || e.status === 'Completed' || e.status === 'completed' || this.isEventPast(e.date, e.time, e.endTime);
       return tab === 'past' ? isPast : !isPast;
     });
 
     // Filter by Category
     const category = this.selectedCategory();
     if (category !== 'All') {
-      const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'kho kho', 'cricket'];
       if (category.toLowerCase() === 'other') {
-        list = list.filter(e => !standardCategories.includes(e.category.toLowerCase()));
+        const standardCategories = ['running', 'badminton', 'football', 'volleyball', 'pickleball', 'lifestyle', 'surfing'];
+        list = list.filter(e => !standardCategories.includes(e.category.toLowerCase()) || e.category.toLowerCase() === 'other');
       } else {
         list = list.filter(e => e.category.toLowerCase() === category.toLowerCase());
       }
@@ -126,15 +167,65 @@ export class EventsComponent implements OnInit {
     return list;
   });
 
-  isEventPast(dateStr: string): boolean {
+  isEventPast(dateStr: string, timeStr?: string, endTimeStr?: string): boolean {
     if (!dateStr) return false;
-    const eventDate = new Date(dateStr);
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    return !isNaN(eventDate.getTime()) && eventDate < now;
+    const cleanDate = dateStr.trim();
+    let targetTime = endTimeStr && endTimeStr.trim() ? endTimeStr.trim() : '';
+
+    if (!targetTime && timeStr) {
+      const rangeMatch = timeStr.match(/(?:-|to|–)\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?)/i);
+      if (rangeMatch) {
+        targetTime = rangeMatch[1].trim();
+      } else {
+        targetTime = timeStr.trim();
+      }
+    }
+
+    const parseTimeParts = (tStr: string) => {
+      const m = tStr.match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?/i);
+      if (!m) return null;
+      let hours = parseInt(m[1], 10);
+      const minutes = m[2] ? parseInt(m[2], 10) : 0;
+      const ampm = m[3] ? m[3].toUpperCase() : null;
+      if (ampm === 'PM' && hours < 12) hours += 12;
+      if (ampm === 'AM' && hours === 12) hours = 0;
+      return { hours, minutes };
+    };
+
+    let d: Date;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(cleanDate)) {
+      const parts = cleanDate.split('-').map(Number);
+      d = new Date(parts[0], parts[1] - 1, parts[2]);
+    } else {
+      d = new Date(cleanDate);
+    }
+    if (isNaN(d.getTime())) return false;
+
+    const timeParts = targetTime ? parseTimeParts(targetTime) : null;
+    if (timeParts) {
+      d.setHours(timeParts.hours, timeParts.minutes, 0, 0);
+      if (!endTimeStr || !endTimeStr.trim()) {
+        d.setHours(d.getHours() + 1);
+      }
+    } else {
+      d.setHours(23, 59, 59, 999);
+    }
+
+    return d < new Date();
+  }
+
+  isUpcomingEvent(event: EventListItem): boolean {
+    if (event.status) {
+      const upper = event.status.toUpperCase();
+      if (upper === 'COMPLETED' || upper === 'EVENT COMPLETED' || upper === 'PAST') {
+        return false;
+      }
+    }
+    return !this.isEventPast(event.date, event.time, event.endTime);
   }
 
   selectCategory(category: string) {
+    this.selectedCategory.set(category);
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { category: category === 'All' ? null : category },
@@ -142,8 +233,67 @@ export class EventsComponent implements OnInit {
     });
   }
 
+  getSlotsLeftCount(event: EventListItem): number {
+    return Math.max(0, (event.slotsTotal || 0) - (event.slotsFilled || 0));
+  }
+
   getSlotsPercentage(event: EventListItem): number {
     if (!event.slotsTotal) return 0;
-    return (event.slotsFilled / event.slotsTotal) * 100;
+    return Math.min(100, ((event.slotsFilled || 0) / event.slotsTotal) * 100);
+  }
+
+  getEventIcon(event: EventListItem): string {
+    if (event.icon) return event.icon;
+    const icons: Record<string, string> = {
+      'Running': '🏃',
+      'Badminton': '🏸',
+      'Football': '⚽',
+      'Volleyball': '🏐',
+      'Pickleball': '🏓',
+      'Lifestyle': '🧘‍♀️',
+      'Surfing': '🏄'
+    };
+    return icons[event.category] || '✨';
+  }
+
+  getEventImage(event: EventListItem): string {
+    if (event.image) return event.image;
+    const defaultImages: Record<string, string> = {
+      'Running': '/assets/Run.jpg',
+      'Badminton': '/assets/Badminton.jpg',
+      'Football': '/assets/Football.jpg',
+      'Volleyball': 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
+      'Pickleball': '/assets/Pickleball.webp',
+      'Lifestyle': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
+      'Surfing': 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=800&q=80',
+      'Other': '/assets/Other.jpg'
+    };
+    return defaultImages[event.category] || '/assets/Other.jpg';
+  }
+
+  getEventPrice(event: EventListItem): number | null {
+    if (event.price) return event.price;
+    const defaultPrices: Record<string, number> = {
+      'Running': 499,
+      'Badminton': 799,
+      'Football': 599,
+      'Volleyball': 399,
+      'Pickleball': 649,
+      'Lifestyle': 199,
+      'Surfing': 499
+    };
+    return defaultPrices[event.category] || 499;
+  }
+
+  getEventStatus(event: EventListItem): string {
+    if (!this.isUpcomingEvent(event)) {
+      return 'COMPLETED';
+    }
+    const fillPercentage = this.getSlotsPercentage(event);
+    return fillPercentage > 50 ? 'FILLING FAST' : 'OPEN';
+  }
+
+  hasCategoryPill(event: EventListItem): boolean {
+    return event.category === 'Volleyball' || event.category === 'Pickleball' || event.category === 'Lifestyle' || !!event.icon;
   }
 }
