@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://strydclubbackend-1.onrender.com/api',
+  apiUrl: 'https://strydclub-backend.vercel.app/api',
   razorpayKeyId: 'rzp_test_TF1mZOVdqrbek8',
   cashfreeEnv: 'production'
 };
