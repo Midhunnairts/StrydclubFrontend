@@ -224,6 +224,16 @@ export class ApiService {
   }
 
   /**
+   * Verify MSG91 OTP Widget access token and receive JWT and profile details.
+   */
+  verifyWidgetToken(accessToken: string): Observable<{ success: boolean; token: string; user: any; isNewUser?: boolean; message?: string }> {
+    return this.http.post<{ success: boolean; token: string; user: any; isNewUser?: boolean; message?: string }>(
+      `${this.apiUrl}/auth/verify-widget-token`,
+      { accessToken }
+    );
+  }
+
+  /**
    * Fetch authenticated user's dashboard metrics and registered events list.
    */
   getUserDashboard(token: string): Observable<{

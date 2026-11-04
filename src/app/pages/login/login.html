@@ -51,6 +51,14 @@
             </svg>
           </button>
 
+          @if (activeTab() === 'phone') {
+            <div style="text-align: center; margin-top: 14px;">
+              <button type="button" class="btn-otp-action-link" (click)="waitingForOtp.set(true)" style="font-size: 13px; opacity: 0.85;">
+                Or enter code manually / test code
+              </button>
+            </div>
+          }
+
         </form>
 
         <!-- or continue with Separator -->

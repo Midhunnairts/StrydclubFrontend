@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -39,20 +40,116 @@ export class LoginComponent {
 
     this.loading.set(true);
 
+    // Call backend API to trigger MSG91 SendOTP or Email SMTP
     this.apiService.sendOtp(channel, value).subscribe({
       next: (res: any) => {
         this.loading.set(false);
+        // Switch view to type OTP screen
         this.waitingForOtp.set(true);
+
         if (res.mockMode && res.code) {
-          this.otpSentMessage.set(`Simulated Code: ${res.code} (SMTP or SMS gateway not active)`);
+          this.otpSentMessage.set(`Simulated Code: ${res.code}`);
         } else {
-          this.otpSentMessage.set(`A 6-digit OTP code has been sent to ${value}.`);
+          this.otpSentMessage.set(`A 6-digit verification code has been sent to ${value}.`);
         }
       },
       error: (err) => {
         this.loading.set(false);
         const errorMsg = err.error?.message || 'Server connection failed';
         alert('Failed to send OTP: ' + errorMsg);
+      }
+    });
+  }
+
+  /**
+   * Optional helper: Triggers the MSG91 OTP Widget popup
+   */
+  openMsg91Widget() {
+    const phone = this.phoneNumber.trim();
+    this.loading.set(true);
+
+    const configuration = {
+      widgetId: environment.msg91WidgetId || '366b63714641323136353833',
+      tokenAuth: environment.msg91TokenAuth || '586808TRmIwbVp6aea1d2eP1',
+      identifier: phone || undefined,
+      exposeMethods: true,
+      success: (data: any) => {
+        console.log('[MSG91 OTP Widget Success]:', data);
+        const accessToken = typeof data === 'string' ? data : (data?.['access-token'] || data?.message || data?.data || data?.token);
+        if (accessToken) {
+          this.verifyMsg91Token(accessToken);
+        } else {
+          this.loading.set(false);
+        }
+      },
+      failure: (error: any) => {
+        console.error('[MSG91 OTP Widget Failure]:', error);
+        this.loading.set(false);
+      }
+    };
+
+    if (typeof (window as any).initSendOTP === 'function') {
+      (window as any).initSendOTP(configuration);
+      this.loading.set(false);
+    } else {
+      this.loadOtpScript([
+        'https://verify.msg91.com/otp-provider.js',
+        'https://verify.phone91.com/otp-provider.js'
+      ], configuration);
+    }
+  }
+
+  private loadOtpScript(urls: string[], configuration: any) {
+    let i = 0;
+    const attempt = () => {
+      const s = document.createElement('script');
+      s.src = urls[i];
+      s.async = true;
+      s.onload = () => {
+        this.loading.set(false);
+        if (typeof (window as any).initSendOTP === 'function') {
+          (window as any).initSendOTP(configuration);
+        }
+      };
+      s.onerror = () => {
+        i++;
+        if (i < urls.length) {
+          attempt();
+        } else {
+          this.loading.set(false);
+          alert('Could not load MSG91 OTP widget provider.');
+        }
+      };
+      document.head.appendChild(s);
+    };
+    attempt();
+  }
+
+  verifyMsg91Token(accessToken: string) {
+    this.loading.set(true);
+    this.apiService.verifyWidgetToken(accessToken).subscribe({
+      next: (res: any) => {
+        this.loading.set(false);
+        if (res.success) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('token', res.token);
+          }
+          if (res.user) {
+            this.apiService.currentUser.set(res.user);
+          }
+
+          const isProfileComplete = res.user?.isProfileComplete;
+          if (!isProfileComplete || res.isNewUser) {
+            this.router.navigate(['/complete-profile']);
+          } else {
+            this.router.navigate(['/events']);
+          }
+        }
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const errorMsg = err.error?.message || 'Failed to verify MSG91 OTP access token';
+        alert(errorMsg);
       }
     });
   }
@@ -130,4 +227,3 @@ export class LoginComponent {
     alert('Please sign in using your Phone Number or Email with a 6-digit verification code.');
   }
 }
-
