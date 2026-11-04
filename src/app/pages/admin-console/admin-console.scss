@@ -987,7 +987,7 @@
 .user-info-meta {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .user-name-line {
@@ -999,6 +999,72 @@
     font-size: 16px;
     font-weight: 700;
     color: #ffffff;
+  }
+}
+
+.user-contact-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+
+  .user-phone-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #38bdf8;
+    background-color: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12.5px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+
+    .contact-icon {
+      color: #38bdf8;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background-color: rgba(56, 189, 248, 0.16);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #7dd3fc;
+    }
+  }
+
+  .user-email-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #d1d5db;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 12.5px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    .contact-icon {
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+  }
+
+  .no-contact-text {
+    color: #6b7280;
+    font-style: italic;
+    font-size: 12.5px;
   }
 }
 
@@ -1040,9 +1106,28 @@
 }
 
 .user-submeta-text {
-  font-size: 13.5px;
+  font-size: 12.5px;
   color: #8e8e93;
   font-weight: 400;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+
+  .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    svg {
+      color: #8e8e93;
+      flex-shrink: 0;
+    }
+  }
+
+  .meta-dot {
+    color: #48484a;
+  }
 }
 
 .user-card-right {

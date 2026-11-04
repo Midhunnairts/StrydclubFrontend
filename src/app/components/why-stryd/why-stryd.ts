@@ -12,13 +12,18 @@ import { ApiService } from '../../services/api.service';
 })
 export class WhyStrydComponent implements OnInit {
   private apiService = inject(ApiService);
-  citiesCount = signal<string>('24');
+  citiesCount = signal<string>('1');
 
   ngOnInit() {
     this.apiService.getPublicStats().subscribe({
       next: (res) => {
-        if (res && res.success && res.stats && res.stats.citiesText) {
-          this.citiesCount.set(res.stats.citiesText);
+        if (res && res.success && res.stats) {
+          if (Array.isArray(res.stats.cityList) && res.stats.cityList.length > 0) {
+            const hostedCities = res.stats.cityList.filter(c => (c.eventsCount || 0) > 0);
+            this.citiesCount.set(hostedCities.length > 0 ? `${hostedCities.length}` : (res.stats.citiesText || '1'));
+          } else if (res.stats.citiesText) {
+            this.citiesCount.set(res.stats.citiesText);
+          }
         }
       }
     });

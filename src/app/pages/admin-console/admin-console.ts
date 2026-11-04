@@ -331,7 +331,12 @@ export class AdminConsoleComponent implements OnInit {
     let list = this.allUsers();
     if (this.userSearchQuery.trim()) {
       const q = this.userSearchQuery.toLowerCase();
-      list = list.filter(u => (u.name && u.name.toLowerCase().includes(q)) || (u.email && u.email.toLowerCase().includes(q)) || (u.phone && u.phone.includes(q)));
+      list = list.filter(u =>
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        (u.phone && u.phone.includes(q)) ||
+        (u.location && u.location.toLowerCase().includes(q))
+      );
     }
     return list;
   }

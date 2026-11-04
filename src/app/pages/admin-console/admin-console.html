@@ -477,9 +477,39 @@
                   </span>
                 </div>
 
+                <div class="user-contact-line">
+                  <!-- Phone Number badge -->
+                  <a [href]="'tel:' + u.phone" class="user-phone-badge" *ngIf="u.phone" [title]="'Call ' + u.phone">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="contact-icon">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.502-5.176-3.854-6.678-6.678l1.293-.97a2.25 2.25 0 0 0 .417-1.173L6.113 3.243c-.125-.501-.575-.852-1.091-.852H3.75a2.25 2.25 0 0 0-2.25 2.25v2.25Z" />
+                    </svg>
+                    <span>{{ u.phone }}</span>
+                  </a>
+
+                  <!-- Email badge -->
+                  <a [href]="'mailto:' + u.email" class="user-email-badge" *ngIf="u.email" [title]="'Email ' + u.email">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="contact-icon">
+                      <rect width="20" height="16" x="2" y="4" rx="2"/>
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                    </svg>
+                    <span>{{ u.email }}</span>
+                  </a>
+
+                  <span class="no-contact-text" *ngIf="!u.phone && !u.email">No contact available</span>
+                </div>
+
                 <div class="user-submeta-text">
-                  {{ u.email || u.phone || 'no-contact' }} · {{ (u.favoriteSports && u.favoriteSports.length > 0) ?
-                  u.favoriteSports[0] : 'Running' }} · Joined {{ u.memberSince || 'Jan 2026' }}
+                  <span class="meta-item" *ngIf="u.location">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    {{ u.location }}
+                  </span>
+                  <span class="meta-dot" *ngIf="u.location">·</span>
+                  <span class="meta-item">{{ (u.favoriteSports && u.favoriteSports.length > 0) ? u.favoriteSports.join(', ') : 'Running' }}</span>
+                  <span class="meta-dot">·</span>
+                  <span class="meta-item">Joined {{ u.memberSince || 'Jan 2026' }}</span>
                 </div>
               </div>
             </div>

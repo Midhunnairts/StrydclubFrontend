@@ -57,6 +57,14 @@ export class CommunityHomeComponent implements OnInit {
     this.apiService.getPublicStats().subscribe({
       next: (res) => {
         if (res && res.success && res.stats) {
+          let citiesValue = res.stats.citiesText || '1';
+          if (Array.isArray(res.stats.cityList) && res.stats.cityList.length > 0) {
+            const hostedCities = res.stats.cityList.filter(c => (c.eventsCount || 0) > 0);
+            if (hostedCities.length > 0) {
+              citiesValue = `${hostedCities.length}`;
+            }
+          }
+
           this.stats.set([
             {
               value: res.stats.athletesText || '12,500+',
@@ -64,8 +72,8 @@ export class CommunityHomeComponent implements OnInit {
               iconName: 'members'
             },
             {
-              value: res.stats.citiesText || '24',
-              label: 'Cities',
+              value: citiesValue,
+              label: citiesValue === '1' ? 'City' : 'Cities',
               iconName: 'cities'
             },
             {

@@ -64,14 +64,24 @@ export class CommunityComponent implements OnInit {
     this.apiService.getPublicStats().subscribe({
       next: (res) => {
         if (res && res.success && res.stats) {
+          let hostedCities = res.stats.cityList || [];
+          if (hostedCities.length > 0) {
+            const filtered = hostedCities.filter(c => (c.eventsCount || 0) > 0);
+            if (filtered.length > 0) {
+              hostedCities = filtered;
+            }
+          }
+
+          const citiesCountStr = hostedCities.length > 0 ? `${hostedCities.length}` : (res.stats.citiesText || '1');
+
           this.stats.set([
             { iconName: 'members', value: res.stats.athletesText, label: 'Active Members' },
-            { iconName: 'cities', value: res.stats.citiesText, label: 'Cities Covered' },
+            { iconName: 'cities', value: citiesCountStr, label: citiesCountStr === '1' ? 'City Covered' : 'Cities Covered' },
             { iconName: 'events', value: res.stats.eventsText, label: 'Total Events' }
           ]);
 
-          if (res.stats.cityList && res.stats.cityList.length > 0) {
-            this.cities.set(res.stats.cityList);
+          if (hostedCities.length > 0) {
+            this.cities.set(hostedCities);
           }
         }
       },

@@ -15,7 +15,7 @@ export class HeroComponent implements OnInit {
 
   athletesCount = signal<string>('');
   eventsCount = signal<string>('');
-  citiesCount = signal<string>('');
+  citiesCount = signal<string>('1');
 
   ngOnInit() {
     this.loadStats();
@@ -27,7 +27,14 @@ export class HeroComponent implements OnInit {
         if (res && res.success && res.stats) {
           if (res.stats.athletesText) this.athletesCount.set(res.stats.athletesText);
           if (res.stats.eventsText) this.eventsCount.set(res.stats.eventsText);
-          if (res.stats.citiesText) this.citiesCount.set(res.stats.citiesText);
+
+          // City count based on event hosted cities
+          if (Array.isArray(res.stats.cityList) && res.stats.cityList.length > 0) {
+            const hostedCities = res.stats.cityList.filter(c => (c.eventsCount || 0) > 0);
+            this.citiesCount.set(hostedCities.length > 0 ? `${hostedCities.length}` : (res.stats.citiesText || '1'));
+          } else if (res.stats.citiesText) {
+            this.citiesCount.set(res.stats.citiesText);
+          }
         }
       },
       error: (err) => {
