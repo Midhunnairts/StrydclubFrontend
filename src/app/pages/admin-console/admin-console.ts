@@ -247,6 +247,81 @@ export class AdminConsoleComponent implements OnInit {
     this.editingEvent.set(null);
   }
 
+  // Sync Payment Modal State
+  isSyncModalOpen = signal<boolean>(false);
+  syncMode = signal<'phone' | 'orderId'>('phone');
+  syncPhone = '';
+  syncEventId = '';
+  syncOrderId = '';
+  isSyncing = signal<boolean>(false);
+
+  openSyncModal() {
+    this.syncPhone = '';
+    this.syncOrderId = '';
+    const events = this.allEvents();
+    if (events.length > 0) {
+      this.syncEventId = events[0]._id || events[0].id || '';
+    }
+    this.isSyncModalOpen.set(true);
+  }
+
+  closeSyncModal() {
+    this.isSyncModalOpen.set(false);
+  }
+
+  confirmSyncPayment() {
+    if (this.syncMode() === 'phone') {
+      if (!this.syncPhone.trim()) {
+        alert('Please enter the athlete phone number');
+        return;
+      }
+      if (!this.syncEventId) {
+        alert('Please select an event');
+        return;
+      }
+      this.isSyncing.set(true);
+      this.apiService.syncCashfreeOrder({
+        phone: this.syncPhone.trim(),
+        eventId: this.syncEventId
+      }).subscribe({
+        next: (res) => {
+          this.isSyncing.set(false);
+          this.showToast(res.message || 'Payment synced & athlete registered successfully!');
+          this.closeSyncModal();
+          this.loadAdminEvents();
+          this.loadAdminData();
+          if (this.activeTab() === 'users') this.loadAdminUsers();
+        },
+        error: (err) => {
+          this.isSyncing.set(false);
+          alert(err.error?.message || 'Failed to sync athlete payment.');
+        }
+      });
+    } else {
+      if (!this.syncOrderId.trim()) {
+        alert('Please enter the Cashfree Order ID');
+        return;
+      }
+      this.isSyncing.set(true);
+      this.apiService.syncCashfreeOrder({
+        order_id: this.syncOrderId.trim()
+      }).subscribe({
+        next: (res) => {
+          this.isSyncing.set(false);
+          this.showToast(res.message || 'Payment synced successfully!');
+          this.closeSyncModal();
+          this.loadAdminEvents();
+          this.loadAdminData();
+          if (this.activeTab() === 'users') this.loadAdminUsers();
+        },
+        error: (err) => {
+          this.isSyncing.set(false);
+          alert(err.error?.message || 'Failed to sync order.');
+        }
+      });
+    }
+  }
+
   saveEditEvent() {
     const ev = this.editingEvent();
     if (!ev) return;

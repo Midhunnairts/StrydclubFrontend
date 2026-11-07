@@ -114,12 +114,13 @@ export class ApiService {
   /**
    * Admin method to manually sync a Cashfree order and register user if paid.
    */
-  syncCashfreeOrder(orderId: string): Observable<{ success: boolean; message: string; registration?: any }> {
+  syncCashfreeOrder(payload: string | { order_id?: string; phone?: string; eventId?: string }): Observable<{ success: boolean; message: string; registration?: any }> {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    const body = typeof payload === 'string' ? { order_id: payload } : payload;
     return this.http.post<{ success: boolean; message: string; registration?: any }>(
       `${this.apiUrl}/admin/sync-cashfree-order`,
-      { order_id: orderId },
+      body,
       { headers }
     );
   }

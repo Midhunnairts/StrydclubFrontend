@@ -266,9 +266,17 @@
             <p class="section-subtitle">Manage, edit, and moderate published events</p>
           </div>
 
-          <a routerLink="/host-event" class="new-event-btn">
-            <span class="bolt-icon">⚡</span> New Event
-          </a>
+          <div class="header-action-group">
+            <button type="button" class="sync-payment-btn" (click)="openSyncModal()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+              </svg>
+              <span>Sync Payment</span>
+            </button>
+            <a routerLink="/host-event" class="new-event-btn">
+              <span class="bolt-icon">⚡</span> New Event
+            </a>
+          </div>
         </div>
 
         <!-- Search & Filter Bar -->
@@ -425,6 +433,62 @@
         <div class="modal-footer">
           <button class="modal-cancel-btn" (click)="closeEditModal()">Cancel</button>
           <button class="modal-save-btn" (click)="saveEditEvent()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sync Payment Modal Backdrop -->
+    <div class="modal-backdrop" *ngIf="isSyncModalOpen()" (click)="closeSyncModal()">
+      <div class="modal-card sync-modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Sync Payment & Register Athlete</h3>
+          <button class="close-modal-btn" (click)="closeSyncModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <p class="modal-desc" style="font-size: 13.5px; color: #8e8e93; margin-bottom: 16px; line-height: 1.5;">
+            Confirm an athlete whose payment was completed on Cashfree or UPI but needs registration confirmed.
+          </p>
+
+          <!-- Mode Toggle Tabs -->
+          <div class="sync-tabs-bar">
+            <button type="button" class="tab-pill-btn" [class.active]="syncMode() === 'phone'" (click)="syncMode.set('phone')">
+              By Phone Number
+            </button>
+            <button type="button" class="tab-pill-btn" [class.active]="syncMode() === 'orderId'" (click)="syncMode.set('orderId')">
+              By Cashfree Order ID
+            </button>
+          </div>
+
+          <!-- Mode 1: By Phone & Event -->
+          <div *ngIf="syncMode() === 'phone'">
+            <div class="form-group mb-4">
+              <label class="form-label">Athlete Phone Number</label>
+              <input type="text" class="modal-input" [(ngModel)]="syncPhone" placeholder="e.g. 9345413912 or +919345413912">
+            </div>
+
+            <div class="form-group mb-4">
+              <label class="form-label">Select Event</label>
+              <select class="modal-select" [(ngModel)]="syncEventId">
+                <option *ngFor="let ev of allEvents()" [value]="ev._id || ev.id">{{ ev.title }} ({{ ev.date }})</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Mode 2: By Cashfree Order ID -->
+          <div *ngIf="syncMode() === 'orderId'">
+            <div class="form-group mb-4">
+              <label class="form-label">Cashfree Order ID</label>
+              <input type="text" class="modal-input" [(ngModel)]="syncOrderId" placeholder="e.g. order_6aeacbddd22d50b70821d345_1793970672341">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="modal-cancel-btn" (click)="closeSyncModal()">Cancel</button>
+          <button class="modal-save-btn sync-confirm-btn" (click)="confirmSyncPayment()" [disabled]="isSyncing()">
+            {{ isSyncing() ? 'Syncing...' : 'Confirm & Register' }}
+          </button>
         </div>
       </div>
     </div>
