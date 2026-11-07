@@ -97,10 +97,12 @@
 .event-description {
   font-family: var(--font-family-body);
   font-size: 1.2rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
   margin: 0;
   max-width: 680px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* Parameters Cards Grid */
