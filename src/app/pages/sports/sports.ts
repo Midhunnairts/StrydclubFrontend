@@ -38,8 +38,12 @@ export class SportsComponent implements OnInit {
   loadSports() {
     this.apiService.getSports().subscribe({
       next: (res) => {
-        if (res.success) {
-          this.sports.set(res.sports || []);
+        if (res.success && res.sports) {
+          const mapped = res.sports.map(s => ({
+            ...s,
+            eventsCount: typeof s.upcomingEventsCount === 'number' ? s.upcomingEventsCount : (s.eventsCount || 0)
+          }));
+          this.sports.set(mapped);
         }
       },
       error: () => {

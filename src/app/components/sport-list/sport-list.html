@@ -40,7 +40,7 @@
           <!-- Bottom Info Block -->
           <div class="card-bottom-info">
             <h3 class="sport-name">{{ sport.name }}</h3>
-            <p class="sport-events-count">{{ sport.eventsCount }} upcoming events</p>
+            <p class="sport-events-count">{{ sport.eventsCount }} upcoming {{ sport.eventsCount === 1 ? 'event' : 'events' }}</p>
           </div>
 
         </div>

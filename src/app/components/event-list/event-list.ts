@@ -46,8 +46,13 @@ export class EventListComponent implements OnInit {
             'Other': '/assets/Other.jpg'
           };
           const upcomingEvents = res.events.filter(e => {
-            const isCompleted = e.status === 'Completed' || e.status === 'completed' || e.status === 'COMPLETED' || this.isEventPast(e.date, e.time, e.endTime);
-            return !isCompleted;
+            if (e.status) {
+              const upper = e.status.toString().toUpperCase().trim();
+              if (upper === 'COMPLETED' || upper === 'EVENT COMPLETED' || upper === 'PAST' || upper === 'CANCELLED') {
+                return false;
+              }
+            }
+            return !this.isEventPast(e.date, e.time, e.endTime);
           });
 
           const featured = upcomingEvents.slice(0, 3).map(e => ({
