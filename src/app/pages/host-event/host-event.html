@@ -362,23 +362,64 @@
             <div class="input-group full-row">
               <label class="input-label">EVENT BANNER IMAGE</label>
 
+              <!-- Native File Input -->
+              <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="file-input-hidden">
+
               @if (bannerUrl()) {
-                <!-- Active Image Preview Container -->
-                <div class="image-preview-container">
-                  <img [src]="bannerUrl()" alt="Event Banner Preview" class="preview-banner-img">
-                  <div class="preview-img-overlay">
-                    <div class="image-info-tag">
-                      <span class="file-name-text">{{ imageFileName() || 'Uploaded Banner Image' }}</span>
-                      @if (imageFileSize()) {
-                        <span class="file-size-badge">{{ imageFileSize() }}</span>
-                      }
+                <!-- Exact Event Listing Card Resolution Preview Container -->
+                <div class="banner-preview-wrapper">
+                  <!-- Header: Badge & Action Buttons -->
+                  <div class="preview-header-bar">
+                    <div class="resolution-badge">
+                      <span class="badge-dot"></span>
+                      <span>Event Listing Card Preview (215px height)</span>
                     </div>
-                    <button type="button" class="btn-remove-image" (click)="removeImage()" title="Remove Image">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="icon-sm">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                      <span>Remove</span>
-                    </button>
+
+                    <div class="banner-action-btns">
+                      <button type="button" class="btn-preview-action btn-change-image" (click)="fileInput.click()" title="Select a different banner image">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="action-icon">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        <span>Change</span>
+                      </button>
+                      <button type="button" class="btn-preview-action btn-remove-image" (click)="removeImage()" title="Remove banner image">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="action-icon">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Exact Card Image Container matching /events page -->
+                  <div class="events-listing-preview-card" [style.background-image]="'url(' + bannerUrl() + ')'">
+                    <div class="image-gradient-overlay"></div>
+
+                    <!-- Category Tag Pill (Top Left) -->
+                    @if (selectedSport()) {
+                      <div class="badge-category-pill">
+                        <span class="pill-icon">{{ getSportIcon(selectedSport()) }}</span>
+                        <span>{{ selectedSport() }}</span>
+                      </div>
+                    }
+
+                    <!-- Price Tag Pill (Top Right) -->
+                    <div class="badge-price-pill">
+                      <span>₹{{ price() || '0' }}</span>
+                    </div>
+
+                    <!-- Status Tag Badge (Bottom Left) -->
+                    <div class="badge-status-pill open-status bottom-left-align">
+                      <span>OPEN</span>
+                    </div>
+                  </div>
+
+                  <!-- File Details -->
+                  <div class="preview-footer-details">
+                    <span class="file-name-text">{{ imageFileName() || 'Uploaded Banner Image' }}</span>
+                    @if (imageFileSize()) {
+                      <span class="file-size-badge">{{ imageFileSize() }}</span>
+                    }
                   </div>
                 </div>
               } @else {
@@ -388,8 +429,6 @@
                      (dragover)="onDragOver($event)"
                      (dragleave)="onDragLeave($event)"
                      (drop)="onFileDropped($event)">
-                  <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="file-input-hidden">
-                  
                   <div class="dropzone-content" (click)="fileInput.click()">
                     <div class="upload-icon-circle">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="upload-svg">
@@ -398,7 +437,7 @@
                     </div>
                     <div class="dropzone-text-group">
                       <span class="upload-main-text"><span class="highlight-upload">Click to upload</span> or drag and drop</span>
-                      <span class="upload-sub-text">PNG, JPG, WebP up to 5MB</span>
+                      <span class="upload-sub-text">PNG, JPG, WebP up to 5MB (optimized for 215px event card height)</span>
                     </div>
                     <button type="button" class="btn-browse-file">Browse File</button>
                   </div>
@@ -423,9 +462,27 @@
 
           @if (bannerUrl()) {
             <div class="banner-preview-card">
-              <span class="preview-card-label" style="display: block; margin-bottom: 8px;">EVENT BANNER</span>
-              <div class="banner-image-preview-box">
-                <img [src]="bannerUrl()" alt="Event Banner" class="banner-preview-img">
+              <div class="preview-card-header-row">
+                <span class="preview-card-label">EVENT BANNER</span>
+                <span class="preview-resolution-chip">Event Listing Card Preview (215px)</span>
+              </div>
+              <div class="events-listing-preview-card" [style.background-image]="'url(' + bannerUrl() + ')'">
+                <div class="image-gradient-overlay"></div>
+
+                @if (selectedSport()) {
+                  <div class="badge-category-pill">
+                    <span class="pill-icon">{{ getSportIcon(selectedSport()) }}</span>
+                    <span>{{ selectedSport() }}</span>
+                  </div>
+                }
+
+                <div class="badge-price-pill">
+                  <span>₹{{ price() || '0' }}</span>
+                </div>
+
+                <div class="badge-status-pill open-status bottom-left-align">
+                  <span>OPEN</span>
+                </div>
               </div>
             </div>
           }
